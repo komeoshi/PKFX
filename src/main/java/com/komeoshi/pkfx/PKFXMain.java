@@ -30,8 +30,19 @@ public class PKFXMain {
             PKFXRestClient client = new PKFXRestClient();
             Instrument i = client.run(restTemplate);
 
-            PKFXAnalyzeParameter analyze = new PKFXAnalyzeParameter();
-            analyze.run(i);
+            // デフォルトパラメータで解析
+            PKFXAnalyzeParameter analyze1 = new PKFXAnalyzeParameter();
+            analyze1.run(i);
+
+            // パラメータをいじって解析
+            PKFXAnalyzeParameter analyze2
+                    = new PKFXAnalyzeParameter(
+                    1.0002,
+                    1.00025,
+                    5
+            );
+            analyze2.run(i);
+
         };
     }
 }

@@ -12,13 +12,13 @@ public class PKFXAnalyzeParameter {
      * プロパティ.
      * ローソクの長さ係数.
      */
-    private Double candleLengthMagnification = 1.0005;
+    private Double candleLengthMagnification = 1.0002;
 
     /**
      * プロパティ.
      * 目標金額係数.
      */
-    private Double targetMagnification = 1.0007;
+    private Double targetMagnification = 1.0003;
 
     /**
      * プロパティ.
@@ -39,6 +39,17 @@ public class PKFXAnalyzeParameter {
      */
     private Double total = 0.0;
 
+    public int getLengthEnoughCount() {
+        return lengthEnoughCount;
+    }
+
+    public int getTargetReachedCount() {
+        return targetReachedCount;
+    }
+
+    public double getTotal() {
+        return total;
+    }
 
     /**
      * コンストラクタ.
@@ -48,8 +59,11 @@ public class PKFXAnalyzeParameter {
 
     /**
      * コンストラクタ.
+     * パラメータを指定する.
      *
      * @param candleLengthMagnification ローソクの長さ係数.
+     * @param targetMagnification       目標金額係数.
+     * @param waitTime                  ローソクの長さ閾値達成後の最大待ち時間.
      */
     public PKFXAnalyzeParameter(Double candleLengthMagnification, Double targetMagnification, Integer waitTime) {
         this.candleLengthMagnification = candleLengthMagnification;
@@ -61,17 +75,19 @@ public class PKFXAnalyzeParameter {
 
         int lengthEnoughCount = 0;
         int targetReachedCount = 0;
-        for (int i = 0; i < instrument.getCandles().size(); i++) {
+        int searchLength = instrument.getCandles().size() - waitTime;
+
+        for (int i = 0; i < searchLength; i++) {
+            // 起点ローソク
             Candle candle = instrument.getCandles().get(i);
 
-            if (isInsen(candle)) {
+            if (isInsen(candle) || !isLengthEnough(candle)) {
+                // 起点が陰線は対象外
+                // 起点ローソクの長さが足りない場合は対象外
                 continue;
             }
 
-            if (!isLengthEnough(candle)) {
-                continue;
-            }
-
+            // 起点ローソクの長さが十分
             lengthEnoughCount++;
 
             boolean isTargetReached = false;
@@ -81,14 +97,13 @@ public class PKFXAnalyzeParameter {
                 // 目標金額達成閾値
                 double target = candle.getOpenBid() * targetMagnification;
                 if (target < targetCandle.getHighBid()) {
+                    // 目標金額達成した
                     isTargetReached = true;
+
+                    log.info(candle.toString());
+                    targetReachedCount++;
                     break;
                 }
-            }
-
-            if (isTargetReached) {
-                log.info(candle.toString());
-                targetReachedCount++;
             }
         }
 
@@ -118,6 +133,7 @@ public class PKFXAnalyzeParameter {
     }
 
     private boolean isYousen(Candle candle) {
+        // 始値よりも終値が高ければ陽線
         return candle.getOpenBid() > candle.getCloseBid();
     }
 
