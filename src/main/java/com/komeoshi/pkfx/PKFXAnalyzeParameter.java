@@ -9,19 +9,36 @@ public class PKFXAnalyzeParameter {
     private static final Logger log = LoggerFactory.getLogger(PKFXAnalyzeParameter.class);
 
     /**
+     * プロパティ.
      * ローソクの長さ係数.
      */
     private Double candleLengthMagnification = 1.0005;
 
     /**
+     * プロパティ.
      * 目標金額係数.
      */
     private Double targetMagnification = 1.0007;
 
     /**
-     * ローソクの長さ閾値達成後の最大町地時間.
+     * プロパティ.
+     * ローソクの長さ閾値達成後の最大待ち時間.
      */
     private Integer waitTime = 5;
+
+    /**
+     * ローソクの長さ達成回数.
+     */
+    private int lengthEnoughCount = 0;
+    /**
+     * 目標金額達成回数.
+     */
+    private int targetReachedCount = 0;
+    /**
+     * 勝率.
+     */
+    private Double total = 0.0;
+
 
     /**
      * コンストラクタ.
@@ -52,9 +69,10 @@ public class PKFXAnalyzeParameter {
             }
 
             if (!isLengthEnough(candle)) {
-                lengthEnoughCount++;
                 continue;
             }
+
+            lengthEnoughCount++;
 
             boolean isTargetReached = false;
             for (int j = 0; j < waitTime; j++) {
@@ -74,9 +92,17 @@ public class PKFXAnalyzeParameter {
             }
         }
 
+        this.total = ((double) targetReachedCount /
+                ((double) lengthEnoughCount + (double) targetReachedCount));
+        this.lengthEnoughCount = lengthEnoughCount;
+        this.targetReachedCount = targetReachedCount;
+        printResult();
+    }
+
+    public void printResult() {
         log.info("lengthEnoughCount:" + lengthEnoughCount);
         log.info("targetReachedCount:" + targetReachedCount);
-        log.info("total:" + (targetReachedCount / (lengthEnoughCount + targetReachedCount)));
+        log.info("total:" + total);
     }
 
     /**
