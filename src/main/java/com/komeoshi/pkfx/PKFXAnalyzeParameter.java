@@ -27,7 +27,6 @@ public class PKFXAnalyzeParameter {
      * コンストラクタ.
      */
     public PKFXAnalyzeParameter() {
-
     }
 
     /**
@@ -77,6 +76,7 @@ public class PKFXAnalyzeParameter {
 
         log.info("lengthEnoughCount:" + lengthEnoughCount);
         log.info("targetReachedCount:" + targetReachedCount);
+        log.info("total:" + (targetReachedCount / (lengthEnoughCount + targetReachedCount)));
     }
 
     /**
