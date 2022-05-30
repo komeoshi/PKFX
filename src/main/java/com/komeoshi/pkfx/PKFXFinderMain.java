@@ -2,7 +2,6 @@ package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Instrument;
-import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -12,7 +11,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
@@ -47,7 +45,7 @@ public class PKFXFinderMain {
 
                 if (status == Status.NONE) {
                     PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(c);
-                    if (finder.isSignal(1.0002)) {
+                    if (finder.isSignal(1.0002) && !openTime.isEqual(c.getTime())) {
                         log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH());
 
                         // シグナル点灯したので買う.
@@ -60,9 +58,10 @@ public class PKFXFinderMain {
                 } else {
 
                     boolean isTargetReached = openRate * 1.0003 < c.getMid().getH();
-
-                    if(isTargetReached || openTime.plusMinutes(5).isAfter(LocalDateTime.now())) {
-                        log.info("signal<< " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH());
+                    boolean isTimeReached = openTime.plusMinutes(5).isAfter(LocalDateTime.now());
+                    if (isTargetReached || isTimeReached) {
+                        log.info("signal<< " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH() + ", "
+                                + isTargetReached + ", " + isTimeReached);
 
                         // シグナル終了したので売る.
                         client.sell();
