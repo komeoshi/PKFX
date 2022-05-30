@@ -98,6 +98,9 @@ public class PKFXSimulatorAnalyzeParameter {
                 double target = candle.getMid().getO() * targetMagnification;
                 if (target < targetCandle.getMid().getH()) {
                     // 目標金額達成した
+//                    log.info("signal<< " + candle.getTime() + ", " + candle.getMid().getO() + ", " + targetCandle.getMid().getH() + ", "
+//                            + (targetCandle.getMid().getH() - candle.getMid().getO()) );
+
                     targetReachedCount++;
                     break;
                 }
@@ -116,8 +119,6 @@ public class PKFXSimulatorAnalyzeParameter {
         log.info("targetReachedCount:" + targetReachedCount);
         log.info("total:" + total);
     }
-
-
 
 
 }
