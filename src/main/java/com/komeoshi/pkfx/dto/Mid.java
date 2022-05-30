@@ -19,7 +19,6 @@ public class Mid {
         s.append("l:" + l + "\n");
         s.append("c:" + c + "\n");
 
-
         return s.toString();
     }
 

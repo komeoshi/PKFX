@@ -5,9 +5,9 @@ import com.komeoshi.pkfx.dto.Instrument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PKFXAnalyzeParameter {
+public class PKFXSimulatorAnalyzeParameter {
     private static final Logger log =
-            LoggerFactory.getLogger(PKFXAnalyzeParameter.class);
+            LoggerFactory.getLogger(PKFXSimulatorAnalyzeParameter.class);
 
     /**
      * プロパティ.
@@ -55,7 +55,7 @@ public class PKFXAnalyzeParameter {
     /**
      * コンストラクタ.
      */
-    public PKFXAnalyzeParameter() {
+    public PKFXSimulatorAnalyzeParameter() {
     }
 
     /**
@@ -66,7 +66,7 @@ public class PKFXAnalyzeParameter {
      * @param targetMagnification       目標金額係数.
      * @param waitTime                  ローソクの長さ閾値達成後の最大待ち時間.
      */
-    public PKFXAnalyzeParameter(Double candleLengthMagnification, Double targetMagnification, Integer waitTime) {
+    public PKFXSimulatorAnalyzeParameter(Double candleLengthMagnification, Double targetMagnification, Integer waitTime) {
         this.candleLengthMagnification = candleLengthMagnification;
         this.targetMagnification = targetMagnification;
         this.waitTime = waitTime;
@@ -82,7 +82,7 @@ public class PKFXAnalyzeParameter {
             // 起点ローソク
             Candle candle = instrument.getCandles().get(i);
 
-            if (isInsen(candle) || !isLengthEnough(candle)) {
+            if (candle.isInsen() || !candle.isLengthEnough(candleLengthMagnification)) {
                 // 起点が陰線は対象外
                 // 起点ローソクの長さが足りない場合は対象外
                 continue;
@@ -117,24 +117,7 @@ public class PKFXAnalyzeParameter {
         log.info("total:" + total);
     }
 
-    /**
-     * ローソクの長さ閾値を達成するか.
-     *
-     * @param candle ローソク
-     * @return true:ローソクの長さ閾値を達成する
-     */
-    private boolean isLengthEnough(Candle candle) {
-        // ローソクの長さ閾値
-        double threshold = (candle.getMid().getO() * candleLengthMagnification);
-        return candle.getMid().getC() > threshold;
-    }
 
-    private boolean isYousen(Candle candle) {
-        // 始値よりも終値が高ければ陽線
-        return candle.getMid().getC() > candle.getMid().getO();
-    }
 
-    private boolean isInsen(Candle candle) {
-        return !isYousen(candle);
-    }
+
 }

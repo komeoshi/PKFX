@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-public class PKFXMain {
+public class PKFXSimulatorMain {
 
-    private static final Logger log = LoggerFactory.getLogger(PKFXMain.class);
+    private static final Logger log = LoggerFactory.getLogger(PKFXSimulatorMain.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(PKFXMain.class, args);
+        SpringApplication.run(PKFXSimulatorMain.class, args);
     }
 
     @Bean
@@ -27,16 +27,16 @@ public class PKFXMain {
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
         return args -> {
-            PKFXRestClient client = new PKFXRestClient();
+            PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
             Instrument i = client.run(restTemplate);
 
             // デフォルトパラメータで解析
-            PKFXAnalyzeParameter analyze1 = new PKFXAnalyzeParameter();
+            PKFXSimulatorAnalyzeParameter analyze1 = new PKFXSimulatorAnalyzeParameter();
             analyze1.run(i);
 
             // パラメータをいじって解析
-            PKFXAnalyzeParameter analyze2
-                    = new PKFXAnalyzeParameter(
+            PKFXSimulatorAnalyzeParameter analyze2
+                    = new PKFXSimulatorAnalyzeParameter(
                     1.0005,
                     1.0006,
                     5

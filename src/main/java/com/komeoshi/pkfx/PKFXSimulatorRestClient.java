@@ -7,10 +7,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-
-public class PKFXRestClient {
-    private static final Logger log = LoggerFactory.getLogger(PKFXRestClient.class);
+public class PKFXSimulatorRestClient {
+    private static final Logger log = LoggerFactory.getLogger(PKFXSimulatorRestClient.class);
 
     public Instrument run(RestTemplate restTemplate) {
 
