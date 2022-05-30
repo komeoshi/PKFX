@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @SpringBootApplication
 public class PKFXFinderMain {
@@ -57,8 +58,9 @@ public class PKFXFinderMain {
 
                 } else {
 
+                    LocalDateTime targetTime = openTime.plusMinutes(60);
                     boolean isTargetReached = openRate * 1.0007 < c.getMid().getH();
-                    boolean isTimeReached = openTime.plusMinutes(60).isAfter(LocalDateTime.now());
+                    boolean isTimeReached = LocalDateTime.now(ZoneId.of("America/New_York")).isAfter(targetTime);
                     if (isTargetReached || isTimeReached) {
                         log.info("signal<< " + c.getTime() + ", " + openRate + ", " + c.getMid().getH() + ", "
                                 + (c.getMid().getH() - openRate) + ", "
