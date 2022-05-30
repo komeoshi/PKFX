@@ -6,7 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PKFXAnalyzeParameter {
-    private static final Logger log = LoggerFactory.getLogger(PKFXAnalyzeParameter.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(PKFXAnalyzeParameter.class);
 
     /**
      * プロパティ.
@@ -90,17 +91,13 @@ public class PKFXAnalyzeParameter {
             // 起点ローソクの長さが十分
             lengthEnoughCount++;
 
-            boolean isTargetReached = false;
             for (int j = 0; j < waitTime; j++) {
                 Candle targetCandle = instrument.getCandles().get(i + j);
 
                 // 目標金額達成閾値
-                double target = candle.getOpenBid() * targetMagnification;
-                if (target < targetCandle.getHighBid()) {
+                double target = candle.getMid().getO() * targetMagnification;
+                if (target < targetCandle.getMid().getH()) {
                     // 目標金額達成した
-                    isTargetReached = true;
-
-                    log.info(candle.toString());
                     targetReachedCount++;
                     break;
                 }
@@ -108,7 +105,7 @@ public class PKFXAnalyzeParameter {
         }
 
         this.total = ((double) targetReachedCount /
-                ((double) lengthEnoughCount + (double) targetReachedCount));
+                ((double) lengthEnoughCount));
         this.lengthEnoughCount = lengthEnoughCount;
         this.targetReachedCount = targetReachedCount;
         printResult();
@@ -128,13 +125,13 @@ public class PKFXAnalyzeParameter {
      */
     private boolean isLengthEnough(Candle candle) {
         // ローソクの長さ閾値
-        Double threshold = (candle.getOpenBid() * candleLengthMagnification);
-        return candle.getCloseBid() > threshold;
+        double threshold = (candle.getMid().getO() * candleLengthMagnification);
+        return candle.getMid().getC() > threshold;
     }
 
     private boolean isYousen(Candle candle) {
         // 始値よりも終値が高ければ陽線
-        return candle.getOpenBid() > candle.getCloseBid();
+        return candle.getMid().getC() > candle.getMid().getO();
     }
 
     private boolean isInsen(Candle candle) {

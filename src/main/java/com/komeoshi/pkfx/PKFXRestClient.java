@@ -14,25 +14,25 @@ public class PKFXRestClient {
 
     public Instrument run(RestTemplate restTemplate) {
 
-        String url = "http://api-sandbox.oanda.com/v1/candles?instrument=EUR_USD";
-        url += "&count=5000";
+        String url = "https://api-fxpractice.oanda.com/v3/instruments/USD_JPY/candles?";
+        url += "count=5000";
         url += "&granularity=M1";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("apikey", "xxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        headers.add("Authorization", "Bearer 8a93d17e57500d5a9b13c4a27f74b179-4aee32e93758790ec1d3fa0eb24f1aed");
 
-        ResponseEntity<List<Instrument>> response = restTemplate.exchange(
+        ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
-                new ParameterizedTypeReference<List<Instrument>>() {
+                new ParameterizedTypeReference<Instrument>() {
                 });
-        List<Instrument> instruments = response.getBody();
+        Instrument instrument = response.getBody();
 
-        log.info(instruments.toString());
+        log.info("response size:" + instrument.getCandles().size());
 
-        return instruments.get(0);
+        return instrument;
     }
 
 }

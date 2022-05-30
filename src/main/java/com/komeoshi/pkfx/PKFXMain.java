@@ -37,8 +37,8 @@ public class PKFXMain {
             // パラメータをいじって解析
             PKFXAnalyzeParameter analyze2
                     = new PKFXAnalyzeParameter(
-                    1.0002,
-                    1.00025,
+                    1.0005,
+                    1.0006,
                     5
             );
             analyze2.run(i);
