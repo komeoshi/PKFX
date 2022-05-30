@@ -61,8 +61,8 @@ public class PKFXSimulatorMain {
             // パラメータをいじって解析
             PKFXSimulatorAnalyzeParameter analyze5
                     = new PKFXSimulatorAnalyzeParameter(
-                    1.0001,
-                    1.0007,
+                    1.00001,
+                    1.00007,
                     60
             );
             analyze5.run(i);

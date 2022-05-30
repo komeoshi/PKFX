@@ -49,7 +49,7 @@ public class PKFXFinderMain {
                         log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH());
 
                         // シグナル点灯したので買う.
-                        client.buy();
+                        client.buy(restTemplate);
                         status = Status.HOLDING;
                         openRate = c.getMid().getO();
                         openTime = c.getTime();
@@ -65,12 +65,11 @@ public class PKFXFinderMain {
                                 + isTargetReached + ", " + isTimeReached);
 
                         // シグナル終了したので売る.
-                        client.sell();
+                        client.sell(restTemplate);
                         status = Status.NONE;
                     }
                 }
             }
-
         };
 
     }
