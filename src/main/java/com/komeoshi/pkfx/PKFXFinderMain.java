@@ -35,7 +35,7 @@ public class PKFXFinderMain {
 
             Status status = Status.NONE;
             double openRate = 0.0;
-            LocalDateTime openTime = null;
+            LocalDateTime openTime = LocalDateTime.now();
             while (true) {
                 Thread.sleep(1000);
 
@@ -45,7 +45,7 @@ public class PKFXFinderMain {
 
                 if (status == Status.NONE) {
                     PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(c);
-                    if (finder.isSignal(1.0002) && !openTime.isEqual(c.getTime())) {
+                    if (finder.isSignal(1.0002) && (!openTime.isEqual(c.getTime()))) {
                         log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH());
 
                         // シグナル点灯したので買う.
