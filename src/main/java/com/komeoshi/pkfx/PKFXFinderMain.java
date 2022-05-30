@@ -46,7 +46,8 @@ public class PKFXFinderMain {
                 if (status == Status.NONE) {
                     PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(c);
                     if (finder.isSignal(1.0002) && (!openTime.isEqual(c.getTime()))) {
-                        log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH());
+                        log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH() + ", "
+                                + (c.getMid().getO()-c.getMid().getH()));
 
                         // シグナル点灯したので買う.
                         client.buy();
@@ -57,10 +58,11 @@ public class PKFXFinderMain {
 
                 } else {
 
-                    boolean isTargetReached = openRate * 1.0003 < c.getMid().getH();
-                    boolean isTimeReached = openTime.plusMinutes(5).isAfter(LocalDateTime.now());
+                    boolean isTargetReached = openRate * 1.0005 < c.getMid().getH();
+                    boolean isTimeReached = openTime.plusMinutes(15).isAfter(LocalDateTime.now());
                     if (isTargetReached || isTimeReached) {
                         log.info("signal<< " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH() + ", "
+                                + (c.getMid().getO()-c.getMid().getH()) + ", "
                                 + isTargetReached + ", " + isTimeReached);
 
                         // シグナル終了したので売る.
