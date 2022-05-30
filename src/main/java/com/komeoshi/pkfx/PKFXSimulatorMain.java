@@ -42,7 +42,30 @@ public class PKFXSimulatorMain {
                     5
             );
             analyze2.run(i);
-
+            // パラメータをいじって解析
+            PKFXSimulatorAnalyzeParameter analyze3
+                    = new PKFXSimulatorAnalyzeParameter(
+                    1.0002,
+                    1.0003,
+                    10
+            );
+            analyze3.run(i);
+            // パラメータをいじって解析
+            PKFXSimulatorAnalyzeParameter analyze4
+                    = new PKFXSimulatorAnalyzeParameter(
+                    1.0002,
+                    1.0005,
+                    15
+            );
+            analyze4.run(i);
+            // パラメータをいじって解析
+            PKFXSimulatorAnalyzeParameter analyze5
+                    = new PKFXSimulatorAnalyzeParameter(
+                    1.0002,
+                    1.0005,
+                    30
+            );
+            analyze5.run(i);
         };
     }
 }

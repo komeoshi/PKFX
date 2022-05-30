@@ -37,7 +37,7 @@ public class PKFXFinderMain {
             double openRate = 0.0;
             LocalDateTime openTime = LocalDateTime.now();
             while (true) {
-                Thread.sleep(1000);
+                sleep();
 
                 Instrument i = client.getInstrument(restTemplate);
 
@@ -46,8 +46,7 @@ public class PKFXFinderMain {
                 if (status == Status.NONE) {
                     PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(c);
                     if (finder.isSignal(1.0002) && (!openTime.isEqual(c.getTime()))) {
-                        log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH() + ", "
-                                + (c.getMid().getO()-c.getMid().getH()));
+                        log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH());
 
                         // シグナル点灯したので買う.
                         client.buy();
@@ -61,8 +60,8 @@ public class PKFXFinderMain {
                     boolean isTargetReached = openRate * 1.0005 < c.getMid().getH();
                     boolean isTimeReached = openTime.plusMinutes(15).isAfter(LocalDateTime.now());
                     if (isTargetReached || isTimeReached) {
-                        log.info("signal<< " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH() + ", "
-                                + (c.getMid().getO()-c.getMid().getH()) + ", "
+                        log.info("signal<< " + c.getTime() + ", " + openRate + ", " + c.getMid().getH() + ", "
+                                + (c.getMid().getH() - openRate) + ", "
                                 + isTargetReached + ", " + isTimeReached);
 
                         // シグナル終了したので売る.
@@ -74,5 +73,9 @@ public class PKFXFinderMain {
 
         };
 
+    }
+
+    private void sleep() throws InterruptedException {
+        Thread.sleep(100);
     }
 }
