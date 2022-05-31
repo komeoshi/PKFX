@@ -25,11 +25,11 @@ public class PKFXConst {
     /**
      * シグナル点灯閾値.
      */
-    public static final Double CANDLE_LENGTH_MAGNIFICATION = 1.0001;
+    public static final Double CANDLE_LENGTH_MAGNIFICATION = 1.0002;
     /**
      * シグナル終了閾値.
      */
-    public static final Double CANDLE_TARGET_MAGNIFICATION = 1.0007;
+    public static final Double CANDLE_TARGET_MAGNIFICATION = 1.0003;
     /**
      * シグナル終了待ち時間.
      */
