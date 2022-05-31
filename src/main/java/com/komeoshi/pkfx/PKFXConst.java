@@ -33,7 +33,7 @@ public class PKFXConst {
     /**
      * シグナル終了待ち時間.
      */
-    public static final int WAIT_TIME = 60;
+    public static final int WAIT_TIME = 5;
 
     /**
      * インターバル. ミリ秒.
