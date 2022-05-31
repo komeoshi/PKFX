@@ -20,7 +20,7 @@ public class PKFXConst {
     /**
      * 売買単位.
      */
-    public static final String DEFAULT_UNIT = "4500";
+    public static final String DEFAULT_UNIT = "45000";
 
     /**
      * シグナル点灯閾値.

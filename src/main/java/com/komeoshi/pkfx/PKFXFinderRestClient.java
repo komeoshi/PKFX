@@ -45,7 +45,7 @@ public class PKFXFinderRestClient {
     }
 
     public void sell(RestTemplate restTemplate) {
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getHttpHeaders();
 
         // 保有しているポジションを取得
         Trades trades = getTrades(restTemplate, headers);
@@ -84,5 +84,10 @@ public class PKFXFinderRestClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + PKFXConst.API_ACCESS_TOKEN);
         return headers;
+    }
+
+    public static void main(String[] args){
+        PKFXFinderRestClient c = new PKFXFinderRestClient();
+        c.sell(new RestTemplate());
     }
 }
