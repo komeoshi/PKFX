@@ -65,8 +65,9 @@ public class PKFXFinderMain {
 
                 } else {
                     LocalDateTime targetTime = openTime.plusMinutes(PKFXConst.WAIT_TIME);
+                    LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("UTC"));
+                    boolean isTimeReached = currentTime.isAfter(targetTime);
                     boolean isTargetReached = openRate * PKFXConst.CANDLE_TARGET_MAGNIFICATION < c.getMid().getH();
-                    boolean isTimeReached = LocalDateTime.now(ZoneId.of("America/New_York")).isAfter(targetTime);
                     if (isTargetReached || isTimeReached) {
                         log.info("signal<< " + c.getTime() + ", " + openRate + ", " + c.getMid().getH() + ", "
                                 + (c.getMid().getH() - openRate) + ", "
