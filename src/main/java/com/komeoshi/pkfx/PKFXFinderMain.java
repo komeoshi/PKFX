@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -40,7 +41,13 @@ public class PKFXFinderMain {
             while (true) {
                 sleep();
 
-                Instrument i = client.getInstrument(restTemplate);
+                Instrument i;
+                try {
+                    i = client.getInstrument(restTemplate);
+                } catch (RestClientException e) {
+                    log.error("", e);
+                    continue;
+                }
 
                 Candle c = i.getCandles().get(0);
 
