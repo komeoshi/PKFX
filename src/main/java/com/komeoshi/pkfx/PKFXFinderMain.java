@@ -53,7 +53,7 @@ public class PKFXFinderMain {
 
                 if (status == Status.NONE) {
                     PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(c);
-                    if (finder.isSignal(1.0001) && (!openTime.isEqual(c.getTime()))) {
+                    if (finder.isSignal(PKFXConst.CANDLE_LENGTH_MAGNIFICATION) && (!openTime.isEqual(c.getTime()))) {
                         log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH());
 
                         // シグナル点灯したので買う.
@@ -64,9 +64,8 @@ public class PKFXFinderMain {
                     }
 
                 } else {
-
-                    LocalDateTime targetTime = openTime.plusMinutes(60);
-                    boolean isTargetReached = openRate * 1.0007 < c.getMid().getH();
+                    LocalDateTime targetTime = openTime.plusMinutes(PKFXConst.WAIT_TIME);
+                    boolean isTargetReached = openRate * PKFXConst.CANDLE_TARGET_MAGNIFICATION < c.getMid().getH();
                     boolean isTimeReached = LocalDateTime.now(ZoneId.of("America/New_York")).isAfter(targetTime);
                     if (isTargetReached || isTimeReached) {
                         log.info("signal<< " + c.getTime() + ", " + openRate + ", " + c.getMid().getH() + ", "
@@ -84,6 +83,6 @@ public class PKFXFinderMain {
     }
 
     private void sleep() throws InterruptedException {
-        Thread.sleep(100);
+        Thread.sleep(PKFXConst.SLEEP_INTERVAL);
     }
 }

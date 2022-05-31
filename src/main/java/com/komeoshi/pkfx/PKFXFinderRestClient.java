@@ -14,13 +14,11 @@ public class PKFXFinderRestClient {
 
     public Instrument getInstrument(RestTemplate restTemplate) {
 
-        String url = "https://api-fxpractice.oanda.com/v3/instruments/USD_JPY/candles?";
+        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/instruments/USD_JPY/candles?";
         url += "count=1";
         url += "&granularity=M1";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer 8a93d17e57500d5a9b13c4a27f74b179-4aee32e93758790ec1d3fa0eb24f1aed");
+        HttpHeaders headers = getHttpHeaders();
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
@@ -28,53 +26,39 @@ public class PKFXFinderRestClient {
                 new HttpEntity<>(headers),
                 new ParameterizedTypeReference<Instrument>() {
                 });
-        Instrument instrument = response.getBody();
 
-        return instrument;
+        return response.getBody();
     }
 
     public void buy(RestTemplate restTemplate) {
-        String url = "https://api-fxpractice.oanda.com/v3/accounts/101-009-22492304-001/orders";
+        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/orders";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer 8a93d17e57500d5a9b13c4a27f74b179-4aee32e93758790ec1d3fa0eb24f1aed");
-
-        String body = "{\"order\":{\"units\":\"4500\",\"instrument\":\"USD_JPY\",\"timeInForce\":\"FOK\",\"type\":\"MARKET\",\"positionFill\":\"DEFAULT\"}}";
+        HttpHeaders headers = getHttpHeaders();
+        String body = "{\"order\":{\"units\":\"" + PKFXConst.DEFAULT_UNIT +
+                "\",\"instrument\":\"USD_JPY\",\"timeInForce\":\"FOK\",\"type\":\"MARKET\",\"positionFill\":\"DEFAULT\"}}";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
         //リクエストの送信
-        ResponseEntity<String> response = restTemplate.exchange(
+        restTemplate.exchange(
                 url, HttpMethod.POST, entity, String.class);
-        String res = response.getBody();
-        // log.info(res);
-
     }
 
     public void sell(RestTemplate restTemplate) {
-        String url = "https://api-fxpractice.oanda.com/v3/accounts/101-009-22492304-001/trades?instrument=USD_JPY";
-
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer 8a93d17e57500d5a9b13c4a27f74b179-4aee32e93758790ec1d3fa0eb24f1aed");
 
-        ResponseEntity<Trades> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                new ParameterizedTypeReference<Trades>() {
-                });
-        Trades trades = response.getBody();
+        // 保有しているポジションを取得
+        Trades trades = getTrades(restTemplate, headers);
 
         for (int i = 0; i < trades.getTrades().size(); i++) {
+            // 保有しているポジションを決済する
             Trade trade = trades.getTrades().get(i);
 
-            String sellUrl = "https://api-fxpractice.oanda.com/v3/accounts/101-009-22492304-001/trades/";
+            String sellUrl = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/trades/";
             sellUrl += "" + trade.getId();
             sellUrl += "/close";
 
-            ResponseEntity<String> sellResponse = restTemplate.exchange(
+            restTemplate.exchange(
                     sellUrl,
                     HttpMethod.PUT,
                     new HttpEntity<>(headers),
@@ -82,5 +66,23 @@ public class PKFXFinderRestClient {
                     });
 
         }
+    }
+
+    private Trades getTrades(RestTemplate restTemplate, HttpHeaders headers) {
+        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/trades?instrument=USD_JPY";
+        ResponseEntity<Trades> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                new ParameterizedTypeReference<Trades>() {
+                });
+        return response.getBody();
+    }
+
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", "Bearer " + PKFXConst.API_ACCESS_TOKEN);
+        return headers;
     }
 }

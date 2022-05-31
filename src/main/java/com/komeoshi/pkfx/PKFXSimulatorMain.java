@@ -35,35 +35,11 @@ public class PKFXSimulatorMain {
             analyze1.run(i);
 
             // パラメータをいじって解析
-            PKFXSimulatorAnalyzeParameter analyze2
-                    = new PKFXSimulatorAnalyzeParameter(
-                    1.0005,
-                    1.0006,
-                    5
-            );
-            analyze2.run(i);
-            // パラメータをいじって解析
-            PKFXSimulatorAnalyzeParameter analyze3
-                    = new PKFXSimulatorAnalyzeParameter(
-                    1.0002,
-                    1.0003,
-                    10
-            );
-            analyze3.run(i);
-            // パラメータをいじって解析
-            PKFXSimulatorAnalyzeParameter analyze4
-                    = new PKFXSimulatorAnalyzeParameter(
-                    1.0002,
-                    1.0005,
-                    15
-            );
-            analyze4.run(i);
-            // パラメータをいじって解析
             PKFXSimulatorAnalyzeParameter analyze5
                     = new PKFXSimulatorAnalyzeParameter(
-                    1.0001,
-                    1.0007,
-                    60
+                    PKFXConst.CANDLE_LENGTH_MAGNIFICATION,
+                    PKFXConst.CANDLE_TARGET_MAGNIFICATION,
+                    PKFXConst.WAIT_TIME
             );
             analyze5.run(i);
         };
