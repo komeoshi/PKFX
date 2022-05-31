@@ -49,12 +49,13 @@ public class PKFXFinderMain {
                     continue;
                 }
 
-                Candle c = i.getCandles().get(0);
+                Candle c = i.getCandles().get(i.getCandles().size() - 1);
 
                 if (status == Status.NONE) {
                     PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(c);
-                    if (finder.isSignal(PKFXConst.CANDLE_LENGTH_MAGNIFICATION) && (!openTime.isEqual(c.getTime()))) {
-                        log.info("signal>> " + c.getTime() + ", " + c.getMid().getO() + ", " + c.getMid().getH());
+                    double rsi = finder.getRsi(i.getCandles());
+                    if (rsi > 0 && finder.isSignal(PKFXConst.CANDLE_LENGTH_MAGNIFICATION) && (!openTime.isEqual(c.getTime()))) {
+                        log.info("signal>> " + c.getTime() + ", OPEN:" + c.getMid().getO() + ", HIGH:" + c.getMid().getH() + ", RSI :" + rsi);
 
                         // シグナル点灯したので買う.
                         client.buy(restTemplate);
@@ -69,7 +70,7 @@ public class PKFXFinderMain {
                     boolean isTimeReached = currentTime.isAfter(targetTime);
                     boolean isTargetReached = openRate * PKFXConst.CANDLE_TARGET_MAGNIFICATION < c.getMid().getH();
                     if (isTargetReached || isTimeReached) {
-                        log.info("signal<< " + c.getTime() + ", " + openRate + ", " + c.getMid().getH() + ", "
+                        log.info("<<signal " + c.getTime() + ", OPEN:" + openRate + ", HIGH:" + c.getMid().getH() + ", DIFF:"
                                 + (c.getMid().getH() - openRate) + ", "
                                 + isTargetReached + ", " + isTimeReached);
 

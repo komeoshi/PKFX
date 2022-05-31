@@ -12,10 +12,15 @@ import org.springframework.web.client.RestTemplate;
 public class PKFXFinderRestClient {
     private static final Logger log = LoggerFactory.getLogger(PKFXFinderRestClient.class);
 
+    /**
+     * 最新のローソク情報を取得する.
+     * @param restTemplate RestTemplate
+     * @return Instrument
+     */
     public Instrument getInstrument(RestTemplate restTemplate) {
 
         String url = "https://" + PKFXConst.API_DOMAIN + "/v3/instruments/USD_JPY/candles?";
-        url += "count=1";
+        url += "count=300";
         url += "&granularity=M1";
 
         HttpHeaders headers = getHttpHeaders();
@@ -39,7 +44,7 @@ public class PKFXFinderRestClient {
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
-        //リクエストの送信
+        // リクエストの送信
         restTemplate.exchange(
                 url, HttpMethod.POST, entity, String.class);
     }
