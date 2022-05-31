@@ -36,11 +36,11 @@ public class PKFXConst {
     /**
      * シグナル終了閾値.
      */
-    public static final Double CANDLE_TARGET_MAGNIFICATION = 1.0003;
+    public static final Double CANDLE_TARGET_MAGNIFICATION = 1.0004;
     /**
      * シグナル終了待ち時間.
      */
-    public static final int WAIT_TIME = 3;
+    public static final int WAIT_TIME = 10;
 
     /**
      * インターバル. ミリ秒.
