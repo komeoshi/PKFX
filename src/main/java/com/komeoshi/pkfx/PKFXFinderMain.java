@@ -69,10 +69,11 @@ public class PKFXFinderMain {
                     LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("UTC"));
                     boolean isTimeReached = currentTime.isAfter(targetTime);
                     boolean isTargetReached = openRate * PKFXConst.CANDLE_TARGET_MAGNIFICATION < c.getMid().getH();
-                    if (isTargetReached || isTimeReached) {
+                    boolean isLosscutReached = openRate * PKFXConst.CANDLE_LOSSCUT_MAGNIFICATION > c.getMid().getL();
+                    if (isTargetReached || isTimeReached || isLosscutReached) {
                         log.info("<<signal " + c.getTime() + ", OPEN:" + openRate + ", HIGH:" + c.getMid().getH() + ", DIFF:"
                                 + (c.getMid().getH() - openRate) + ", "
-                                + isTargetReached + ", " + isTimeReached);
+                                + isTargetReached + ", " + isTimeReached + ", " + isLosscutReached);
 
                         // シグナル終了したので売る.
                         client.sell(restTemplate);
