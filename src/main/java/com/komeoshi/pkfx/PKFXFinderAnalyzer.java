@@ -27,6 +27,27 @@ public class PKFXFinderAnalyzer {
                 candle.isLengthEnough(candleLengthMagnification);
     }
 
+    public boolean isMaOk(final List<Candle> candles){
+        double aveShort = getMa(candles, 25);
+        double aveLong = getMa(candles, 50);
+
+        // log.info("aveShort:" + aveShort + ", aveLong:" + aveLong);
+
+        return aveShort > aveLong;
+
+    }
+    private double getMa(final List<Candle> candles, final int term){
+        int lastBar = candles.size() - 1;
+        int firstBar = lastBar - term + 1;
+
+        double ave = 0;
+        for(int i= firstBar ; i <= lastBar; i++){
+            ave += candles.get(i).getMid().getC();
+        }
+        ave = (ave / term);
+        return ave;
+    }
+
     public double getRsi(final List<Candle> candles) {
         int periodLength = 14;
         int lastBar = candles.size() - 1;
