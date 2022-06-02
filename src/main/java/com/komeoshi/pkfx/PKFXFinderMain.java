@@ -54,9 +54,10 @@ public class PKFXFinderMain {
                 if (status == Status.NONE) {
                     PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(c);
                     double rsi = finder.getRsi(i.getCandles());
+                    boolean isRsiOk = (rsi > 0 && rsi < 30);
                     boolean isMaOk = finder.isMaOk(i.getCandles());
                     boolean isSignal = finder.isSignal(PKFXConst.CANDLE_LENGTH_MAGNIFICATION);
-                    if (isMaOk && (rsi > 0 && rsi < 30)  && (!openTime.isEqual(c.getTime()))) {
+                    if (isMaOk && (!openTime.isEqual(c.getTime()))) {
                         log.info("signal>> " + c.getTime() + ", OPEN:" + c.getMid().getO() + ", HIGH:" + c.getMid().getH() + ", RSI :" + rsi);
 
                         // シグナル点灯したので買う.
