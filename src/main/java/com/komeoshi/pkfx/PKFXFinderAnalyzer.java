@@ -38,7 +38,7 @@ public class PKFXFinderAnalyzer {
         // log.info("aveShort:" + aveShort + ", aveLong:" + aveLong);
 
         // return aveShort > aveLong;
-        return b1 && b2;
+        return b1 && b2 && lastCandle.isYousen();
 
     }
     private double getMa(final List<Candle> candles, final int term){
