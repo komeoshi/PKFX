@@ -31,9 +31,14 @@ public class PKFXFinderAnalyzer {
         double aveShort = getMa(candles, 25);
         double aveLong = getMa(candles, 50);
 
+        Candle lastCandle = candles.get(candles.size() - 1);
+        boolean b1 = lastCandle.getMid().getL() < aveShort;
+        boolean b2 = lastCandle.getMid().getH() > aveShort;
+
         // log.info("aveShort:" + aveShort + ", aveLong:" + aveLong);
 
-        return aveShort > aveLong;
+        // return aveShort > aveLong;
+        return b1 && b2;
 
     }
     private double getMa(final List<Candle> candles, final int term){
