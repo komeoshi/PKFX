@@ -45,7 +45,7 @@ public class PKFXFinderAnalyzer {
         // return b1 && b2 && lastCandle.isYousen() && b11 && b12;
 
     }
-    private double getMa(final List<Candle> candles, final int term){
+    public double getMa(final List<Candle> candles, final int term){
         int lastBar = candles.size() - 1;
         int firstBar = lastBar - term + 1;
 

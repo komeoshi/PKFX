@@ -37,6 +37,7 @@ public class PKFXFinderMain {
 
             Status status = Status.NONE;
             double openRate = 0.0;
+            double openMa = 0.0;
             LocalDateTime openTime = LocalDateTime.now();
             while (true) {
                 sleep();
@@ -65,14 +66,16 @@ public class PKFXFinderMain {
                         status = Status.HOLDING;
                         openRate = c.getMid().getO();
                         openTime = c.getTime();
+                        openMa = finder.getMa(i.getCandles(), PKFXConst.MA_SHORT_PERIOD);
+
                     }
 
                 } else {
                     LocalDateTime targetTime = openTime.plusMinutes(PKFXConst.WAIT_TIME);
                     LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("UTC"));
                     boolean isTimeReached = currentTime.isAfter(targetTime);
-                    boolean isTargetReached = openRate * PKFXConst.CANDLE_TARGET_MAGNIFICATION < c.getMid().getH();
-                    boolean isLosscutReached = openRate * PKFXConst.CANDLE_LOSSCUT_MAGNIFICATION > c.getMid().getC();
+                    boolean isTargetReached = openMa * PKFXConst.CANDLE_TARGET_MAGNIFICATION < c.getMid().getH();
+                    boolean isLosscutReached = openMa * PKFXConst.CANDLE_LOSSCUT_MAGNIFICATION > c.getMid().getC();
                     if (isTargetReached || isTimeReached || isLosscutReached) {
                         log.info("<<signal " + c.getTime() + ", OPEN:" + openRate + ", HIGH:" + c.getMid().getH() + ", DIFF:"
                                 + (c.getMid().getH() - openRate) + ", "
