@@ -36,7 +36,7 @@ public class PKFXConst {
     /**
      * シグナル終了閾値.
      */
-    public static final Double CANDLE_TARGET_MAGNIFICATION = 1.00021;
+    public static final Double CANDLE_TARGET_MAGNIFICATION = 1.000205;
 
     // public static final Double CANDLE_LOSSCUT_MAGNIFICATION = 0.99999;
     public static final Double CANDLE_LOSSCUT_MAGNIFICATION = 0.999;
