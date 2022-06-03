@@ -51,6 +51,12 @@ public class PKFXSimulatorMain {
                     PKFXConst.WAIT_TIME
             );
             analyze6.run(i);
+
+            // デフォルトパラメータで解析
+            PKFXSimulatorAnalyzeParameter analyze7 = new PKFXSimulatorAnalyzeParameter();
+            analyze7.run2(i);
+
+
         };
     }
 }

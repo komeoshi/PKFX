@@ -5,6 +5,11 @@ import com.komeoshi.pkfx.dto.Instrument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PKFXSimulatorAnalyzeParameter {
     private static final Logger log =
             LoggerFactory.getLogger(PKFXSimulatorAnalyzeParameter.class);
@@ -70,6 +75,89 @@ public class PKFXSimulatorAnalyzeParameter {
         this.candleLengthMagnification = candleLengthMagnification;
         this.targetMagnification = targetMagnification;
         this.waitTime = waitTime;
+    }
+
+    public void run2(Instrument instrument) {
+        List<Candle> allCandles = instrument.getCandles();
+
+
+        int countBuy = 0;
+        int countSell = 0;
+        int targetReachedCount = 0;
+        int losscutReachedCount = 0;
+        int timeoutReachedCount = 0;
+        double totalDiff = 0.0;
+        for (int i = 75; i < allCandles.size(); i++) {
+            List<Candle> currentCandles = new ArrayList<>();
+            for (int j = 0; j < i; j++) {
+                currentCandles.add(allCandles.get(j));
+            }
+
+            double openRate = 0.0;
+            LocalDateTime openTime = LocalDateTime.now();
+
+            Candle currentCandle = allCandles.get(i);
+            PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
+            boolean isMaOk = finder.isMaOk(currentCandles);
+            if (isMaOk) {
+
+
+                openRate = currentCandle.getMid().getO();
+                openTime = currentCandle.getTime();
+
+                log.info("signal>> " + openTime.atZone(ZoneId.of("Asia/Tokyo")) + ", OPEN:" + currentCandle.getMid().getO() + ", HIGH:" + currentCandle.getMid().getH() + ", ");
+
+                countBuy++;
+
+                for (int j = i + 1; j < i + PKFXConst.WAIT_TIME; j++) {
+
+                    if (j == allCandles.size()) {
+                        break;
+                    }
+
+                    Candle targetCandle = allCandles.get(j);
+                    boolean isTargetReached = openRate * PKFXConst.CANDLE_TARGET_MAGNIFICATION < targetCandle.getMid().getH();
+                    boolean isLosscutReached = openRate * PKFXConst.CANDLE_LOSSCUT_MAGNIFICATION > targetCandle.getMid().getC();
+                    boolean isTimeoutReached = false;
+                    if (j - (i+1) > waitTime)
+                        isTimeoutReached = true;
+
+
+                    double diff = Math.abs(targetCandle.getMid().getH() - openRate);
+
+                    if (isTargetReached) {
+                        targetReachedCount++;
+                    }
+                    if (isLosscutReached) {
+                        losscutReachedCount++;
+                    }
+                    if (isTimeoutReached) {
+                        timeoutReachedCount++;
+                    }
+
+
+                    if (isTargetReached || isLosscutReached || isTimeoutReached) {
+                        log.info("<<signal " + targetCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + ", OPEN:" + openRate + ", HIGH:" + targetCandle.getMid().getH() + ", DIFF:"
+                                + diff + ", "
+                                + isTargetReached + ", " + isLosscutReached);
+
+                        countSell++;
+                        totalDiff += diff;
+                        break;
+                    }
+                }
+            }
+        }
+
+        double rate = (double) targetReachedCount / ((double) targetReachedCount + (double) losscutReachedCount + (double) timeoutReachedCount);
+
+        log.info(countBuy + ", " + countSell);
+        log.info("rate:" + rate);
+        log.info("targetReachedCount:" + targetReachedCount);
+        log.info("losscutReachedCount:" + losscutReachedCount);
+        log.info("timeoutReachedCount:" + timeoutReachedCount);
+        log.info("totalDiff:" + totalDiff);
+        log.info("totalDiff/countBuy:" + totalDiff / (countBuy));
     }
 
     public void run(Instrument instrument) {

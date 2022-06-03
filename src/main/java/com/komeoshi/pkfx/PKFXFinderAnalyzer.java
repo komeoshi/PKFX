@@ -41,7 +41,8 @@ public class PKFXFinderAnalyzer {
         boolean b11 = aveShort > aveMid;
         boolean b12 = aveMid > aveLong;
 
-        return b1 && b2 && lastCandle.isYousen() && b11 && b12;
+        return b1 && b2 && lastCandle.isYousen();
+        // return b1 && b2 && lastCandle.isYousen() && b11 && b12;
 
     }
     private double getMa(final List<Candle> candles, final int term){
