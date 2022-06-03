@@ -82,7 +82,7 @@ public class PKFXFinderGCMain {
 
                     client.sell(restTemplate);
                     status = Status.NONE;
-                    lastPosition = Position.SHORT;
+                    lastPosition = Position.LONG;
                 }
             }
         };
