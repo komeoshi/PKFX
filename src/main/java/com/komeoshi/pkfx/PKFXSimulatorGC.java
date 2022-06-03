@@ -1,7 +1,6 @@
 package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
-import com.komeoshi.pkfx.dto.Instrument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

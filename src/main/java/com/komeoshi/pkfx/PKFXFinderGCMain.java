@@ -38,13 +38,21 @@ public class PKFXFinderGCMain {
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
             Candle openCandle = null;
-
+            boolean initialBuy = false;
             while (true) {
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;
 
                 setPosition(instrument.getCandles());
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
+
+                if (!initialBuy) {
+                    if (candle.getPosition() == Position.LONG) {
+                        initialBuy = true;
+                    } else {
+                        continue;
+                    }
+                }
 
                 if (candle.getPosition() != lastPosition) {
                     if (candle.getPosition() == Position.LONG && status == Status.NONE) {
