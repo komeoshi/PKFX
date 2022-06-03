@@ -9,19 +9,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class PKFXSimulatorGC {
+public class PKFXFinderGCMain {
 
-    private static final Logger log = LoggerFactory.getLogger(PKFXSimulatorGC.class);
+    private static final Logger log = LoggerFactory.getLogger(PKFXFinderGCMain.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(PKFXSimulatorGC.class, args);
+        SpringApplication.run(PKFXFinderGCMain.class, args);
     }
 
     @Bean
@@ -32,24 +32,26 @@ public class PKFXSimulatorGC {
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
         return args -> {
-            PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
 
-            List<Candle> candles = client.runWithManyCandles(restTemplate);
-
-            // Instrument i = client.run(restTemplate);
-            // List<Candle> candles = i.getCandles();
-
-            setPosition(candles);
+            PKFXFinderRestClient client = new PKFXFinderRestClient();
 
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
-            boolean initialBuy = false;
             Candle openCandle = null;
-            for (Candle candle : candles) {
+            boolean initialBuy = false;
+
+            while (true) {
+                Instrument instrument = getInstrument(restTemplate, client);
+                if (instrument == null) continue;
+
+                setPosition(instrument.getCandles());
+
+                Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
                 if (!initialBuy) {
                     if (candle.getPosition() == Position.LONG) {
                         initialBuy = true;
+                        log.info("signal (initialBuy)>>");
                     } else {
                         continue;
                     }
@@ -57,13 +59,17 @@ public class PKFXSimulatorGC {
 
                 if (candle.getPosition() != lastPosition) {
                     if (candle.getPosition() == Position.LONG) {
-                        buy(candle);
+                        log.info("signal>> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+
+                        client.buy(restTemplate);
                         status = Status.HOLDING;
                         lastPosition = candle.getPosition();
 
                         openCandle = candle;
                     } else if (candle.getPosition() == Position.SHORT && status == Status.HOLDING) {
-                        sell(openCandle, candle, Reason.TIMEOUT);
+                        log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+
+                        client.sell(restTemplate);
                         status = Status.NONE;
                         lastPosition = candle.getPosition();
                     }
@@ -72,46 +78,27 @@ public class PKFXSimulatorGC {
                 double targetRate = openCandle.getMid().getC() * 1.00015;
                 if (status == Status.HOLDING &&
                         targetRate < candle.getMid().getC()) {
-                    sell(openCandle, candle, Reason.REACHED);
+                    log.info("<<signal (reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+
+                    client.sell(restTemplate);
                     status = Status.NONE;
                     lastPosition = Position.SHORT;
                 }
             }
         };
+
     }
 
-    private void buy(Candle candle) {
-
-        log.info("signal >> " + candle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
-                candle.getNumber() + "】");
-    }
-
-    private void sell(Candle openCandle, Candle closeCandle, Reason reason) {
-
-        if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
-            countWin++;
-            totalCount++;
-        } else {
-            countLose++;
-            totalCount++;
+    private Instrument getInstrument(RestTemplate restTemplate, PKFXFinderRestClient client) {
+        Instrument i;
+        try {
+            i = client.getInstrument(restTemplate);
+        } catch (RestClientException e) {
+            log.error("", e);
+            return null;
         }
-
-        diff += (closeCandle.getMid().getC() - openCandle.getMid().getC());
-
-        log.info("<< signal " + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
-                closeCandle.getNumber() + "】" +
-                openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + (closeCandle.getMid().getC() - openCandle.getMid().getC()) + "), " +
-                countWin + "/" + countLose + "/" + totalCount + ", " +
-                diff + ", " + reason
-        );
-
+        return i;
     }
-
-    private int countWin = 0;
-    private int countLose = 0;
-    private int totalCount = 0;
-
-    private double diff = 0.0;
 
     private void setPosition(List<Candle> candles) {
         for (int ii = 0; ii < candles.size(); ii++) {
@@ -135,9 +122,8 @@ public class PKFXSimulatorGC {
             } else {
                 currentCandle.setPosition(Position.SHORT);
             }
-            log.info(currentCandle.getTime() + " " + currentCandle.getPosition());
+            // log.info(currentCandle.getTime() + " " + currentCandle.getPosition());
         }
     }
+
 }
-
-

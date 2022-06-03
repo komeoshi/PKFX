@@ -20,7 +20,7 @@ public class PKFXFinderRestClient {
     public Instrument getInstrument(RestTemplate restTemplate) {
 
         String url = "https://" + PKFXConst.API_DOMAIN + "/v3/instruments/USD_JPY/candles?";
-        url += "count=300";
+        url += "count=100";
         url += "&granularity=M1";
 
         HttpHeaders headers = getHttpHeaders();

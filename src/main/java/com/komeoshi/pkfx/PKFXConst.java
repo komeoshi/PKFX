@@ -20,9 +20,10 @@ public class PKFXConst {
     /**
      * 口座番号.
      * 101-009-22492304-001
+     * 101-009-22492304-002
      * 001-009-7946898-001
      */
-    public static final String ACCOUNT_ID = "101-009-22492304-001";
+    public static final String ACCOUNT_ID = "101-009-22492304-002";
 
     /**
      * 売買単位.
