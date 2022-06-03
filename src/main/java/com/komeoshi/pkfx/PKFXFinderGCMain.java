@@ -38,7 +38,6 @@ public class PKFXFinderGCMain {
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
             Candle openCandle = null;
-            boolean initialBuy = false;
 
             while (true) {
                 Instrument instrument = getInstrument(restTemplate, client);
@@ -110,7 +109,6 @@ public class PKFXFinderGCMain {
             } else {
                 currentCandle.setPosition(Position.SHORT);
             }
-            // log.info(currentCandle.getTime() + " " + currentCandle.getPosition());
         }
     }
 
