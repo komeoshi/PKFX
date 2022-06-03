@@ -28,9 +28,9 @@ public class PKFXFinderAnalyzer {
     }
 
     public boolean isMaOk(final List<Candle> candles){
-        double aveShort = getMa(candles, 25);
-        double aveMid = getMa(candles, 50);
-        double aveLong = getMa(candles, 75);
+        double aveShort = getMa(candles, PKFXConst.MA_SHORT_PERIOD);
+        double aveMid = getMa(candles, PKFXConst.MA_MID_PERIOD);
+        double aveLong = getMa(candles, PKFXConst.MA_LONG_PERIOD);
 
         Candle lastCandle = candles.get(candles.size() - 1);
         boolean b1 = lastCandle.getMid().getL() < aveShort;
