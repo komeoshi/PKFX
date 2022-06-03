@@ -45,35 +45,24 @@ public class PKFXFinderGCMain {
                 if (instrument == null) continue;
 
                 setPosition(instrument.getCandles());
-
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
-                if (!initialBuy) {
-                    if (candle.getPosition() == Position.LONG) {
-                        initialBuy = true;
-                        log.info("signal (initialBuy)>>");
-                    } else {
-                        continue;
-                    }
-                }
-
                 if (candle.getPosition() != lastPosition) {
-                    if (candle.getPosition() == Position.LONG) {
+                    if (candle.getPosition() == Position.LONG && status == Status.NONE) {
                         log.info("signal>> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
 
                         client.buy(restTemplate);
                         status = Status.HOLDING;
-                        lastPosition = candle.getPosition();
-
                         openCandle = candle;
+
                     } else if (candle.getPosition() == Position.SHORT && status == Status.HOLDING) {
                         log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
 
                         client.sell(restTemplate);
                         status = Status.NONE;
-                        lastPosition = candle.getPosition();
                     }
                 }
+                lastPosition = candle.getPosition();
 
                 double targetRate = openCandle.getMid().getC() * 1.00015;
                 if (status == Status.HOLDING &&
@@ -82,7 +71,6 @@ public class PKFXFinderGCMain {
 
                     client.sell(restTemplate);
                     status = Status.NONE;
-                    lastPosition = Position.LONG;
                 }
             }
         };
