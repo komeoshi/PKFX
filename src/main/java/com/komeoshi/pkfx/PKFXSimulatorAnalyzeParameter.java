@@ -94,6 +94,7 @@ public class PKFXSimulatorAnalyzeParameter {
             }
 
             double openRate = 0.0;
+            double openMa = 0.0;
             LocalDateTime openTime = LocalDateTime.now();
 
             Candle currentCandle = allCandles.get(i);
@@ -101,9 +102,9 @@ public class PKFXSimulatorAnalyzeParameter {
             boolean isMaOk = finder.isMaOk(currentCandles);
             if (isMaOk) {
 
-
                 openRate = currentCandle.getMid().getO();
                 openTime = currentCandle.getTime();
+                openMa = finder.getMa(currentCandles, PKFXConst.MA_SHORT_PERIOD);
 
                 log.info("signal>> " + openTime.atZone(ZoneId.of("Asia/Tokyo")) + ", OPEN:" + currentCandle.getMid().getO() + ", HIGH:" + currentCandle.getMid().getH() + ", ");
 
@@ -116,14 +117,14 @@ public class PKFXSimulatorAnalyzeParameter {
                     }
 
                     Candle targetCandle = allCandles.get(j);
-                    boolean isTargetReached = openRate * PKFXConst.CANDLE_TARGET_MAGNIFICATION < targetCandle.getMid().getH();
-                    boolean isLosscutReached = openRate * PKFXConst.CANDLE_LOSSCUT_MAGNIFICATION > targetCandle.getMid().getC();
+                    boolean isTargetReached = openMa * PKFXConst.CANDLE_TARGET_MAGNIFICATION < targetCandle.getMid().getH();
+                    boolean isLosscutReached = openMa * PKFXConst.CANDLE_LOSSCUT_MAGNIFICATION > targetCandle.getMid().getC();
                     boolean isTimeoutReached = false;
                     if (j - (i+1) > waitTime)
                         isTimeoutReached = true;
 
 
-                    double diff = Math.abs(targetCandle.getMid().getH() - openRate);
+                    double diff = Math.abs(targetCandle.getMid().getH() - openMa);
 
                     if (isTargetReached) {
                         targetReachedCount++;
