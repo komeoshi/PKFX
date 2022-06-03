@@ -1,5 +1,6 @@
 package com.komeoshi.pkfx.dto;
 
+import com.komeoshi.pkfx.Position;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,9 @@ public class Candle {
     private boolean complete;
 
     private Mid mid;
+
+    private int number = -1;
+    private Position position = Position.NONE;
 
     public boolean isYousen() {
         // 始値よりも終値が高ければ陽線
