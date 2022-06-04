@@ -63,7 +63,7 @@ public class PKFXFinderMain {
 
                         // シグナル点灯したので買う.
                         client.buy(c.getMid().getH(), restTemplate);
-                        status = Status.HOLDING;
+                        status = Status.HOLDING_BUY;
                         openRate = c.getMid().getO();
                         openTime = c.getTime();
                         openMa = finder.getMa(i.getCandles(), PKFXConst.MA_SHORT_PERIOD);

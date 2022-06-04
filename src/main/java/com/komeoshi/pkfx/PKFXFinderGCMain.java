@@ -59,10 +59,10 @@ public class PKFXFinderGCMain {
                         log.info("signal>> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
 
                         client.buy(candle.getMid().getH(), restTemplate);
-                        status = Status.HOLDING;
+                        status = Status.HOLDING_BUY;
                         openCandle = candle;
 
-                    } else if (candle.getPosition() == Position.SHORT && status == Status.HOLDING) {
+                    } else if (candle.getPosition() == Position.SHORT && status == Status.HOLDING_BUY) {
                         log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
 
                         client.sell(restTemplate);
@@ -72,7 +72,7 @@ public class PKFXFinderGCMain {
                 lastPosition = candle.getPosition();
 
                 double targetRate = openCandle.getMid().getC() * 1.00015;
-                if (status == Status.HOLDING &&
+                if (status == Status.HOLDING_BUY &&
                         targetRate < candle.getMid().getC()) {
                     log.info("<<signal (reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
 

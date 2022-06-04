@@ -17,6 +17,8 @@ public class Candle {
 
     private int number = -1;
     private Position position = Position.NONE;
+    private double shortMa;
+    private double longMa;
 
     public boolean isYousen() {
         // 始値よりも終値が高ければ陽線

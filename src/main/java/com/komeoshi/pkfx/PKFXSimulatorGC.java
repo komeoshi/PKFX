@@ -34,68 +34,104 @@ public class PKFXSimulatorGC {
             PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
 
             List<Candle> candles = client.runWithManyCandles(restTemplate);
+            // List<Candle> candles = client.run(restTemplate).getCandles();
+
             setPosition(candles);
 
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
-            boolean initialBuy = false;
             Candle openCandle = null;
             for (Candle candle : candles) {
-
-                if (!initialBuy) {
-                    if (candle.getPosition() == Position.LONG) {
-                        initialBuy = true;
-                    } else {
-                        continue;
-                    }
+                if (candle.getPosition() == Position.NONE) {
+                    continue;
                 }
 
                 if (candle.getPosition() != lastPosition) {
-                    if (candle.getPosition() == Position.LONG) {
-                        buy(candle);
-                        status = Status.HOLDING;
-                        lastPosition = candle.getPosition();
+                    // クロスした
 
-                        openCandle = candle;
-                    } else if (candle.getPosition() == Position.SHORT && status == Status.HOLDING) {
-                        sell(openCandle, candle, Reason.TIMEOUT);
-                        status = Status.NONE;
-                        lastPosition = candle.getPosition();
+                    if (candle.getPosition() == Position.LONG) {
+                        // 売り→買い
+                        if (status == Status.HOLDING_SELL) {
+                            completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
+                        }
+                        if (candle.getMid().getH() > candle.getShortMa()) {
+                            buy(candle);
+                            status = Status.HOLDING_BUY;
+                            openCandle = candle;
+                        }
+                    } else if (candle.getPosition() == Position.SHORT) {
+                        // 買い→売り
+                        if (status == Status.HOLDING_BUY) {
+                            completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
+                        }
+                        if (candle.getMid().getL() < candle.getShortMa()) {
+                            sell(candle);
+                            status = Status.HOLDING_SELL;
+                            openCandle = candle;
+                        }
                     }
                 }
+                lastPosition = candle.getPosition();
 
-                double targetRate = openCandle.getMid().getC() * 1.00015;
-                if (status == Status.HOLDING &&
-                        targetRate < candle.getMid().getC()) {
-                    sell(openCandle, candle, Reason.REACHED);
+                double mag = 0.00007;
+                double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
+                double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+                if (status == Status.HOLDING_BUY &&
+                        targetRateBuy < candle.getMid().getC()) {
+
+                    completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
                     status = Status.NONE;
-                    lastPosition = Position.SHORT;
+                } else if (status == Status.HOLDING_SELL &&
+                        targetRateSell > candle.getMid().getC()) {
+
+                    completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
+                    status = Status.NONE;
                 }
             }
         };
     }
 
     private void buy(Candle candle) {
-
-        log.info("signal >> " + candle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
+        log.info("signal (buy )>> " + candle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
                 candle.getNumber() + "】");
     }
 
-    private void sell(Candle openCandle, Candle closeCandle, Reason reason) {
+    private void sell(Candle candle) {
+        log.info("signal (sell)>> " + candle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
+                candle.getNumber() + "】");
+    }
 
-        if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
-            countWin++;
-            totalCount++;
+
+    private void completeOrder(Candle openCandle, Candle closeCandle, Reason reason, Position position) {
+
+        String mark;
+        if (position == Position.LONG) {
+            if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
+                countWin++;
+            } else {
+                countLose++;
+            }
+            mark = "(buy )";
         } else {
-            countLose++;
-            totalCount++;
+            if (openCandle.getMid().getC() > closeCandle.getMid().getC()) {
+                countWin++;
+            } else {
+                countLose++;
+            }
+            mark = "(sell)";
         }
+        totalCount++;
+        double thisDiff;
+        if (position == Position.LONG) {
+            thisDiff = (closeCandle.getMid().getC() - openCandle.getMid().getC());
+        } else {
+            thisDiff = (openCandle.getMid().getC() - closeCandle.getMid().getC());
+        }
+        diff += thisDiff;
 
-        diff += (closeCandle.getMid().getC() - openCandle.getMid().getC());
-
-        log.info("<< signal " + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
+        log.info("<< signal " + mark + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
                 closeCandle.getNumber() + "】" +
-                openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + (closeCandle.getMid().getC() - openCandle.getMid().getC()) + "), " +
+                openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
                 countWin + "/" + countLose + "/" + totalCount + ", " +
                 diff + ", " + reason
         );
@@ -125,12 +161,15 @@ public class PKFXSimulatorGC {
             double shortMa = finder.getMa(currentCandles, 9);
             double longMa = finder.getMa(currentCandles, 26);
 
+            currentCandle.setShortMa(shortMa);
+            currentCandle.setLongMa(longMa);
+
             if (shortMa > longMa) {
                 currentCandle.setPosition(Position.LONG);
             } else {
                 currentCandle.setPosition(Position.SHORT);
             }
-            log.info(currentCandle.getTime() + " " + currentCandle.getPosition());
+            log.info(ii + " " + currentCandle.getTime() + " " + currentCandle.getPosition());
         }
     }
 }
