@@ -96,12 +96,12 @@ public class PKFXSimulatorGC {
     }
 
     private void buy(Candle candle) {
-        log.info("signal (buy )>> " + candle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
+        log.info("signal (buy )>> " + candle.getTime() + " 【" +
                 candle.getNumber() + "】");
     }
 
     private void sell(Candle candle) {
-        log.info("signal (sell)>> " + candle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
+        log.info("signal (sell)>> " + candle.getTime() + " 【" +
                 candle.getNumber() + "】");
     }
 
@@ -133,10 +133,10 @@ public class PKFXSimulatorGC {
         }
         diff += thisDiff;
 
-        log.info("<< signal " + mark + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
+        log.info("<< signal " + mark + closeCandle.getTime() + " 【" +
                 closeCandle.getNumber() + "】" +
                 openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
-                countWin + "/" + countLose + "/" + totalCount + ", " +
+                countWin + "/" + countLose + "/" + totalCount + "(" +((double)countWin/(double)totalCount) + ") " +
                 diff + ", " + reason
         );
 
@@ -166,8 +166,8 @@ public class PKFXSimulatorGC {
             double longMa = finder.getMa(currentCandles, 26);
             double superLongMa = finder.getMa(currentCandles, 50);
 
-            double shortVma = finder.getVma(currentCandles, 25);
-            double longVma = finder.getVma(currentCandles, 50);
+            double shortVma = finder.getVma(currentCandles, 9);
+            double longVma = finder.getVma(currentCandles, 26);
 
             currentCandle.setShortMa(shortMa);
             currentCandle.setLongMa(longMa);
