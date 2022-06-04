@@ -58,7 +58,7 @@ public class PKFXFinderGCMain {
                     if (candle.getPosition() == Position.LONG && status == Status.NONE) {
                         log.info("signal>> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
 
-                        client.buy(restTemplate);
+                        client.buy(candle.getMid().getH(), restTemplate);
                         status = Status.HOLDING;
                         openCandle = candle;
 

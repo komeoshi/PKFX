@@ -62,7 +62,7 @@ public class PKFXFinderMain {
                         log.info("signal>> " + c.getTime() + ", OPEN:" + c.getMid().getO() + ", HIGH:" + c.getMid().getH() + ", RSI :" + rsi);
 
                         // シグナル点灯したので買う.
-                        client.buy(restTemplate);
+                        client.buy(c.getMid().getH(), restTemplate);
                         status = Status.HOLDING;
                         openRate = c.getMid().getO();
                         openTime = c.getTime();

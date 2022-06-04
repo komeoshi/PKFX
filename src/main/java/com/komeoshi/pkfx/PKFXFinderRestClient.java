@@ -1,9 +1,6 @@
 package com.komeoshi.pkfx;
 
-import com.komeoshi.pkfx.dto.Account;
-import com.komeoshi.pkfx.dto.Instrument;
-import com.komeoshi.pkfx.dto.Trade;
-import com.komeoshi.pkfx.dto.Trades;
+import com.komeoshi.pkfx.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,14 +15,14 @@ public class PKFXFinderRestClient {
                 PKFXConst.ACCOUNT_ID + "/summary?";
 
         HttpHeaders headers = getHttpHeaders();
-        ResponseEntity<Account> response = restTemplate.exchange(
+        ResponseEntity<AccountSummary> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
-                new ParameterizedTypeReference<Account>() {
+                new ParameterizedTypeReference<AccountSummary>() {
                 });
 
-        return response.getBody();
+        return response.getBody().getAccount();
     }
 
     /**
@@ -52,11 +49,15 @@ public class PKFXFinderRestClient {
         return response.getBody();
     }
 
-    public void buy(RestTemplate restTemplate) {
+    public void buy(double currentPrice, RestTemplate restTemplate) {
+
+        PKFXUnitCalculator unitCalc = new PKFXUnitCalculator();
+        int unit = unitCalc.calculate(currentPrice, restTemplate);
+
         String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/orders";
 
         HttpHeaders headers = getHttpHeaders();
-        String body = "{\"order\":{\"units\":\"" + PKFXConst.DEFAULT_UNIT +
+        String body = "{\"order\":{\"units\":\"" + unit +
                 "\",\"instrument\":\"USD_JPY\",\"timeInForce\":\"FOK\",\"type\":\"MARKET\",\"positionFill\":\"DEFAULT\"}}";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
@@ -110,6 +111,6 @@ public class PKFXFinderRestClient {
 
     public static void main(String[] args){
         PKFXFinderRestClient c = new PKFXFinderRestClient();
-        c.sell(new RestTemplate());
+        c.buy(130.80, new RestTemplate());
     }
 }

@@ -1,5 +1,6 @@
 package com.komeoshi.pkfx.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +30,7 @@ public class Account {
     private double dividendAdjustment;
     private double guaranteedExecutionFees;
     private double unrealizedPL;
+    @JsonProperty("NAV")
     private double nav;
     private double marginUsed;
     private double marginAvailable;
