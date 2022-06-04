@@ -1,5 +1,6 @@
 package com.komeoshi.pkfx;
 
+import com.komeoshi.pkfx.dto.Account;
 import com.komeoshi.pkfx.dto.Instrument;
 import com.komeoshi.pkfx.dto.Trade;
 import com.komeoshi.pkfx.dto.Trades;
@@ -12,8 +13,24 @@ import org.springframework.web.client.RestTemplate;
 public class PKFXFinderRestClient {
     private static final Logger log = LoggerFactory.getLogger(PKFXFinderRestClient.class);
 
+    public Account getAccount(RestTemplate restTemplate) {
+        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" +
+                PKFXConst.ACCOUNT_ID + "/summary?";
+
+        HttpHeaders headers = getHttpHeaders();
+        ResponseEntity<Account> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                new ParameterizedTypeReference<Account>() {
+                });
+
+        return response.getBody();
+    }
+
     /**
      * 最新のローソク情報を取得する.
+     *
      * @param restTemplate RestTemplate
      * @return Instrument
      */

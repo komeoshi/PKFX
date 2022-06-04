@@ -34,10 +34,6 @@ public class PKFXSimulatorGC {
             PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
 
             List<Candle> candles = client.runWithManyCandles(restTemplate);
-
-            // Instrument i = client.run(restTemplate);
-            // List<Candle> candles = i.getCandles();
-
             setPosition(candles);
 
             Status status = Status.NONE;
