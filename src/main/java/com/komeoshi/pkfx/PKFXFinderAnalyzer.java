@@ -45,6 +45,18 @@ public class PKFXFinderAnalyzer {
         // return b1 && b2 && lastCandle.isYousen() && b11 && b12;
 
     }
+    public double getVma(final List<Candle> candles, final int term){
+        int lastBar = candles.size() - 1;
+        int firstBar = lastBar - term + 1;
+
+        double ave = 0;
+        for(int i= firstBar ; i <= lastBar; i++){
+            ave += candles.get(i).getVolume();
+        }
+        ave = (ave / term);
+        return ave;
+
+    }
     public double getMa(final List<Candle> candles, final int term){
         int lastBar = candles.size() - 1;
         int firstBar = lastBar - term + 1;

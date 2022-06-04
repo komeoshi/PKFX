@@ -53,8 +53,9 @@ public class PKFXSimulatorGC {
                         // 売り→買い
                         if (status == Status.HOLDING_SELL) {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
+                            status = Status.NONE;
                         }
-                        if (candle.getMid().getH() > candle.getShortMa()) {
+                        if (candle.getMid().getH() > candle.getShortMa() && candle.getVolume() > candle.getShortVma()) {
                             buy(candle);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -63,8 +64,9 @@ public class PKFXSimulatorGC {
                         // 買い→売り
                         if (status == Status.HOLDING_BUY) {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
+                            status = Status.NONE;
                         }
-                        if (candle.getMid().getL() < candle.getShortMa()) {
+                        if (candle.getMid().getL() < candle.getShortMa() && candle.getVolume() > candle.getShortVma()) {
                             sell(candle);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -73,19 +75,21 @@ public class PKFXSimulatorGC {
                 }
                 lastPosition = candle.getPosition();
 
-                double mag = 0.00007;
-                double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
-                double targetRateSell = openCandle.getMid().getC() * (1 - mag);
-                if (status == Status.HOLDING_BUY &&
-                        targetRateBuy < candle.getMid().getC()) {
+                if(status != Status.NONE) {
+                    double mag = 0.00007;
+                    double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
+                    double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+                    if (status == Status.HOLDING_BUY &&
+                            targetRateBuy < candle.getMid().getC()) {
 
-                    completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
-                    status = Status.NONE;
-                } else if (status == Status.HOLDING_SELL &&
-                        targetRateSell > candle.getMid().getC()) {
+                        completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
+                        status = Status.NONE;
+                    } else if (status == Status.HOLDING_SELL &&
+                            targetRateSell > candle.getMid().getC()) {
 
-                    completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
-                    status = Status.NONE;
+                        completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
+                        status = Status.NONE;
+                    }
                 }
             }
         };
@@ -160,9 +164,17 @@ public class PKFXSimulatorGC {
             PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
             double shortMa = finder.getMa(currentCandles, 9);
             double longMa = finder.getMa(currentCandles, 26);
+            double superLongMa = finder.getMa(currentCandles, 50);
+
+            double shortVma = finder.getVma(currentCandles, 25);
+            double longVma = finder.getVma(currentCandles, 50);
 
             currentCandle.setShortMa(shortMa);
             currentCandle.setLongMa(longMa);
+            currentCandle.setSuperLongMa(superLongMa);
+
+            currentCandle.setShortVma(shortVma);
+            currentCandle.setLongVma(longVma);
 
             if (shortMa > longMa) {
                 currentCandle.setPosition(Position.LONG);
