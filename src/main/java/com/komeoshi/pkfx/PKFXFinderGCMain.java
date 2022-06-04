@@ -38,7 +38,6 @@ public class PKFXFinderGCMain {
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
             Candle openCandle = null;
-            boolean initialBuy = false;
             while (true) {
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;
@@ -46,38 +45,60 @@ public class PKFXFinderGCMain {
                 setPosition(instrument.getCandles());
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
-                if (!initialBuy) {
-                    if (candle.getPosition() == Position.LONG) {
-                        initialBuy = true;
-                    } else {
-                        continue;
-                    }
+                if (candle.getPosition() == Position.NONE) {
+                    continue;
                 }
 
                 if (candle.getPosition() != lastPosition) {
-                    if (candle.getPosition() == Position.LONG && status == Status.NONE) {
-                        log.info("signal>> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
 
-                        client.buy(candle.getMid().getH(), restTemplate);
-                        status = Status.HOLDING_BUY;
-                        openCandle = candle;
-
-                    } else if (candle.getPosition() == Position.SHORT && status == Status.HOLDING_BUY) {
-                        log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-
-                        client.sell(restTemplate);
-                        status = Status.NONE;
+                    if (candle.getPosition() == Position.LONG) {
+                        // 売り→買い
+                        if (status == Status.HOLDING_SELL) {
+                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            client.complete(restTemplate);
+                            status = Status.NONE;
+                        }
+                        if (candle.getMid().getH() > candle.getShortMa() && candle.getShortVma() > candle.getLongVma()) {
+                            log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            client.buy(candle.getMid().getH(), restTemplate);
+                            status = Status.HOLDING_BUY;
+                            openCandle = candle;
+                        }
+                    } else if (candle.getPosition() == Position.SHORT) {
+                        // 買い→売り
+                        if (status == Status.HOLDING_BUY) {
+                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            client.complete(restTemplate);
+                            status = Status.NONE;
+                        }
+                        if (candle.getMid().getL() < candle.getShortMa() && candle.getShortVma() > candle.getLongVma()) {
+                            log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            client.sell(candle.getMid().getH(), restTemplate);
+                            status = Status.HOLDING_SELL;
+                            openCandle = candle;
+                        }
                     }
+
                 }
                 lastPosition = candle.getPosition();
 
-                double targetRate = openCandle.getMid().getC() * 1.00015;
-                if (status == Status.HOLDING_BUY &&
-                        targetRate < candle.getMid().getC()) {
-                    log.info("<<signal (reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                if (status != Status.NONE) {
+                    double mag = 0.00007;
+                    double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
+                    double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+                    if (status == Status.HOLDING_BUY &&
+                            targetRateBuy < candle.getMid().getC()) {
 
-                    client.sell(restTemplate);
-                    status = Status.NONE;
+                        log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                        client.complete(restTemplate);
+                        status = Status.NONE;
+                    } else if (status == Status.HOLDING_SELL &&
+                            targetRateSell > candle.getMid().getC()) {
+
+                        log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                        client.complete(restTemplate);
+                        status = Status.NONE;
+                    }
                 }
             }
         };
@@ -111,12 +132,24 @@ public class PKFXFinderGCMain {
             PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
             double shortMa = finder.getMa(currentCandles, 9);
             double longMa = finder.getMa(currentCandles, 26);
+            double superLongMa = finder.getMa(currentCandles, 50);
+
+            double shortVma = finder.getVma(currentCandles, 25);
+            double longVma = finder.getVma(currentCandles, 50);
+
+            currentCandle.setShortMa(shortMa);
+            currentCandle.setLongMa(longMa);
+            currentCandle.setSuperLongMa(superLongMa);
+
+            currentCandle.setShortVma(shortVma);
+            currentCandle.setLongVma(longVma);
 
             if (shortMa > longMa) {
                 currentCandle.setPosition(Position.LONG);
             } else {
                 currentCandle.setPosition(Position.SHORT);
             }
+            // log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition());
         }
     }
 

@@ -82,7 +82,7 @@ public class PKFXFinderMain {
                                 + isTargetReached + ", " + isTimeReached + ", " + isLosscutReached);
 
                         // シグナル終了したので売る.
-                        client.sell(restTemplate);
+                        client.complete(restTemplate);
                         status = Status.NONE;
                     }
                 }

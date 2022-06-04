@@ -67,7 +67,26 @@ public class PKFXFinderRestClient {
                 url, HttpMethod.POST, entity, String.class);
     }
 
-    public void sell(RestTemplate restTemplate) {
+    public void sell(double currentPrice, RestTemplate restTemplate) {
+
+        PKFXUnitCalculator unitCalc = new PKFXUnitCalculator();
+        int unit = unitCalc.calculate(currentPrice, restTemplate);
+        unit = -unit;
+
+        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/orders";
+
+        HttpHeaders headers = getHttpHeaders();
+        String body = "{\"order\":{\"units\":\"" + unit +
+                "\",\"instrument\":\"USD_JPY\",\"timeInForce\":\"FOK\",\"type\":\"MARKET\",\"positionFill\":\"DEFAULT\"}}";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        // リクエストの送信
+        restTemplate.exchange(
+                url, HttpMethod.POST, entity, String.class);
+    }
+
+    public void complete(RestTemplate restTemplate) {
         HttpHeaders headers = getHttpHeaders();
 
         // 保有しているポジションを取得
