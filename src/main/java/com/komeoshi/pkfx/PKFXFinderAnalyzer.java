@@ -11,9 +11,6 @@ public class PKFXFinderAnalyzer {
 
     private static final Logger log = LoggerFactory.getLogger(PKFXFinderAnalyzer.class);
 
-    public PKFXFinderAnalyzer() {
-    }
-
     /**
      * シグナル点灯を判定
      *
@@ -33,8 +30,6 @@ public class PKFXFinderAnalyzer {
         Candle lastCandle = candles.get(candles.size() - 1);
         boolean b1 = lastCandle.getMid().getL() < aveShort;
         boolean b2 = lastCandle.getMid().getH() > aveShort;
-
-        // log.info("aveShort:" + aveShort + ", aveLong:" + aveLong);
 
         boolean b11 = aveShort > aveMid;
         boolean b12 = aveMid > aveLong;
@@ -128,8 +123,9 @@ public class PKFXFinderAnalyzer {
             } else {
                 currentCandle.setPosition(Position.SHORT);
             }
-            if (logging)
+            if (logging) {
                 log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition());
+            }
         }
     }
 }
