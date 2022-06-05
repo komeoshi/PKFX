@@ -10,14 +10,17 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
 public class PKFXSimulatorGC {
 
     private static final Logger log = LoggerFactory.getLogger(PKFXSimulatorGC.class);
+
+    private int countWin = 0;
+    private int countLose = 0;
+    private int totalCount = 0;
+    private double diff = 0.0;
 
     public static void main(String[] args) {
         SpringApplication.run(PKFXSimulatorGC.class, args);
@@ -36,7 +39,7 @@ public class PKFXSimulatorGC {
             List<Candle> candles = client.runWithManyCandles(restTemplate);
             // List<Candle> candles = client.run(restTemplate).getCandles();
 
-            setPosition(candles);
+            new PKFXFinderAnalyzer(null).setPosition(candles, true);
 
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
@@ -76,7 +79,7 @@ public class PKFXSimulatorGC {
                 lastPosition = candle.getPosition();
 
                 if(status != Status.NONE) {
-                    double mag = 0.00007;
+                    double mag = 0.00005;
                     double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
                     double targetRateSell = openCandle.getMid().getC() * (1 - mag);
                     if (status == Status.HOLDING_BUY &&
@@ -137,53 +140,11 @@ public class PKFXSimulatorGC {
                 closeCandle.getNumber() + "】" +
                 openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
                 countWin + "/" + countLose + "/" + totalCount + "(" +((double)countWin/(double)totalCount) + ") " +
-                diff + ", " + reason
+                diff + "("+(diff/totalCount)+"), " + reason
         );
 
     }
 
-    private int countWin = 0;
-    private int countLose = 0;
-    private int totalCount = 0;
-
-    private double diff = 0.0;
-
-    private void setPosition(List<Candle> candles) {
-        for (int ii = 0; ii < candles.size(); ii++) {
-            Candle currentCandle = candles.get(ii);
-            currentCandle.setNumber(ii);
-            if (ii < 75) {
-                continue;
-            }
-
-            List<Candle> currentCandles = new ArrayList<>();
-
-            for (int jj = 0; jj < ii; jj++) {
-                currentCandles.add(candles.get(jj));
-            }
-            PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
-            double shortMa = finder.getMa(currentCandles, 9);
-            double longMa = finder.getMa(currentCandles, 26);
-            double superLongMa = finder.getMa(currentCandles, 50);
-
-            double shortVma = finder.getVma(currentCandles, 9);
-            double longVma = finder.getVma(currentCandles, 26);
-
-            currentCandle.setShortMa(shortMa);
-            currentCandle.setLongMa(longMa);
-            currentCandle.setSuperLongMa(superLongMa);
-
-            currentCandle.setShortVma(shortVma);
-            currentCandle.setLongVma(longVma);
-
-            if (shortMa > longMa) {
-                currentCandle.setPosition(Position.LONG);
-            } else {
-                currentCandle.setPosition(Position.SHORT);
-            }
-            log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition());
-        }
-    }
 }
 
 

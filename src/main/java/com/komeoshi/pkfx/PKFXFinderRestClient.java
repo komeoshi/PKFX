@@ -33,9 +33,9 @@ public class PKFXFinderRestClient {
      */
     public Instrument getInstrument(RestTemplate restTemplate) {
 
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/instruments/USD_JPY/candles?";
+        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
         url += "count=100";
-        url += "&granularity=M1";
+        url += "&granularity=" + PKFXConst.GRANULARITY;
 
         HttpHeaders headers = getHttpHeaders();
 
@@ -58,7 +58,7 @@ public class PKFXFinderRestClient {
 
         HttpHeaders headers = getHttpHeaders();
         String body = "{\"order\":{\"units\":\"" + unit +
-                "\",\"instrument\":\"USD_JPY\",\"timeInForce\":\"FOK\",\"type\":\"MARKET\",\"positionFill\":\"DEFAULT\"}}";
+                "\",\"instrument\":\"" + PKFXConst.CURRENCY + "\",\"timeInForce\":\"FOK\",\"type\":\"MARKET\",\"positionFill\":\"DEFAULT\"}}";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
@@ -77,7 +77,7 @@ public class PKFXFinderRestClient {
 
         HttpHeaders headers = getHttpHeaders();
         String body = "{\"order\":{\"units\":\"" + unit +
-                "\",\"instrument\":\"USD_JPY\",\"timeInForce\":\"FOK\",\"type\":\"MARKET\",\"positionFill\":\"DEFAULT\"}}";
+                "\",\"instrument\":\"" + PKFXConst.CURRENCY + "\",\"timeInForce\":\"FOK\",\"type\":\"MARKET\",\"positionFill\":\"DEFAULT\"}}";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
@@ -111,7 +111,7 @@ public class PKFXFinderRestClient {
     }
 
     private Trades getTrades(RestTemplate restTemplate, HttpHeaders headers) {
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/trades?instrument=USD_JPY";
+        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/trades?instrument=" + PKFXConst.CURRENCY;
         ResponseEntity<Trades> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,

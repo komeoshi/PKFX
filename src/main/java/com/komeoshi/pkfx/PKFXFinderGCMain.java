@@ -12,9 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @SpringBootApplication
 public class PKFXFinderGCMain {
 
@@ -42,7 +39,7 @@ public class PKFXFinderGCMain {
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;
 
-                setPosition(instrument.getCandles());
+                new PKFXFinderAnalyzer(null).setPosition(instrument.getCandles(), false);
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
                 if (candle.getPosition() == Position.NONE) {
@@ -115,42 +112,4 @@ public class PKFXFinderGCMain {
         }
         return i;
     }
-
-    private void setPosition(List<Candle> candles) {
-        for (int ii = 0; ii < candles.size(); ii++) {
-            Candle currentCandle = candles.get(ii);
-            currentCandle.setNumber(ii);
-            if (ii < 75) {
-                continue;
-            }
-
-            List<Candle> currentCandles = new ArrayList<>();
-
-            for (int jj = 0; jj < ii; jj++) {
-                currentCandles.add(candles.get(jj));
-            }
-            PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
-            double shortMa = finder.getMa(currentCandles, 9);
-            double longMa = finder.getMa(currentCandles, 26);
-            double superLongMa = finder.getMa(currentCandles, 50);
-
-            double shortVma = finder.getVma(currentCandles, 9);
-            double longVma = finder.getVma(currentCandles, 26);
-
-            currentCandle.setShortMa(shortMa);
-            currentCandle.setLongMa(longMa);
-            currentCandle.setSuperLongMa(superLongMa);
-
-            currentCandle.setShortVma(shortVma);
-            currentCandle.setLongVma(longVma);
-
-            if (shortMa > longMa) {
-                currentCandle.setPosition(Position.LONG);
-            } else {
-                currentCandle.setPosition(Position.SHORT);
-            }
-            // log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition());
-        }
-    }
-
 }

@@ -4,6 +4,7 @@ import com.komeoshi.pkfx.dto.Candle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PKFXFinderAnalyzer {
@@ -96,5 +97,43 @@ public class PKFXFinderAnalyzer {
 
         // log.info("RSI: " + rsi);
         return rsi;
+    }
+
+    public void setPosition(List<Candle> candles, boolean logging) {
+        for (int ii = 0; ii < candles.size(); ii++) {
+            Candle currentCandle = candles.get(ii);
+            currentCandle.setNumber(ii);
+            if (ii < 75) {
+                continue;
+            }
+
+            List<Candle> currentCandles = new ArrayList<>();
+
+            for (int jj = 0; jj < ii; jj++) {
+                currentCandles.add(candles.get(jj));
+            }
+            PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
+            double shortMa = finder.getMa(currentCandles, 9);
+            double longMa = finder.getMa(currentCandles, 26);
+            double superLongMa = finder.getMa(currentCandles, 50);
+
+            double shortVma = finder.getVma(currentCandles, 9);
+            double longVma = finder.getVma(currentCandles, 26);
+
+            currentCandle.setShortMa(shortMa);
+            currentCandle.setLongMa(longMa);
+            currentCandle.setSuperLongMa(superLongMa);
+
+            currentCandle.setShortVma(shortVma);
+            currentCandle.setLongVma(longVma);
+
+            if (shortMa > longMa) {
+                currentCandle.setPosition(Position.LONG);
+            } else {
+                currentCandle.setPosition(Position.SHORT);
+            }
+            if (logging)
+                log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition());
+        }
     }
 }

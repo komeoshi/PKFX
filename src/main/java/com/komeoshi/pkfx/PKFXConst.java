@@ -26,9 +26,14 @@ public class PKFXConst {
     public static final String ACCOUNT_ID = "101-009-22492304-002";
 
     /**
-     * 売買単位.
+     * 通貨
      */
-    public static final String DEFAULT_UNIT = "55000";
+    public static final String CURRENCY = "USD_JPY";
+
+    /**
+     * 足
+     */
+    public static final String GRANULARITY = "M1";
 
     /**
      * シグナル点灯閾値.
@@ -39,7 +44,6 @@ public class PKFXConst {
      */
     public static final Double CANDLE_TARGET_MAGNIFICATION = 1.00015;
 
-    // public static final Double CANDLE_LOSSCUT_MAGNIFICATION = 0.99999;
     public static final Double CANDLE_LOSSCUT_MAGNIFICATION = 0.999;
 
     public static final int MA_SHORT_PERIOD = 9;
