@@ -11,10 +11,7 @@ public class PKFXFinderAnalyzer {
 
     private static final Logger log = LoggerFactory.getLogger(PKFXFinderAnalyzer.class);
 
-    private final Candle candle;
-
-    public PKFXFinderAnalyzer(Candle candle) {
-        this.candle = candle;
+    public PKFXFinderAnalyzer() {
     }
 
     /**
@@ -23,7 +20,7 @@ public class PKFXFinderAnalyzer {
      * @param candleLengthMagnification 閾値
      * @return true: シグナル点灯
      */
-    public boolean isSignal(double candleLengthMagnification) {
+    public boolean isSignal(Candle candle, double candleLengthMagnification) {
         return candle.isYousen() &&
                 candle.isLengthEnough(candleLengthMagnification);
     }
@@ -112,13 +109,12 @@ public class PKFXFinderAnalyzer {
             for (int jj = 0; jj < ii; jj++) {
                 currentCandles.add(candles.get(jj));
             }
-            PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
-            double shortMa = finder.getMa(currentCandles, 9);
-            double longMa = finder.getMa(currentCandles, 26);
-            double superLongMa = finder.getMa(currentCandles, 50);
+            double shortMa = getMa(currentCandles, 9);
+            double longMa = getMa(currentCandles, 26);
+            double superLongMa = getMa(currentCandles, 50);
 
-            double shortVma = finder.getVma(currentCandles, 5);
-            double longVma = finder.getVma(currentCandles, 10);
+            double shortVma = getVma(currentCandles, 5);
+            double longVma = getVma(currentCandles, 10);
 
             currentCandle.setShortMa(shortMa);
             currentCandle.setLongMa(longMa);

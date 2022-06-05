@@ -39,7 +39,7 @@ public class PKFXSimulatorGC {
             List<Candle> candles = client.runWithManyCandles(restTemplate);
             // List<Candle> candles = client.run(restTemplate).getCandles();
 
-            new PKFXFinderAnalyzer(null).setPosition(candles, true);
+            new PKFXFinderAnalyzer().setPosition(candles, true);
 
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
@@ -51,6 +51,7 @@ public class PKFXSimulatorGC {
 
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
+                    log.info("cross detected. " + candle.getPosition());
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い

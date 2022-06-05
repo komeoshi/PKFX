@@ -98,7 +98,7 @@ public class PKFXSimulatorAnalyzeParameter {
             LocalDateTime openTime = LocalDateTime.now();
 
             Candle currentCandle = allCandles.get(i);
-            PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
+            PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer();
             boolean isMaOk = finder.isMaOk(currentCandles);
             if (isMaOk) {
 

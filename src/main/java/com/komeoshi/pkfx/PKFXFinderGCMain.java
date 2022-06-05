@@ -39,7 +39,7 @@ public class PKFXFinderGCMain {
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;
 
-                new PKFXFinderAnalyzer(null).setPosition(instrument.getCandles(), false);
+                new PKFXFinderAnalyzer().setPosition(instrument.getCandles(), false);
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
                 if (candle.getPosition() == Position.NONE) {
