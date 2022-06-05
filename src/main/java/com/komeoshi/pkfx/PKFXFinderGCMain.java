@@ -47,6 +47,8 @@ public class PKFXFinderGCMain {
                 }
 
                 if (candle.getPosition() != lastPosition) {
+                    // クロスした
+                    log.info("cross detected. " + candle.getPosition());
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
