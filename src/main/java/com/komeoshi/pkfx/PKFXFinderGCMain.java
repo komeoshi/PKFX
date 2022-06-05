@@ -39,7 +39,7 @@ public class PKFXFinderGCMain {
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;
 
-                new PKFXFinderAnalyzer(null).setPosition(instrument.getCandles(), false);
+                new PKFXFinderAnalyzer().setPosition(instrument.getCandles(), false);
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
                 if (candle.getPosition() == Position.NONE) {
@@ -47,6 +47,8 @@ public class PKFXFinderGCMain {
                 }
 
                 if (candle.getPosition() != lastPosition) {
+                    // クロスした
+                    log.info("cross detected. " + candle.getPosition());
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -80,7 +82,7 @@ public class PKFXFinderGCMain {
                 lastPosition = candle.getPosition();
 
                 if (status != Status.NONE) {
-                    double mag = 0.00007;
+                    double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION;
                     double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
                     double targetRateSell = openCandle.getMid().getC() * (1 - mag);
                     if (status == Status.HOLDING_BUY &&

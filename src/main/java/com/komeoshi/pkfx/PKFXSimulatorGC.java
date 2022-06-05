@@ -34,12 +34,12 @@ public class PKFXSimulatorGC {
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
         return args -> {
+            long startTime = System.currentTimeMillis();
             PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
-
             List<Candle> candles = client.runWithManyCandles(restTemplate);
             // List<Candle> candles = client.run(restTemplate).getCandles();
 
-            new PKFXFinderAnalyzer(null).setPosition(candles, true);
+            new PKFXFinderAnalyzer().setPosition(candles, true);
 
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
@@ -51,6 +51,7 @@ public class PKFXSimulatorGC {
 
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
+                    log.info("cross detected. " + candle.getPosition());
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -79,7 +80,7 @@ public class PKFXSimulatorGC {
                 lastPosition = candle.getPosition();
 
                 if(status != Status.NONE) {
-                    double mag = 0.000100;
+                    double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION;
                     double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
                     double targetRateSell = openCandle.getMid().getC() * (1 - mag);
                     if (status == Status.HOLDING_BUY &&
@@ -95,6 +96,9 @@ public class PKFXSimulatorGC {
                     }
                 }
             }
+
+            long endTime = System.currentTimeMillis();
+            log.info((endTime - startTime) +"ms.");
         };
     }
 

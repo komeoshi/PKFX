@@ -11,19 +11,13 @@ public class PKFXFinderAnalyzer {
 
     private static final Logger log = LoggerFactory.getLogger(PKFXFinderAnalyzer.class);
 
-    private final Candle candle;
-
-    public PKFXFinderAnalyzer(Candle candle) {
-        this.candle = candle;
-    }
-
     /**
      * シグナル点灯を判定
      *
      * @param candleLengthMagnification 閾値
      * @return true: シグナル点灯
      */
-    public boolean isSignal(double candleLengthMagnification) {
+    public boolean isSignal(Candle candle, double candleLengthMagnification) {
         return candle.isYousen() &&
                 candle.isLengthEnough(candleLengthMagnification);
     }
@@ -36,8 +30,6 @@ public class PKFXFinderAnalyzer {
         Candle lastCandle = candles.get(candles.size() - 1);
         boolean b1 = lastCandle.getMid().getL() < aveShort;
         boolean b2 = lastCandle.getMid().getH() > aveShort;
-
-        // log.info("aveShort:" + aveShort + ", aveLong:" + aveLong);
 
         boolean b11 = aveShort > aveMid;
         boolean b12 = aveMid > aveLong;
@@ -112,13 +104,12 @@ public class PKFXFinderAnalyzer {
             for (int jj = 0; jj < ii; jj++) {
                 currentCandles.add(candles.get(jj));
             }
-            PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(currentCandle);
-            double shortMa = finder.getMa(currentCandles, 9);
-            double longMa = finder.getMa(currentCandles, 26);
-            double superLongMa = finder.getMa(currentCandles, 50);
+            double shortMa = getMa(currentCandles, PKFXConst.MA_SHORT_PERIOD);
+            double longMa = getMa(currentCandles, PKFXConst.MA_MID_PERIOD);
+            double superLongMa = getMa(currentCandles, PKFXConst.MA_LONG_PERIOD);
 
-            double shortVma = finder.getVma(currentCandles, 5);
-            double longVma = finder.getVma(currentCandles, 10);
+            double shortVma = getVma(currentCandles, PKFXConst.VMA_SHORT_PERIOD);
+            double longVma = getVma(currentCandles, PKFXConst.VMA_LONG_PERIOD);
 
             currentCandle.setShortMa(shortMa);
             currentCandle.setLongMa(longMa);
@@ -132,8 +123,9 @@ public class PKFXFinderAnalyzer {
             } else {
                 currentCandle.setPosition(Position.SHORT);
             }
-            if (logging)
+            if (logging) {
                 log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition());
+            }
         }
     }
 }

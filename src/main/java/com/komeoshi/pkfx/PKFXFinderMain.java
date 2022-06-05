@@ -53,11 +53,11 @@ public class PKFXFinderMain {
                 Candle c = i.getCandles().get(i.getCandles().size() - 1);
 
                 if (status == Status.NONE) {
-                    PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer(c);
+                    PKFXFinderAnalyzer finder = new PKFXFinderAnalyzer();
                     double rsi = finder.getRsi(i.getCandles());
                     boolean isRsiOk = (rsi > 0 && rsi < 30);
                     boolean isMaOk = finder.isMaOk(i.getCandles());
-                    boolean isSignal = finder.isSignal(PKFXConst.CANDLE_LENGTH_MAGNIFICATION);
+                    boolean isSignal = finder.isSignal(c, PKFXConst.CANDLE_LENGTH_MAGNIFICATION);
                     if (isMaOk && (!openTime.isEqual(c.getTime()))) {
                         log.info("signal>> " + c.getTime() + ", OPEN:" + c.getMid().getO() + ", HIGH:" + c.getMid().getH() + ", RSI :" + rsi);
 
