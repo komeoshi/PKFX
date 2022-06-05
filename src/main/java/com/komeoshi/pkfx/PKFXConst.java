@@ -46,9 +46,13 @@ public class PKFXConst {
 
     public static final Double CANDLE_LOSSCUT_MAGNIFICATION = 0.999;
 
+    public static final Double GC_CANDLE_TARGET_MAGNIFICATION = 0.000100;
+
     public static final int MA_SHORT_PERIOD = 9;
     public static final int MA_MID_PERIOD = 26;
     public static final int MA_LONG_PERIOD = 50;
+    public static final int VMA_SHORT_PERIOD = 5;
+    public static final int VMA_LONG_PERIOD = 10;
 
     /**
      * シグナル終了待ち時間.
