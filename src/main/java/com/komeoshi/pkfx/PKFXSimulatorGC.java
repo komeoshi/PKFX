@@ -79,7 +79,7 @@ public class PKFXSimulatorGC {
                 lastPosition = candle.getPosition();
 
                 if(status != Status.NONE) {
-                    double mag = 0.00005;
+                    double mag = 0.000100;
                     double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
                     double targetRateSell = openCandle.getMid().getC() * (1 - mag);
                     if (status == Status.HOLDING_BUY &&

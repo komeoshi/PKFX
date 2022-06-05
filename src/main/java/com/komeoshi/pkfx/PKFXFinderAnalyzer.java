@@ -118,7 +118,7 @@ public class PKFXFinderAnalyzer {
             double superLongMa = finder.getMa(currentCandles, 50);
 
             double shortVma = finder.getVma(currentCandles, 9);
-            double longVma = finder.getVma(currentCandles, 26);
+            double longVma = finder.getVma(currentCandles, 25);
 
             currentCandle.setShortMa(shortMa);
             currentCandle.setLongMa(longMa);
