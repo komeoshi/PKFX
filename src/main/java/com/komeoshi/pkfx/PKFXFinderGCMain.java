@@ -134,8 +134,8 @@ public class PKFXFinderGCMain {
             double longMa = finder.getMa(currentCandles, 26);
             double superLongMa = finder.getMa(currentCandles, 50);
 
-            double shortVma = finder.getVma(currentCandles, 25);
-            double longVma = finder.getVma(currentCandles, 50);
+            double shortVma = finder.getVma(currentCandles, 9);
+            double longVma = finder.getVma(currentCandles, 26);
 
             currentCandle.setShortMa(shortMa);
             currentCandle.setLongMa(longMa);
