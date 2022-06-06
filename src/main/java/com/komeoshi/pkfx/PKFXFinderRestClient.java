@@ -14,8 +14,8 @@ public class PKFXFinderRestClient {
     private static final Logger log = LoggerFactory.getLogger(PKFXFinderRestClient.class);
 
     public Account getAccount(RestTemplate restTemplate) {
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" +
-                PKFXConst.ACCOUNT_ID + "/summary?";
+        String url = "https://" + PKFXConst.getApiDomain() + "/v3/accounts/" +
+                PKFXConst.getAccountId() + "/summary?";
 
         HttpHeaders headers = getHttpHeaders();
         ResponseEntity<AccountSummary> response = restTemplate.exchange(
@@ -36,7 +36,7 @@ public class PKFXFinderRestClient {
      */
     public Instrument getInstrument(RestTemplate restTemplate) {
 
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
+        String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
         url += "count=100";
         url += "&granularity=" + PKFXConst.GRANULARITY;
 
@@ -57,7 +57,7 @@ public class PKFXFinderRestClient {
         PKFXUnitCalculator unitCalc = new PKFXUnitCalculator();
         int unit = unitCalc.calculate(currentPrice, restTemplate);
 
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/orders";
+        String url = "https://" + PKFXConst.getApiDomain() + "/v3/accounts/" + PKFXConst.getAccountId() + "/orders";
 
         HttpHeaders headers = getHttpHeaders();
         String body = "{\"order\":{\"units\":\"" + unit +
@@ -77,7 +77,7 @@ public class PKFXFinderRestClient {
         int unit = unitCalc.calculate(currentPrice, restTemplate);
         unit = -unit;
 
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/orders";
+        String url = "https://" + PKFXConst.getApiDomain() + "/v3/accounts/" + PKFXConst.getAccountId() + "/orders";
 
         HttpHeaders headers = getHttpHeaders();
         String body = "{\"order\":{\"units\":\"" + unit +
@@ -101,7 +101,7 @@ public class PKFXFinderRestClient {
             // 保有しているポジションを決済する
             Trade trade = trades.getTrades().get(i);
 
-            String sellUrl = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/trades/";
+            String sellUrl = "https://" + PKFXConst.getApiDomain() + "/v3/accounts/" + PKFXConst.getAccountId() + "/trades/";
             sellUrl += "" + trade.getId();
             sellUrl += "/close";
 
@@ -127,7 +127,7 @@ public class PKFXFinderRestClient {
     }
 
     private Trades getTrades(RestTemplate restTemplate, HttpHeaders headers) {
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/accounts/" + PKFXConst.ACCOUNT_ID + "/trades?instrument=" + PKFXConst.CURRENCY;
+        String url = "https://" + PKFXConst.getApiDomain() + "/v3/accounts/" + PKFXConst.getAccountId() + "/trades?instrument=" + PKFXConst.CURRENCY;
         ResponseEntity<Trades> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -140,7 +140,7 @@ public class PKFXFinderRestClient {
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer " + PKFXConst.API_ACCESS_TOKEN);
+        headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
         return headers;
     }
 

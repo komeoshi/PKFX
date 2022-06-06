@@ -2382,13 +2382,13 @@ public class PKFXSimulatorRestClient {
     }
 
     private Instrument run(RestTemplate restTemplate, String day){
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
+        String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
         url += day;
         url += "&granularity=" + PKFXConst.GRANULARITY;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer " + PKFXConst.API_ACCESS_TOKEN);
+        headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
@@ -2405,13 +2405,13 @@ public class PKFXSimulatorRestClient {
 
     public Instrument run(RestTemplate restTemplate) {
 
-        String url = "https://" + PKFXConst.API_DOMAIN + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
+        String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
         url += "count=5000";
         url += "&granularity=" + PKFXConst.GRANULARITY;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer " + PKFXConst.API_ACCESS_TOKEN);
+        headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
