@@ -50,8 +50,20 @@ public class PKFXFinderAnalyzer {
         }
         ave = (ave / term);
         return ave;
-
     }
+
+    public double getSig(final List<Candle> candles, final int term){
+        int lastBar = candles.size() - 1;
+        int firstBar = lastBar - term + 1;
+
+        double ave = 0;
+        for(int i= firstBar ; i <= lastBar; i++){
+            ave += candles.get(i).getMacd();
+        }
+        ave = (ave / term);
+        return ave;
+    }
+
     public double getMa(final List<Candle> candles, final int term){
         int lastBar = candles.size() - 1;
         int firstBar = lastBar - term + 1;
@@ -131,6 +143,12 @@ public class PKFXFinderAnalyzer {
             currentCandle.setShortVma(shortVma);
             currentCandle.setLongVma(longVma);
 
+            double macd = Math.abs(longMa - shortMa);
+            currentCandle.setMacd(macd);
+
+            double sig = getSig(currentCandles, 9);
+            currentCandle.setSig(sig);
+
             if (shortMa > longMa) {
                 currentCandle.setPosition(Position.LONG);
             } else {
@@ -139,6 +157,7 @@ public class PKFXFinderAnalyzer {
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();
                 log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition() +
+                        " " + currentCandle.getSig() +
                         " " + (endTime - startTime));
             }
         }

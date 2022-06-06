@@ -22,6 +22,8 @@ public class Candle {
     private double superLongMa;
     private double shortVma;
     private double longVma;
+    private double macd;
+    private double sig;
 
     public boolean isYousen() {
         // 始値よりも終値が高ければ陽線

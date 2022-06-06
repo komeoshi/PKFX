@@ -49,7 +49,8 @@ public class PKFXFinderGCMain {
 
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
-                    log.info("cross detected. " + candle.getPosition());
+                    boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
+                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " " + isSigOver);
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -58,7 +59,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (anal.checkActiveTime()) {
+                        if (isSigOver && anal.checkActiveTime()) {
                             log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -71,7 +72,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (anal.checkActiveTime()) {
+                        if (isSigOver && anal.checkActiveTime()) {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
@@ -92,7 +93,7 @@ public class PKFXFinderGCMain {
     }
 
     private Status losscut(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double lossCutMag = 0.000600;
+        double lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
         if(status == Status.HOLDING_BUY &&
