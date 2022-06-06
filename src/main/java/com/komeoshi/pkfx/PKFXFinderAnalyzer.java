@@ -103,6 +103,9 @@ public class PKFXFinderAnalyzer {
 
     public void setPosition(List<Candle> candles, boolean logging) {
         for (int ii = 0; ii < candles.size(); ii++) {
+
+            long startTime = System.currentTimeMillis();
+
             Candle currentCandle = candles.get(ii);
             currentCandle.setNumber(ii);
             if (ii < 75) {
@@ -134,7 +137,9 @@ public class PKFXFinderAnalyzer {
                 currentCandle.setPosition(Position.SHORT);
             }
             if (logging) {
-                log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition());
+                long endTime = System.currentTimeMillis();
+                log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition() +
+                        " " + (endTime - startTime));
             }
         }
     }
