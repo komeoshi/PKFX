@@ -116,19 +116,26 @@ public class PKFXFinderGCMain {
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
+        double rsiMagnification = 20;
         boolean isSigEnough = openCandle.getSig() > candle.getSig();
-        if (status == Status.HOLDING_BUY &&
-                targetRateBuy < candle.getMid().getC() && isSigEnough) {
+        boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification) ;
+        boolean isRsiCOld = (candle.getRsi() < rsiMagnification);
+        if (status == Status.HOLDING_BUY) {
+            if (targetRateBuy < candle.getMid().getC() && isSigEnough ||
+                    targetRateBuy < candle.getMid().getC() && isRsiHot) {
 
-            log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-            client.complete(restTemplate);
-            status = Status.NONE;
-        } else if (status == Status.HOLDING_SELL &&
-                targetRateSell > candle.getMid().getC() && isSigEnough) {
+                log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                client.complete(restTemplate);
+                status = Status.NONE;
+            }
+        } else if (status == Status.HOLDING_SELL) {
+            if (targetRateSell > candle.getMid().getC() && isSigEnough ||
+                    targetRateSell > candle.getMid().getC() && isRsiCOld) {
 
-            log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-            client.complete(restTemplate);
-            status = Status.NONE;
+                log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                client.complete(restTemplate);
+                status = Status.NONE;
+            }
         }
         return status;
     }

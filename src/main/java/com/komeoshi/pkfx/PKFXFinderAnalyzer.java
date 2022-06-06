@@ -149,6 +149,9 @@ public class PKFXFinderAnalyzer {
             double sig = getSig(currentCandles, 50);
             currentCandle.setSig(sig);
 
+            double rsi = getRsi(currentCandles);
+            currentCandle.setRsi(rsi);
+
             if (shortMa > longMa) {
                 currentCandle.setPosition(Position.LONG);
             } else {

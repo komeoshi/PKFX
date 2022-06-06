@@ -113,17 +113,24 @@ public class PKFXSimulatorGC {
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
+        double rsiMagnification = 20;
         boolean isSigEnough = openCandle.getSig() > candle.getSig();
-        if (status == Status.HOLDING_BUY &&
-                targetRateBuy < candle.getMid().getC() && isSigEnough) {
+        boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification) ;
+        boolean isRsiCOld = (candle.getRsi() < rsiMagnification);
+        if (status == Status.HOLDING_BUY) {
+            if (targetRateBuy < candle.getMid().getC() && isSigEnough ||
+                    targetRateBuy < candle.getMid().getC() && isRsiHot) {
 
-            completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
-            status = Status.NONE;
-        } else if (status == Status.HOLDING_SELL &&
-                targetRateSell > candle.getMid().getC() && isSigEnough) {
+                completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
+                status = Status.NONE;
+            }
+        } else if (status == Status.HOLDING_SELL) {
+            if (targetRateSell > candle.getMid().getC() && isSigEnough ||
+                    targetRateSell > candle.getMid().getC() && isRsiCOld) {
 
-            completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
-            status = Status.NONE;
+                completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
+                status = Status.NONE;
+            }
         }
         return status;
     }
