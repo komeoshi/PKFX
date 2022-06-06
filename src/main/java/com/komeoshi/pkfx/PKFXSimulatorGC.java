@@ -80,41 +80,50 @@ public class PKFXSimulatorGC {
                 lastPosition = candle.getPosition();
 
                 if(status != Status.NONE) {
-                    double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION;
-                    double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
-                    double targetRateSell = openCandle.getMid().getC() * (1 - mag);
-                    if (status == Status.HOLDING_BUY &&
-                            targetRateBuy < candle.getMid().getC()) {
-
-                        completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
-                        status = Status.NONE;
-                    } else if (status == Status.HOLDING_SELL &&
-                            targetRateSell > candle.getMid().getC()) {
-
-                        completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
-                        status = Status.NONE;
-                    }
-
-                    double lossCutMag = 0.000600;
-                    double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
-                    double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
-                    if(status == Status.HOLDING_BUY &&
-                            lossCutRateBuy > candle.getMid().getC()){
-
-                        completeOrder(openCandle, candle, Reason.LOSSCUT, Position.LONG);
-                        status = Status.NONE;
-                    }else if (status == Status.HOLDING_SELL &&
-                            lossCutRateSell < candle.getMid().getC()) {
-
-                        completeOrder(openCandle, candle, Reason.LOSSCUT, Position.SHORT);
-                        status = Status.NONE;
-                    }
+                    status = targetReach(status, openCandle, candle);
+                    status = losscut(status, openCandle, candle);
                 }
             }
 
             long endTime = System.currentTimeMillis();
             log.info((endTime - startTime) +"ms.");
         };
+    }
+
+    private Status losscut(Status status, Candle openCandle, Candle candle) {
+        double lossCutMag = 0.000600;
+        double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
+        double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
+        if(status == Status.HOLDING_BUY &&
+                lossCutRateBuy > candle.getMid().getC()){
+
+            completeOrder(openCandle, candle, Reason.LOSSCUT, Position.LONG);
+            status = Status.NONE;
+        }else if (status == Status.HOLDING_SELL &&
+                lossCutRateSell < candle.getMid().getC()) {
+
+            completeOrder(openCandle, candle, Reason.LOSSCUT, Position.SHORT);
+            status = Status.NONE;
+        }
+        return status;
+    }
+
+    private Status targetReach(Status status, Candle openCandle, Candle candle) {
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION;
+        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
+        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+        if (status == Status.HOLDING_BUY &&
+                targetRateBuy < candle.getMid().getC()) {
+
+            completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
+            status = Status.NONE;
+        } else if (status == Status.HOLDING_SELL &&
+                targetRateSell > candle.getMid().getC()) {
+
+            completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
+            status = Status.NONE;
+        }
+        return status;
     }
 
     private void buy(Candle candle) {

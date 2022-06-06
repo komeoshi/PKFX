@@ -84,42 +84,51 @@ public class PKFXFinderGCMain {
                 lastPosition = candle.getPosition();
 
                 if (status != Status.NONE) {
-                    double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION;
-                    double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
-                    double targetRateSell = openCandle.getMid().getC() * (1 - mag);
-                    if (status == Status.HOLDING_BUY &&
-                            targetRateBuy < candle.getMid().getC()) {
-
-                        log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                        client.complete(restTemplate);
-                        status = Status.NONE;
-                    } else if (status == Status.HOLDING_SELL &&
-                            targetRateSell > candle.getMid().getC()) {
-
-                        log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                        client.complete(restTemplate);
-                        status = Status.NONE;
-                    }
-
-                    double lossCutMag = 0.000600;
-                    double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
-                    double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
-                    if(status == Status.HOLDING_BUY &&
-                            lossCutRateBuy > candle.getMid().getC()){
-
-                        log.info("<<signal (buy)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                        client.complete(restTemplate);
-                        status = Status.NONE;
-                    }else if (status == Status.HOLDING_SELL &&
-                            lossCutRateSell < candle.getMid().getC()) {
-
-                        log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                        client.complete(restTemplate);
-                    }
+                    status = targetReach(restTemplate, client, status, openCandle, candle);
+                    status = losscut(restTemplate, client, status, openCandle, candle);
                 }
             }
         };
 
+    }
+
+    private Status losscut(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
+        double lossCutMag = 0.000600;
+        double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
+        double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
+        if(status == Status.HOLDING_BUY &&
+                lossCutRateBuy > candle.getMid().getC()){
+
+            log.info("<<signal (buy)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+            client.complete(restTemplate);
+            status = Status.NONE;
+        }else if (status == Status.HOLDING_SELL &&
+                lossCutRateSell < candle.getMid().getC()) {
+
+            log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+            client.complete(restTemplate);
+        }
+        return status;
+    }
+
+    private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION;
+        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
+        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+        if (status == Status.HOLDING_BUY &&
+                targetRateBuy < candle.getMid().getC()) {
+
+            log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+            client.complete(restTemplate);
+            status = Status.NONE;
+        } else if (status == Status.HOLDING_SELL &&
+                targetRateSell > candle.getMid().getC()) {
+
+            log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+            client.complete(restTemplate);
+            status = Status.NONE;
+        }
+        return status;
     }
 
     private Instrument getInstrument(RestTemplate restTemplate, PKFXFinderRestClient client) {
