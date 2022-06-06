@@ -146,7 +146,7 @@ public class PKFXFinderAnalyzer {
             double macd = Math.abs(longMa - shortMa);
             currentCandle.setMacd(macd);
 
-            double sig = getSig(currentCandles, 9);
+            double sig = getSig(currentCandles, 50);
             currentCandle.setSig(sig);
 
             if (shortMa > longMa) {

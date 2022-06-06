@@ -79,14 +79,14 @@ public class PKFXSimulatorGC {
                 }
                 lastPosition = candle.getPosition();
 
-                if(status != Status.NONE) {
+                if (status != Status.NONE) {
                     status = targetReach(status, openCandle, candle);
                     status = losscut(status, openCandle, candle);
                 }
             }
 
             long endTime = System.currentTimeMillis();
-            log.info((endTime - startTime) +"ms.");
+            log.info((endTime - startTime) + "ms.");
         };
     }
 
@@ -94,12 +94,12 @@ public class PKFXSimulatorGC {
         double lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
-        if(status == Status.HOLDING_BUY &&
-                lossCutRateBuy > candle.getMid().getC()){
+        if (status == Status.HOLDING_BUY &&
+                lossCutRateBuy > candle.getMid().getC()) {
 
             completeOrder(openCandle, candle, Reason.LOSSCUT, Position.LONG);
             status = Status.NONE;
-        }else if (status == Status.HOLDING_SELL &&
+        } else if (status == Status.HOLDING_SELL &&
                 lossCutRateSell < candle.getMid().getC()) {
 
             completeOrder(openCandle, candle, Reason.LOSSCUT, Position.SHORT);
@@ -112,13 +112,15 @@ public class PKFXSimulatorGC {
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION;
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+
+        boolean b = openCandle.getSig() > candle.getSig();
         if (status == Status.HOLDING_BUY &&
-                targetRateBuy < candle.getMid().getC()) {
+                targetRateBuy < candle.getMid().getC() && b) {
 
             completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
             status = Status.NONE;
         } else if (status == Status.HOLDING_SELL &&
-                targetRateSell > candle.getMid().getC()) {
+                targetRateSell > candle.getMid().getC() && b) {
 
             completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
             status = Status.NONE;
@@ -167,8 +169,8 @@ public class PKFXSimulatorGC {
         log.info("<< signal " + mark + closeCandle.getTime() + " 【" +
                 closeCandle.getNumber() + "】" +
                 openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
-                countWin + "/" + countLose + "/" + totalCount + "(" +((double)countWin/(double)totalCount) + ") " +
-                diff + "("+(diff/totalCount)+"), " + reason
+                countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
+                diff + "(" + (diff / totalCount) + "), " + reason
         );
 
     }
