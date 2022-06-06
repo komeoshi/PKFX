@@ -94,6 +94,21 @@ public class PKFXSimulatorGC {
                         completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
                         status = Status.NONE;
                     }
+
+                    double lossCutMag = 0.000600;
+                    double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
+                    double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
+                    if(status == Status.HOLDING_BUY &&
+                            lossCutRateBuy > candle.getMid().getC()){
+
+                        completeOrder(openCandle, candle, Reason.LOSSCUT, Position.LONG);
+                        status = Status.NONE;
+                    }else if (status == Status.HOLDING_SELL &&
+                            lossCutRateSell < candle.getMid().getC()) {
+
+                        completeOrder(openCandle, candle, Reason.LOSSCUT, Position.SHORT);
+                        status = Status.NONE;
+                    }
                 }
             }
 

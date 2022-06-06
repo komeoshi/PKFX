@@ -100,6 +100,22 @@ public class PKFXFinderGCMain {
                         client.complete(restTemplate);
                         status = Status.NONE;
                     }
+
+                    double lossCutMag = 0.000600;
+                    double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
+                    double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
+                    if(status == Status.HOLDING_BUY &&
+                            lossCutRateBuy > candle.getMid().getC()){
+
+                        log.info("<<signal (buy)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                        client.complete(restTemplate);
+                        status = Status.NONE;
+                    }else if (status == Status.HOLDING_SELL &&
+                            lossCutRateSell < candle.getMid().getC()) {
+
+                        log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                        client.complete(restTemplate);
+                    }
                 }
             }
         };
