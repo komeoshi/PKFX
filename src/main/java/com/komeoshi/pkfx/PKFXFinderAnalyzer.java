@@ -4,6 +4,8 @@ import com.komeoshi.pkfx.dto.Candle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,6 +91,14 @@ public class PKFXFinderAnalyzer {
 
         // log.info("RSI: " + rsi);
         return rsi;
+    }
+
+    public boolean checkActiveTime() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        DayOfWeek w = currentTime.getDayOfWeek();
+        int h = currentTime.getHour();
+
+        return w != DayOfWeek.MONDAY || h != 6;
     }
 
     public void setPosition(List<Candle> candles, boolean logging) {

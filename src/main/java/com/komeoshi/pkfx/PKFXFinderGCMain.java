@@ -39,7 +39,8 @@ public class PKFXFinderGCMain {
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;
 
-                new PKFXFinderAnalyzer().setPosition(instrument.getCandles(), false);
+                PKFXFinderAnalyzer anal = new PKFXFinderAnalyzer();
+                anal.setPosition(instrument.getCandles(), false);
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
                 if (candle.getPosition() == Position.NONE) {
@@ -57,7 +58,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (candle.getMid().getH() > candle.getShortMa() && candle.getShortVma() > candle.getLongVma()) {
+                        if (candle.getMid().getH() > candle.getShortMa() && candle.getShortVma() > candle.getLongVma() && anal.checkActiveTime()) {
                             log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -70,7 +71,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (candle.getMid().getL() < candle.getShortMa() && candle.getShortVma() > candle.getLongVma()) {
+                        if (candle.getMid().getL() < candle.getShortMa() && candle.getShortVma() > candle.getLongVma() && anal.checkActiveTime()) {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
