@@ -116,15 +116,15 @@ public class PKFXFinderGCMain {
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
-        boolean b = openCandle.getSig() > candle.getSig();
+        boolean isSigEnough = openCandle.getSig() > candle.getSig();
         if (status == Status.HOLDING_BUY &&
-                targetRateBuy < candle.getMid().getC() && b) {
+                targetRateBuy < candle.getMid().getC() && isSigEnough) {
 
             log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
             client.complete(restTemplate);
             status = Status.NONE;
         } else if (status == Status.HOLDING_SELL &&
-                targetRateSell > candle.getMid().getC() && b) {
+                targetRateSell > candle.getMid().getC() && isSigEnough) {
 
             log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
             client.complete(restTemplate);
