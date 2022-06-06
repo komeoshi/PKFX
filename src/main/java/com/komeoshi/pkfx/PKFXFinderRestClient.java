@@ -7,6 +7,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+import java.util.Set;
+
 public class PKFXFinderRestClient {
     private static final Logger log = LoggerFactory.getLogger(PKFXFinderRestClient.class);
 
@@ -63,8 +66,9 @@ public class PKFXFinderRestClient {
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
         // リクエストの送信
-        restTemplate.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 url, HttpMethod.POST, entity, String.class);
+        log.info(response.getBody());
     }
 
     public void sell(double currentPrice, RestTemplate restTemplate) {
@@ -82,8 +86,9 @@ public class PKFXFinderRestClient {
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
         // リクエストの送信
-        restTemplate.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 url, HttpMethod.POST, entity, String.class);
+        log.info(response.getBody());
     }
 
     public void complete(RestTemplate restTemplate) {
@@ -100,13 +105,14 @@ public class PKFXFinderRestClient {
             sellUrl += "" + trade.getId();
             sellUrl += "/close";
 
-            restTemplate.exchange(
+            ResponseEntity<String> response = restTemplate.exchange(
                     sellUrl,
                     HttpMethod.PUT,
                     new HttpEntity<>(headers),
                     new ParameterizedTypeReference<String>() {
                     });
 
+            log.info(response.getBody());
             sleep();
 
         }
