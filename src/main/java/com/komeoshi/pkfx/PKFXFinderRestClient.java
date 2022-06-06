@@ -107,6 +107,16 @@ public class PKFXFinderRestClient {
                     new ParameterizedTypeReference<String>() {
                     });
 
+            sleep();
+
+        }
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ignored) {
+
         }
     }
 
