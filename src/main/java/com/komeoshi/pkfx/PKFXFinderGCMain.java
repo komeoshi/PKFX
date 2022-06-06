@@ -49,8 +49,7 @@ public class PKFXFinderGCMain {
 
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
-                    boolean isShortVmaLargerThanLongVma = candle.getShortVma() > candle.getLongVma();
-                    log.info("cross detected. " + candle.getPosition() + " vma:" + candle.getShortVma() + "/" + candle.getLongVma() + " " + isShortVmaLargerThanLongVma);
+                    log.info("cross detected. " + candle.getPosition());
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -59,7 +58,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isShortVmaLargerThanLongVma && anal.checkActiveTime()) {
+                        if (anal.checkActiveTime()) {
                             log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -72,7 +71,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isShortVmaLargerThanLongVma && anal.checkActiveTime()) {
+                        if (anal.checkActiveTime()) {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
