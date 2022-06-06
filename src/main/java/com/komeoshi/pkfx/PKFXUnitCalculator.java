@@ -13,12 +13,7 @@ public class PKFXUnitCalculator {
     private static final int MAG = 25;
     private static final int MAX = 250_000;
 
-    public static void main(String[] args) {
-        PKFXUnitCalculator c = new PKFXUnitCalculator();
-        int num = c.calculate(130.80, new RestTemplate());
-
-        log.info("" + num);
-    }
+    private static final double THRESHOLD = 0.9;
 
     public int calculate(double currentPrice, RestTemplate restTemplate) {
         PKFXFinderRestClient client = new PKFXFinderRestClient();
@@ -39,7 +34,7 @@ public class PKFXUnitCalculator {
         double unitCurrency = currentPrice / MAG;
         double unit = currency / unitCurrency;
 
-        int result = Double.valueOf(unit * 0.8).intValue();
+        int result = Double.valueOf(unit * THRESHOLD).intValue();
         if (result > MAX)
             result = MAX;
         return result;
