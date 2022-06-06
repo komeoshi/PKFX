@@ -136,7 +136,7 @@ public class PKFXFinderAnalyzer {
             } else {
                 currentCandle.setPosition(Position.SHORT);
             }
-            if (logging) {
+            if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();
                 log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition() +
                         " " + (endTime - startTime));
