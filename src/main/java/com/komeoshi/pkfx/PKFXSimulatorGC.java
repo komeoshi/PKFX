@@ -50,8 +50,8 @@ public class PKFXSimulatorGC {
                 }
 
                 if (candle.getPosition() != lastPosition) {
-                    // クロスした
-                    log.info("cross detected. " + candle.getPosition());
+                    boolean isShortVmaLargerThanLongVma = candle.getShortVma() > candle.getLongVma();
+                    log.info("cross detected. " + candle.getPosition() + " vma:" + candle.getShortVma() + "/" + candle.getLongVma() + " " + isShortVmaLargerThanLongVma);
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -59,7 +59,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
-                        if (candle.getMid().getH() > candle.getShortMa() && candle.getShortVma() > candle.getLongVma()) {
+                        if (isShortVmaLargerThanLongVma) {
                             buy(candle);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -70,7 +70,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (candle.getMid().getL() < candle.getShortMa() && candle.getShortVma() > candle.getLongVma()) {
+                        if (isShortVmaLargerThanLongVma) {
                             sell(candle);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
