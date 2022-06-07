@@ -87,6 +87,7 @@ public class PKFXSimulatorGC {
 
             long endTime = System.currentTimeMillis();
             log.info((endTime - startTime) + "ms.");
+            System.exit(0);
         };
     }
 
