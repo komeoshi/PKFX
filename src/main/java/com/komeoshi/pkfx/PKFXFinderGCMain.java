@@ -107,6 +107,7 @@ public class PKFXFinderGCMain {
 
             log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
             client.complete(restTemplate);
+            status = Status.NONE;
         }
         return status;
     }
