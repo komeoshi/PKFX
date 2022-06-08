@@ -97,12 +97,8 @@ public class PKFXFinderAnalyzer {
         }
 
         double rs = aveGain / Math.abs(aveLoss);
-        double rsi = 100 - 100 / (1 + rs);
 
-        rsi = rsi - 50;
-
-        // log.info("RSI: " + rsi);
-        return rsi;
+        return 100 - 100 / (1 + rs);
     }
 
     public boolean checkActiveTime() {
