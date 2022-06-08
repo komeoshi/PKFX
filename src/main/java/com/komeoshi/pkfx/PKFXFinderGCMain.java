@@ -121,9 +121,11 @@ public class PKFXFinderGCMain {
 
         double rsiMagnification = 20;
         boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification);
-        boolean isRsiCOld = (candle.getRsi() < rsiMagnification);
+        boolean isRsiCold = (candle.getRsi() < rsiMagnification);
+        boolean isUpper = candle.getPastCandle().getLongMa() < candle.getLongMa();
+
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC()) {
+            if (targetRateBuy < candle.getMid().getC() && !isUpper) {
                 if (isSigNotEnough || isRsiHot) {
 
                     log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
@@ -132,8 +134,8 @@ public class PKFXFinderGCMain {
                 }
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC()) {
-                if (isSigNotEnough || isRsiCOld) {
+            if (targetRateSell > candle.getMid().getC() && isUpper) {
+                if (isSigNotEnough || isRsiCold) {
 
                     log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                     client.complete(restTemplate);

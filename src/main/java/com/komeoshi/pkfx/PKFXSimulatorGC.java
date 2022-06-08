@@ -105,14 +105,16 @@ public class PKFXSimulatorGC {
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
 
+        boolean isUpper = candle.getPastCandle().getLongMa() < candle.getLongMa();
+
         if (status == Status.HOLDING_BUY) {
-            if (lossCutRateBuy > candle.getMid().getC()) {
+            if (lossCutRateBuy > candle.getMid().getC() && isUpper) {
 
                 completeOrder(openCandle, candle, Reason.LOSSCUT, Position.LONG);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (lossCutRateSell < candle.getMid().getC()) {
+            if (lossCutRateSell < candle.getMid().getC() && !isUpper) {
 
                 completeOrder(openCandle, candle, Reason.LOSSCUT, Position.SHORT);
                 status = Status.NONE;
@@ -131,8 +133,10 @@ public class PKFXSimulatorGC {
         double rsiMagnification = 20;
         boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification);
         boolean isRsiCold = (candle.getRsi() < rsiMagnification);
+        boolean isUpper = candle.getPastCandle().getLongMa() < candle.getLongMa();
+
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC()) {
+            if (targetRateBuy < candle.getMid().getC() && !isUpper) {
                 if (isSigNotEnough || isRsiHot) {
 
                     completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
@@ -140,7 +144,7 @@ public class PKFXSimulatorGC {
                 }
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC()) {
+            if (targetRateSell > candle.getMid().getC() && isUpper) {
                 if (isSigNotEnough || isRsiCold) {
 
                     completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
