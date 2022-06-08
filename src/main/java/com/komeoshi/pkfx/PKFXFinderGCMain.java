@@ -117,25 +117,28 @@ public class PKFXFinderGCMain {
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
+        boolean isSigNotEnough = openCandle.getMacd() * 1.5 > candle.getSig();
+
         double rsiMagnification = 20;
-        boolean isSigEnough = openCandle.getSig() > candle.getSig();
-        boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification) ;
+        boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification);
         boolean isRsiCOld = (candle.getRsi() < rsiMagnification);
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC() && isSigEnough ||
-                    targetRateBuy < candle.getMid().getC() && isRsiHot) {
+            if (targetRateBuy < candle.getMid().getC()) {
+                if (isSigNotEnough || isRsiHot) {
 
-                log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                client.complete(restTemplate);
-                status = Status.NONE;
+                    log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                    client.complete(restTemplate);
+                    status = Status.NONE;
+                }
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() && isSigEnough ||
-                    targetRateSell > candle.getMid().getC() && isRsiCOld) {
+            if (targetRateSell > candle.getMid().getC()) {
+                if (isSigNotEnough || isRsiCOld) {
 
-                log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                client.complete(restTemplate);
-                status = Status.NONE;
+                    log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                    client.complete(restTemplate);
+                    status = Status.NONE;
+                }
             }
         }
         return status;
