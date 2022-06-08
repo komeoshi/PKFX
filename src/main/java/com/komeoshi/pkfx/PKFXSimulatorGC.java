@@ -134,9 +134,12 @@ public class PKFXSimulatorGC {
         boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification);
         boolean isRsiCold = (candle.getRsi() < rsiMagnification);
         boolean isUpper = candle.getPastCandle().getLongMa() < candle.getLongMa();
+        boolean isStillUpper = candle.getPastCandle().getMid().getC() < candle.getMid().getC();
+
+        boolean isUpperCloud = candle.getLongMa() < candle.getMid().getC();
 
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC() && !isUpper) {
+            if (targetRateBuy < candle.getMid().getC() && !isUpper && isStillUpper && isUpperCloud) {
                 if (isSigNotEnough || isRsiHot) {
 
                     completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
@@ -144,7 +147,7 @@ public class PKFXSimulatorGC {
                 }
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() && isUpper) {
+            if (targetRateSell > candle.getMid().getC() && isUpper && !isStillUpper&& !isUpperCloud) {
                 if (isSigNotEnough || isRsiCold) {
 
                     completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
