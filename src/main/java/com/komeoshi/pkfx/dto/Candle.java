@@ -4,11 +4,12 @@ import com.komeoshi.pkfx.Position;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class Candle {
+public class Candle implements Serializable {
     private LocalDateTime time;
     private int volume;
     private boolean complete;

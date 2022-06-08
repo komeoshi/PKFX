@@ -3,9 +3,11 @@ package com.komeoshi.pkfx.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class Mid {
+public class Mid implements Serializable {
     private double o;
     private double h;
     private double l;

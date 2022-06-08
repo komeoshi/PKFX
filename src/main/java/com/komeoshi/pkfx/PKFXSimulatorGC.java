@@ -1,5 +1,6 @@
 package com.komeoshi.pkfx;
 
+import com.komeoshi.pkfx.SimulateData.PKFXSimulateDataReader;
 import com.komeoshi.pkfx.dto.Candle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +36,14 @@ public class PKFXSimulatorGC {
     public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
         return args -> {
             long startTime = System.currentTimeMillis();
-            PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
-            List<Candle> candles = client.runWithManyCandles(restTemplate);
+//            PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
+//            List<Candle> candles = client.runWithManyCandles(restTemplate);
             // List<Candle> candles = client.run(restTemplate).getCandles();
 
-            new PKFXFinderAnalyzer().setPosition(candles, true);
+//            new PKFXFinderAnalyzer().setPosition(candles, true);
+
+            PKFXSimulateDataReader reader = new PKFXSimulateDataReader();
+            List<Candle> candles = reader.read().getCandles();
 
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
