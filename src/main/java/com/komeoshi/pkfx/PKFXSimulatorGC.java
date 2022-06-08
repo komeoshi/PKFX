@@ -18,6 +18,10 @@ public class PKFXSimulatorGC {
 
     private static final Logger log = LoggerFactory.getLogger(PKFXSimulatorGC.class);
 
+    private int countLosscut = 0;
+    private int countReached = 0;
+    private int countTimeoutWin = 0;
+    private int countTimeoutLose = 0;
     private int countWin = 0;
     private int countLose = 0;
     private int totalCount = 0;
@@ -70,6 +74,7 @@ public class PKFXSimulatorGC {
                         }
                     } else if (candle.getPosition() == Position.SHORT) {
                         // 買い→売り
+
                         if (status == Status.HOLDING_BUY) {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
@@ -99,16 +104,19 @@ public class PKFXSimulatorGC {
         double lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
-        if (status == Status.HOLDING_BUY &&
-                lossCutRateBuy > candle.getMid().getC()) {
 
-            completeOrder(openCandle, candle, Reason.LOSSCUT, Position.LONG);
-            status = Status.NONE;
-        } else if (status == Status.HOLDING_SELL &&
-                lossCutRateSell < candle.getMid().getC()) {
+        if (status == Status.HOLDING_BUY) {
+            if (lossCutRateBuy > candle.getMid().getC()) {
 
-            completeOrder(openCandle, candle, Reason.LOSSCUT, Position.SHORT);
-            status = Status.NONE;
+                completeOrder(openCandle, candle, Reason.LOSSCUT, Position.LONG);
+                status = Status.NONE;
+            }
+        } else if (status == Status.HOLDING_SELL) {
+            if (lossCutRateSell < candle.getMid().getC()) {
+
+                completeOrder(openCandle, candle, Reason.LOSSCUT, Position.SHORT);
+                status = Status.NONE;
+            }
         }
         return status;
     }
@@ -122,7 +130,7 @@ public class PKFXSimulatorGC {
 
         double rsiMagnification = 20;
         boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification);
-        boolean isRsiCOld = (candle.getRsi() < rsiMagnification);
+        boolean isRsiCold = (candle.getRsi() < rsiMagnification);
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC()) {
                 if (isSigNotEnough || isRsiHot) {
@@ -133,7 +141,7 @@ public class PKFXSimulatorGC {
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getMid().getC()) {
-                if (isSigNotEnough || isRsiCOld) {
+                if (isSigNotEnough || isRsiCold) {
 
                     completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
                     status = Status.NONE;
@@ -181,11 +189,36 @@ public class PKFXSimulatorGC {
         }
         diff += thisDiff;
 
+        switch (reason) {
+            case LOSSCUT:
+                countLosscut++;
+                break;
+            case REACHED:
+                countReached++;
+                break;
+            case TIMEOUT:
+                if (position == Position.LONG) {
+                    if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
+                        countTimeoutWin++;
+                    } else {
+                        countTimeoutLose++;
+                    }
+                } else {
+                    if (openCandle.getMid().getC() > closeCandle.getMid().getC()) {
+                        countTimeoutWin++;
+                    } else {
+                        countTimeoutLose++;
+                    }
+                }
+                break;
+        }
+
         log.info("<< signal " + mark + closeCandle.getTime() + " 【" +
                 closeCandle.getNumber() + "】" +
                 openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
                 countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
-                diff + "(" + (diff / totalCount) + "), " + reason
+                diff + "(" + (diff / totalCount) + "), " + reason +
+                " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
         );
 
     }

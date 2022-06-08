@@ -129,6 +129,8 @@ public class PKFXFinderAnalyzer {
             for (int jj = 0; jj < ii; jj++) {
                 currentCandles.add(candles.get(jj));
             }
+            currentCandle.setPastCandle(candles.get(ii-9));
+
             double shortMa = getMa(currentCandles, PKFXConst.MA_SHORT_PERIOD);
             double longMa = getMa(currentCandles, PKFXConst.MA_MID_PERIOD);
             double superLongMa = getMa(currentCandles, PKFXConst.MA_LONG_PERIOD);

@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +27,7 @@ public class Candle implements Serializable {
     private double macd;
     private double sig;
     private double rsi;
+    private Candle pastCandle;
 
     public boolean isYousen() {
         // 始値よりも終値が高ければ陽線
