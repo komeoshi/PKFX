@@ -11,7 +11,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.DayOfWeek;
 import java.util.List;
 
 @SpringBootApplication
@@ -61,9 +60,8 @@ public class PKFXSimulatorGC {
                 if (candle.getPosition() != lastPosition) {
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
 
-                    DayOfWeek w = candle.getTime().getDayOfWeek();
                     int h = candle.getTime().getHour();
-                    boolean isActiveTime = h != 6;
+                    boolean isActiveTime = h != 6 && h != 7;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -102,14 +100,21 @@ public class PKFXSimulatorGC {
             long endTime = System.currentTimeMillis();
             log.info(countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
                     diff + ", " +
-                    " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
+                    "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
             System.exit(0);
         };
     }
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
-        double lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
+        boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
+        double lossCutMag;
+        if (isLower) {
+            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.75;
+        } else {
+            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
+        }
+
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
 
@@ -132,36 +137,23 @@ public class PKFXSimulatorGC {
     }
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION;
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.8;
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
-        boolean isSigNotEnough = openCandle.getMacd() * 1.5 > candle.getSig();
-
-        double rsiMagnification = 20;
-        boolean isRsiHot = (candle.getRsi() > 100 - rsiMagnification);
-        boolean isRsiCold = (candle.getRsi() < rsiMagnification);
         boolean isUpperCloud = candle.getLongMa() < candle.getMid().getC();
-
-        double powerMag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.8;
-        double powerTargetRateBuy = openCandle.getMid().getC() * (1 + powerMag);
-        double powerTargetRateSell = openCandle.getMid().getC() * (1 - powerMag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC() && isUpperCloud) {
-                if (isSigNotEnough || isRsiHot || powerTargetRateBuy < candle.getMid().getC()) {
 
-                    completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
-                    status = Status.NONE;
-                }
+                completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
+                status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getMid().getC() && !isUpperCloud) {
-                if (isSigNotEnough || isRsiCold || powerTargetRateSell > candle.getMid().getC()) {
 
-                    completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
-                    status = Status.NONE;
-                }
+                completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
+                status = Status.NONE;
             }
         }
         return status;

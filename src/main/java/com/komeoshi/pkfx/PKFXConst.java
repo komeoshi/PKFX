@@ -78,9 +78,10 @@ public class PKFXConst {
 
     public static final Double CANDLE_LOSSCUT_MAGNIFICATION = 0.999;
 
-    public static final Double GC_CANDLE_TARGET_MAGNIFICATION = 0.000010;
+    public static final Double GC_CANDLE_TARGET_MAGNIFICATION = 0.000025;
 
-    public static final Double GC_SIG_MAGNIFICATION = 0.00080;
+    /** 0.0無効 */
+    public static final Double GC_SIG_MAGNIFICATION = 0.0;
 
     public static final Double GC_LOSSCUT_MAGNIFICATION = 0.00080;
     public static final int MA_SHORT_PERIOD = 9;
