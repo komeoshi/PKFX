@@ -39,11 +39,6 @@ public class PKFXSimulatorGC {
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
         return args -> {
-//            PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
-//            List<Candle> candles = client.runWithManyCandles(restTemplate);
-            // List<Candle> candles = client.run(restTemplate).getCandles();
-
-//            new PKFXFinderAnalyzer().setPosition(candles, true);
 
             PKFXSimulateDataReader reader = new PKFXSimulateDataReader();
             List<Candle> candles = reader.read().getCandles();
@@ -108,7 +103,7 @@ public class PKFXSimulatorGC {
         boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
         double lossCutMag;
         if (isLower) {
-            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.75;
+            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.6;
         } else {
             lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
         }
