@@ -39,7 +39,6 @@ public class PKFXSimulatorGC {
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
         return args -> {
-            long startTime = System.currentTimeMillis();
 //            PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
 //            List<Candle> candles = client.runWithManyCandles(restTemplate);
             // List<Candle> candles = client.run(restTemplate).getCandles();
@@ -97,7 +96,6 @@ public class PKFXSimulatorGC {
                 }
             }
 
-            long endTime = System.currentTimeMillis();
             log.info(countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
                     diff + ", " +
                     "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
