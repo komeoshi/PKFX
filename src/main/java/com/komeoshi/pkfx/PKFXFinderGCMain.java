@@ -13,7 +13,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @SpringBootApplication
 public class PKFXFinderGCMain {
@@ -30,7 +29,7 @@ public class PKFXFinderGCMain {
     }
 
     @Bean
-    public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
+    public CommandLineRunner run(RestTemplate restTemplate) {
         return args -> {
 
             PKFXFinderRestClient client = new PKFXFinderRestClient();
@@ -103,7 +102,7 @@ public class PKFXFinderGCMain {
         boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
         double lossCutMag;
         if (isLower) {
-            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.6;
+            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.595;
         } else {
             lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
         }
@@ -127,7 +126,7 @@ public class PKFXFinderGCMain {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.85;
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.86;
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 

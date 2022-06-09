@@ -65,7 +65,7 @@ public class PKFXSimulatorGC {
                             status = Status.NONE;
                         }
                         if (isSigOver && isActiveTime) {
-                            buy(candle);
+                            buy();
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
                         }
@@ -77,7 +77,7 @@ public class PKFXSimulatorGC {
                             status = Status.NONE;
                         }
                         if (isSigOver && isActiveTime) {
-                            sell(candle);
+                            sell();
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
                         }
@@ -103,7 +103,7 @@ public class PKFXSimulatorGC {
         boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
         double lossCutMag;
         if (isLower) {
-            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.6;
+            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.595;
         } else {
             lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
         }
@@ -130,7 +130,7 @@ public class PKFXSimulatorGC {
     }
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.85;
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.86;
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
@@ -153,34 +153,27 @@ public class PKFXSimulatorGC {
         return status;
     }
 
-    private void buy(Candle candle) {
-//        log.info("signal (buy )>> " + candle.getTime() + " 【" +
-//                candle.getNumber() + "】");
+    private void buy() {
     }
 
-    private void sell(Candle candle) {
-//        log.info("signal (sell)>> " + candle.getTime() + " 【" +
-//                candle.getNumber() + "】");
+    private void sell() {
     }
 
 
     private void completeOrder(Candle openCandle, Candle closeCandle, Reason reason, Position position) {
 
-        String mark;
         if (position == Position.LONG) {
             if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
                 countWin++;
             } else {
                 countLose++;
             }
-            mark = "(buy )";
         } else {
             if (openCandle.getMid().getC() > closeCandle.getMid().getC()) {
                 countWin++;
             } else {
                 countLose++;
             }
-            mark = "(sell)";
         }
         totalCount++;
         double thisDiff;
@@ -214,17 +207,7 @@ public class PKFXSimulatorGC {
                 }
                 break;
         }
-
-//        log.info("<< signal " + mark + closeCandle.getTime() + " 【" +
-//                closeCandle.getNumber() + "】" +
-//                openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
-//                countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
-//                diff + "(" + (diff / totalCount) + "), " + reason +
-//                " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
-//        );
-
     }
-
 }
 
 
