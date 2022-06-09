@@ -52,10 +52,11 @@ public class PKFXFinderGCMain {
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
-                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " " + isSigOver);
 
                     int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-                    boolean isActiveTime = h != 6 ;
+                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " " + isSigOver + " " + h);
+
+                    boolean isActiveTime = h != 21 ;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
