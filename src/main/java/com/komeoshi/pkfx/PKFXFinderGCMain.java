@@ -53,7 +53,7 @@ public class PKFXFinderGCMain {
                     log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " " + isSigOver);
 
                     int h = candle.getTime().getHour();
-                    boolean isActiveTime = h != 6 && h != 7;
+                    boolean isActiveTime = h != 6 ;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -99,7 +99,7 @@ public class PKFXFinderGCMain {
         boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
         double lossCutMag;
         if (isLower) {
-            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.75;
+            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.6;
         } else {
             lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
         }
@@ -123,7 +123,7 @@ public class PKFXFinderGCMain {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.8;
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.85;
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 

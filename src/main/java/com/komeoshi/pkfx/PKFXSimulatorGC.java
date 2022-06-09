@@ -55,7 +55,7 @@ public class PKFXSimulatorGC {
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
 
                     int h = candle.getTime().getHour();
-                    boolean isActiveTime = h != 6 && h != 7;
+                    boolean isActiveTime = h != 6;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -130,7 +130,7 @@ public class PKFXSimulatorGC {
     }
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.8;
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.85;
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
