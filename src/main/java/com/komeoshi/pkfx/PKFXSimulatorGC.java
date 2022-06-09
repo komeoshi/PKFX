@@ -11,6 +11,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 @SpringBootApplication
@@ -60,6 +61,10 @@ public class PKFXSimulatorGC {
                 if (candle.getPosition() != lastPosition) {
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
 
+                    DayOfWeek w = candle.getTime().getDayOfWeek();
+                    int h = candle.getTime().getHour();
+                    boolean isActiveTime = h != 6;
+
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
 
@@ -67,7 +72,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
-                        if (isSigOver) {
+                        if (isSigOver && isActiveTime) {
                             buy(candle);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -79,7 +84,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (isSigOver) {
+                        if (isSigOver && isActiveTime) {
                             sell(candle);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -95,7 +100,10 @@ public class PKFXSimulatorGC {
             }
 
             long endTime = System.currentTimeMillis();
-            log.info((endTime - startTime) + "ms.");
+            log.info(countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
+                    diff + ", " +
+                    " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
+            );
             System.exit(0);
         };
     }
@@ -135,7 +143,7 @@ public class PKFXSimulatorGC {
         boolean isRsiCold = (candle.getRsi() < rsiMagnification);
         boolean isUpperCloud = candle.getLongMa() < candle.getMid().getC();
 
-        double powerMag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10;
+        double powerMag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.8;
         double powerTargetRateBuy = openCandle.getMid().getC() * (1 + powerMag);
         double powerTargetRateSell = openCandle.getMid().getC() * (1 - powerMag);
 
@@ -160,13 +168,13 @@ public class PKFXSimulatorGC {
     }
 
     private void buy(Candle candle) {
-        log.info("signal (buy )>> " + candle.getTime() + " 【" +
-                candle.getNumber() + "】");
+//        log.info("signal (buy )>> " + candle.getTime() + " 【" +
+//                candle.getNumber() + "】");
     }
 
     private void sell(Candle candle) {
-        log.info("signal (sell)>> " + candle.getTime() + " 【" +
-                candle.getNumber() + "】");
+//        log.info("signal (sell)>> " + candle.getTime() + " 【" +
+//                candle.getNumber() + "】");
     }
 
 
@@ -210,26 +218,24 @@ public class PKFXSimulatorGC {
                         countTimeoutWin++;
                     } else {
                         countTimeoutLose++;
-                        log.info("SIG:" + openCandle.getSig());
                     }
                 } else {
                     if (openCandle.getMid().getC() > closeCandle.getMid().getC()) {
                         countTimeoutWin++;
                     } else {
                         countTimeoutLose++;
-                        log.info("SIG:" + openCandle.getSig());
                     }
                 }
                 break;
         }
 
-        log.info("<< signal " + mark + closeCandle.getTime() + " 【" +
-                closeCandle.getNumber() + "】" +
-                openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
-                countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
-                diff + "(" + (diff / totalCount) + "), " + reason +
-                " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
-        );
+//        log.info("<< signal " + mark + closeCandle.getTime() + " 【" +
+//                closeCandle.getNumber() + "】" +
+//                openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
+//                countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
+//                diff + "(" + (diff / totalCount) + "), " + reason +
+//                " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
+//        );
 
     }
 
