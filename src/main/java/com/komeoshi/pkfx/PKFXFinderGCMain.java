@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.ZoneId;
+
 @SpringBootApplication
 public class PKFXFinderGCMain {
 
@@ -52,7 +54,7 @@ public class PKFXFinderGCMain {
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
                     log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " " + isSigOver);
 
-                    int h = candle.getTime().getHour();
+                    int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                     boolean isActiveTime = h != 6 ;
 
                     if (candle.getPosition() == Position.LONG) {
