@@ -7,9 +7,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-import java.util.Set;
-
 public class PKFXFinderRestClient {
     private static final Logger log = LoggerFactory.getLogger(PKFXFinderRestClient.class);
 
