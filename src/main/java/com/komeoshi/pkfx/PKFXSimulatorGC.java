@@ -139,7 +139,7 @@ public class PKFXSimulatorGC {
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
-        boolean isUpperCloud = candle.getLongMa() < candle.getMid().getC();
+        boolean isUpperCloud = candle.getLongMa() < candle.getMid().getH();
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC() && isUpperCloud) {
