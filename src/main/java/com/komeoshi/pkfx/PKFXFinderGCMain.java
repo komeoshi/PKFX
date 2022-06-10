@@ -66,7 +66,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime) {
+                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle)) {
                             log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -79,7 +79,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime) {
+                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle)) {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
@@ -173,6 +173,19 @@ public class PKFXFinderGCMain {
             return null;
         }
         return i;
+    }
+
+    private boolean isInRange(Candle candle) {
+        final double mag = 1.0003;
+        boolean b1 = candle.getShortMa() * mag > candle.getLongMa();
+        boolean b2 = candle.getLongMa() * mag > candle.getSuperLongMa();
+        boolean isUpperRange = b1 && b2;
+
+        boolean bb1 = candle.getShortMa() < candle.getLongMa() * mag;
+        boolean bb2 = candle.getLongMa() < candle.getSuperLongMa() * mag;
+        boolean isLowerRange = bb1 && bb2;
+
+        return !isUpperRange && !isLowerRange;
     }
 
     private boolean isInUpperTIme() {
