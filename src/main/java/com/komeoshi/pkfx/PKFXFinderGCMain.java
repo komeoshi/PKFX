@@ -52,11 +52,7 @@ public class PKFXFinderGCMain {
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
-
-                    int h = LocalDateTime.now().getHour();
-                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " " + isSigOver + " " + h);
-
-                    boolean isActiveTime = h != 6;
+                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " " + isSigOver);
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -65,7 +61,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isActiveTime) {
+                        if (isSigOver) {
                             log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -78,7 +74,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isActiveTime) {
+                        if (isSigOver) {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;

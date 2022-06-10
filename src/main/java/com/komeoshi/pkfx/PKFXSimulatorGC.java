@@ -11,6 +11,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,9 +55,6 @@ public class PKFXSimulatorGC {
                 if (candle.getPosition() != lastPosition) {
                     boolean isSigOver = candle.getShortSig() > PKFXConst.GC_SIG_MAGNIFICATION;
 
-                    int h = candle.getTime().getHour();
-                    boolean isActiveTime = h != 6;
-
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
 
@@ -64,7 +62,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isActiveTime) {
+                        if (isSigOver) {
                             buy();
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -76,7 +74,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isActiveTime) {
+                        if (isSigOver) {
                             sell();
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -100,17 +98,10 @@ public class PKFXSimulatorGC {
     }
 
     private List<Candle> getCandles() {
-        PKFXSimulateDataReader reader201201 = new PKFXSimulateDataReader("data-201201-201512.dat");
+        PKFXSimulateDataReader reader201201 = new PKFXSimulateDataReader("data.dat");
         List<Candle> candles201201 = reader201201.read().getCandles();
 
-        PKFXSimulateDataReader reader201601 = new PKFXSimulateDataReader("data-201601-202205.dat");
-        List<Candle> candles201601 = reader201601.read().getCandles();
-
-        List<Candle> candles = new ArrayList<>();
-        candles.addAll(candles201201);
-        candles.addAll(candles201601);
-
-        return candles;
+        return new ArrayList<>(candles201201);
     }
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
