@@ -156,15 +156,16 @@ public class PKFXSimulatorGC {
         boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
 
         boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
+        boolean checkMacd = candle.getMacd() < candle.getSig() * 1.5;
 
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma) {
+            if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma && checkMacd) {
 
                 completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() && isUpperCloudShort) {
+            if (targetRateSell > candle.getMid().getC() && isUpperCloudShort && checkMacd) {
 
                 completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
                 status = Status.NONE;

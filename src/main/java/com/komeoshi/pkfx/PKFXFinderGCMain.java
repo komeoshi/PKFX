@@ -143,9 +143,10 @@ public class PKFXFinderGCMain {
         boolean isUpperCloud = candle.getLongMa() < candle.getMid().getC();
 
         boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
+        boolean checkMacd = candle.getMacd() < candle.getSig() * 1.5;
 
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC() && isUpperCloud && checkVma) {
+            if (targetRateBuy < candle.getMid().getC() && isUpperCloud && checkVma && checkMacd) {
 
                 log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                 client.complete(restTemplate);
@@ -153,7 +154,7 @@ public class PKFXFinderGCMain {
 
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() && !isUpperCloud && checkVma) {
+            if (targetRateSell > candle.getMid().getC() && !isUpperCloud && checkVma && checkMacd) {
 
                 log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                 client.complete(restTemplate);
