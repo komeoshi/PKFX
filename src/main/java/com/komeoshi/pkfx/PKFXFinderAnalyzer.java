@@ -112,17 +112,19 @@ public class PKFXFinderAnalyzer {
     public void setPosition(List<Candle> candles, boolean logging) {
         for (int ii = 0; ii < candles.size(); ii++) {
 
+            final int MAXSIZE = 200;
+
             long startTime = System.currentTimeMillis();
 
             Candle currentCandle = candles.get(ii);
             currentCandle.setNumber(ii);
-            if (ii < 75) {
+            if (ii < MAXSIZE) {
                 continue;
             }
 
             List<Candle> currentCandles = new ArrayList<>();
 
-            for (int jj = 0; jj < ii; jj++) {
+            for (int jj = ii - MAXSIZE; jj < ii; jj++) {
                 currentCandles.add(candles.get(jj));
             }
             currentCandle.setPastCandle(candles.get(ii-9));
@@ -146,6 +148,9 @@ public class PKFXFinderAnalyzer {
 
             double sig = getSig(currentCandles, 50);
             currentCandle.setSig(sig);
+
+            double shortSig = getSig(currentCandles, 9);
+            currentCandle.setShortSig(shortSig);
 
             double rsi = getRsi(currentCandles);
             currentCandle.setRsi(rsi);

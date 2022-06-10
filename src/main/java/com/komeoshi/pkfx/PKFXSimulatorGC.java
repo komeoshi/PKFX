@@ -11,6 +11,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
@@ -37,11 +38,10 @@ public class PKFXSimulatorGC {
     }
 
     @Bean
-    public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
+    public CommandLineRunner run(RestTemplate restTemplate) {
         return args -> {
 
-            PKFXSimulateDataReader reader = new PKFXSimulateDataReader();
-            List<Candle> candles = reader.read().getCandles();
+            List<Candle> candles = getCandles();
 
             Status status = Status.NONE;
             Position lastPosition = Position.NONE;
@@ -52,7 +52,7 @@ public class PKFXSimulatorGC {
                 }
 
                 if (candle.getPosition() != lastPosition) {
-                    boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
+                    boolean isSigOver = candle.getShortSig() > PKFXConst.GC_SIG_MAGNIFICATION;
 
                     int h = candle.getTime().getHour();
                     boolean isActiveTime = h != 6;
@@ -97,6 +97,20 @@ public class PKFXSimulatorGC {
             );
             System.exit(0);
         };
+    }
+
+    private List<Candle> getCandles() {
+        PKFXSimulateDataReader reader201201 = new PKFXSimulateDataReader("data-201201-201512.dat");
+        List<Candle> candles201201 = reader201201.read().getCandles();
+
+        PKFXSimulateDataReader reader201601 = new PKFXSimulateDataReader("data-201601-202205.dat");
+        List<Candle> candles201601 = reader201601.read().getCandles();
+
+        List<Candle> candles = new ArrayList<>();
+        candles.addAll(candles201201);
+        candles.addAll(candles201601);
+
+        return candles;
     }
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {

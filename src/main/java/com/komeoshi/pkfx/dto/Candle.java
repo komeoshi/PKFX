@@ -26,6 +26,7 @@ public class Candle implements Serializable {
     private double longVma;
     private double macd;
     private double sig;
+    private double shortSig;
     private double rsi;
     private Candle pastCandle;
 

@@ -15,15 +15,15 @@ import java.io.ObjectInputStream;
 public class PKFXSimulateDataReader {
     private static final Logger log = LoggerFactory.getLogger(PKFXSimulateDataReader.class);
 
-    public static void main(String[] args) {
-        Candles candles = new PKFXSimulateDataReader().read();
-        log.info("" + candles.getCandles().size());
+    private String filename;
+    public PKFXSimulateDataReader(String filename){
+        this.filename = filename;
     }
 
     public Candles read() {
 
         Candles candles = null;
-        try (FileInputStream fileInputStream = new FileInputStream("data.dat");
+        try (FileInputStream fileInputStream = new FileInputStream(filename);
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
             byte[] binary = (byte[]) objectInputStream.readObject();
