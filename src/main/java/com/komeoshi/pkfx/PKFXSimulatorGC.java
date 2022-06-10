@@ -11,7 +11,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +53,7 @@ public class PKFXSimulatorGC {
 
                 if (candle.getPosition() != lastPosition) {
                     boolean isSigOver = candle.getShortSig() > PKFXConst.GC_SIG_MAGNIFICATION;
+                    boolean isVmaOver = candle.getLongVma() > 5.0;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -62,7 +62,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
-                        if (isSigOver) {
+                        if (isSigOver && isVmaOver) {
                             buy();
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -74,7 +74,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (isSigOver) {
+                        if (isSigOver && isVmaOver) {
                             sell();
                             status = Status.HOLDING_SELL;
                             openCandle = candle;

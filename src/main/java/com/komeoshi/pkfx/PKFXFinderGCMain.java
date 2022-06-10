@@ -52,7 +52,8 @@ public class PKFXFinderGCMain {
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
-                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " " + isSigOver);
+                    boolean isVmaOver = candle.getLongVma() > 5.0;
+                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " longVma:" + candle.getLongVma());
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
