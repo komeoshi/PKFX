@@ -54,7 +54,7 @@ public class PKFXSimulatorGC {
 
                 if (candle.getPosition() != lastPosition) {
                     boolean isSigOver = candle.getShortSig() > PKFXConst.GC_SIG_MAGNIFICATION;
-                    boolean isVmaOver = candle.getLongVma() > 5.0;
+                    boolean isVmaOver = candle.getLongVma() > 0.1;
 
                     int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                     boolean isDeadTime = h==18|| h==20 || h==21;
@@ -155,7 +155,7 @@ public class PKFXSimulatorGC {
         boolean isUpperCloudLong = candle.getLongMa() < candle.getMid().getH();
         boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
 
-        boolean checkVma = candle.getLongVma() * 1.004 < candle.getShortVma();
+        boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma) {

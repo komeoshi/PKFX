@@ -53,7 +53,7 @@ public class PKFXFinderGCMain {
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
-                    boolean isVmaOver = candle.getLongVma() > 5.0;
+                    boolean isVmaOver = candle.getLongVma() > 0.1;
                     log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " longVma:" + candle.getLongVma());
 
                     int h = LocalDateTime.now().getHour();
@@ -142,7 +142,7 @@ public class PKFXFinderGCMain {
 
         boolean isUpperCloud = candle.getLongMa() < candle.getMid().getC();
 
-        boolean checkVma = candle.getLongVma() < candle.getShortVma();
+        boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC() && isUpperCloud && checkVma) {
