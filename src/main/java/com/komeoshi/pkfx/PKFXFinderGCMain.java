@@ -57,7 +57,7 @@ public class PKFXFinderGCMain {
                     log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " longVma:" + candle.getLongVma());
 
                     int h = LocalDateTime.now().getHour();
-                    boolean isDeadTime = h==18|| h==20 || h==21;
+                    boolean isDeadTime = h==18 || h==19 || h==20 || h==21;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
