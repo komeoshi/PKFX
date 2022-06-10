@@ -34,7 +34,7 @@ public class PKFXFinderRestClient {
     public Instrument getInstrument(RestTemplate restTemplate) {
 
         String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
-        url += "count=100";
+        url += "count=300";
         url += "&granularity=" + PKFXConst.GRANULARITY;
 
         HttpHeaders headers = getHttpHeaders();
