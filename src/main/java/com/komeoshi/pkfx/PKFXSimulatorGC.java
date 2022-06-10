@@ -142,7 +142,7 @@ public class PKFXSimulatorGC {
         boolean isUpperCloudLong = candle.getLongMa() < candle.getMid().getH();
         boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
 
-        boolean checkVma = candle.getLongVma() < candle.getShortVma();
+        boolean checkVma = candle.getLongVma() * 1.004 < candle.getShortVma();
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma) {
