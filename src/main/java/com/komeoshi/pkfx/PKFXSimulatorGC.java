@@ -11,6 +11,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,9 @@ public class PKFXSimulatorGC {
                     boolean isSigOver = candle.getShortSig() > PKFXConst.GC_SIG_MAGNIFICATION;
                     boolean isVmaOver = candle.getLongVma() > 5.0;
 
+                    int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
+                    boolean isDeadTime = h==18|| h==20 || h==21;
+
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
 
@@ -62,7 +66,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver) {
+                        if (isSigOver && isVmaOver && !isDeadTime) {
                             buy();
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -74,7 +78,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver) {
+                        if (isSigOver && isVmaOver && !isDeadTime) {
                             sell();
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -108,9 +112,13 @@ public class PKFXSimulatorGC {
         boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
         double lossCutMag;
         if (isLower) {
-            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.595;
+            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.20;
         } else {
             lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
+        }
+
+        if (!isInUpperTIme(candle)) {
+            lossCutMag *= 1.45;
         }
 
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
@@ -136,6 +144,11 @@ public class PKFXSimulatorGC {
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.86;
+        if (isInUpperTIme(candle)) {
+            mag *= 1.5;
+        } else {
+            mag *= 0.5;
+        }
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
@@ -151,13 +164,30 @@ public class PKFXSimulatorGC {
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() && isUpperCloudShort ) {
+            if (targetRateSell > candle.getMid().getC() && isUpperCloudShort) {
 
                 completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
                 status = Status.NONE;
             }
         }
         return status;
+    }
+
+    private boolean isInUpperTIme(Candle candle) {
+        int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
+        return h == 0 ||
+                h == 1 ||
+                h == 3 ||
+                h == 4 ||
+                h == 5 ||
+                h == 8 ||
+                h == 9 ||
+                h == 11 ||
+                h == 12 ||
+                h == 13 ||
+                h == 14 ||
+                h == 15 ||
+                h == 23;
     }
 
     private void buy() {

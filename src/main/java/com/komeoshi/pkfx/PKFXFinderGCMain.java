@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @SpringBootApplication
 public class PKFXFinderGCMain {
@@ -55,6 +56,9 @@ public class PKFXFinderGCMain {
                     boolean isVmaOver = candle.getLongVma() > 5.0;
                     log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " longVma:" + candle.getLongVma());
 
+                    int h = LocalDateTime.now().getHour();
+                    boolean isDeadTime = h==18|| h==20 || h==21;
+
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
                         if (status == Status.HOLDING_SELL) {
@@ -62,7 +66,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver) {
+                        if (isSigOver && isVmaOver && !isDeadTime) {
                             log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -75,7 +79,7 @@ public class PKFXFinderGCMain {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver) {
+                        if (isSigOver && isVmaOver && !isDeadTime) {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
@@ -99,9 +103,13 @@ public class PKFXFinderGCMain {
         boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
         double lossCutMag;
         if (isLower) {
-            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.595;
+            lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.20;
         } else {
             lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION;
+        }
+
+        if (!isInUpperTIme()) {
+            lossCutMag *= 1.45;
         }
 
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
@@ -124,6 +132,11 @@ public class PKFXFinderGCMain {
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.86;
+        if (isInUpperTIme()) {
+            mag *= 1.5;
+        } else {
+            mag *= 0.5;
+        }
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
@@ -159,5 +172,22 @@ public class PKFXFinderGCMain {
             return null;
         }
         return i;
+    }
+
+    private boolean isInUpperTIme() {
+        int h = LocalDateTime.now().getHour();
+        return h == 0 ||
+                h == 1 ||
+                h == 3 ||
+                h == 4 ||
+                h == 5 ||
+                h == 8 ||
+                h == 9 ||
+                h == 11 ||
+                h == 12 ||
+                h == 13 ||
+                h == 14 ||
+                h == 15 ||
+                h == 23;
     }
 }
