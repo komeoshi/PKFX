@@ -127,7 +127,7 @@ public class PKFXFinderAnalyzer {
             for (int jj = ii - MAXSIZE; jj < ii; jj++) {
                 currentCandles.add(candles.get(jj));
             }
-            currentCandle.setPastCandle(candles.get(ii-9));
+            currentCandle.setPastCandle(candles.get(ii - 9));
 
             double shortMa = getMa(currentCandles, PKFXConst.MA_SHORT_PERIOD);
             double longMa = getMa(currentCandles, PKFXConst.MA_MID_PERIOD);
@@ -160,6 +160,7 @@ public class PKFXFinderAnalyzer {
             } else {
                 currentCandle.setPosition(Position.SHORT);
             }
+
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();
                 log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition() +

@@ -48,6 +48,7 @@ public class PKFXSimulatorGC {
             Position lastPosition = Position.NONE;
             Candle openCandle = null;
             for (Candle candle : candles) {
+
                 if (candle.getPosition() == Position.NONE) {
                     continue;
                 }
@@ -57,7 +58,7 @@ public class PKFXSimulatorGC {
                     boolean isVmaOver = candle.getLongVma() > 0.1;
 
                     int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-                    boolean isDeadTime = h==6 || h==17 || h==18 || h==20 || h==21;
+                    boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -66,7 +67,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime) {
+                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle)) {
                             buy();
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -78,7 +79,7 @@ public class PKFXSimulatorGC {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime) {
+                        if (isSigOver && isVmaOver && !isDeadTime&& !isInRange(candle)) {
                             sell();
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -172,6 +173,19 @@ public class PKFXSimulatorGC {
             }
         }
         return status;
+    }
+
+    private boolean isInRange(Candle candle) {
+        final double mag = 1.0003;
+        boolean b1 = candle.getShortMa() * mag > candle.getLongMa();
+        boolean b2 = candle.getLongMa() * mag > candle.getSuperLongMa();
+        boolean isUpperRange = b1 && b2;
+
+        boolean bb1 = candle.getShortMa() < candle.getLongMa() * mag;
+        boolean bb2 = candle.getLongMa() < candle.getSuperLongMa() * mag;
+        boolean isLowerRange = bb1 && bb2;
+
+        return !isUpperRange && !isLowerRange;
     }
 
     private boolean isInUpperTIme(Candle candle) {
