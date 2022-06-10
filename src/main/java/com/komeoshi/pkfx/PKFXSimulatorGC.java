@@ -146,10 +146,16 @@ public class PKFXSimulatorGC {
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.86;
         if (isInUpperTIme(candle)) {
-            mag *= 1.5;
+            mag *= 1.65;
         } else {
             mag *= 0.5;
         }
+        if (isInRange(candle)) {
+            mag *= 1.1;
+        } else {
+            mag *= 1;
+        }
+
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
@@ -177,15 +183,22 @@ public class PKFXSimulatorGC {
 
     private boolean isInRange(Candle candle) {
         final double mag = 1.0003;
-        boolean b1 = candle.getShortMa() * mag > candle.getLongMa();
-        boolean b2 = candle.getLongMa() * mag > candle.getSuperLongMa();
-        boolean isUpperRange = b1 && b2;
-
-        boolean bb1 = candle.getShortMa() < candle.getLongMa() * mag;
-        boolean bb2 = candle.getLongMa() < candle.getSuperLongMa() * mag;
-        boolean isLowerRange = bb1 && bb2;
+        boolean isUpperRange = isUpperRange(candle, mag);
+        boolean isLowerRange = isLowerRange(candle, mag);
 
         return !isUpperRange && !isLowerRange;
+    }
+
+    private boolean isLowerRange(Candle candle, double mag) {
+        boolean bb1 = candle.getShortMa() < candle.getLongMa() * mag;
+        boolean bb2 = candle.getLongMa() < candle.getSuperLongMa() * mag;
+        return bb1 && bb2;
+    }
+
+    private boolean isUpperRange(Candle candle, double mag) {
+        boolean b1 = candle.getShortMa() * mag > candle.getLongMa();
+        boolean b2 = candle.getLongMa() * mag > candle.getSuperLongMa();
+        return b1 && b2;
     }
 
     private boolean isInUpperTIme(Candle candle) {

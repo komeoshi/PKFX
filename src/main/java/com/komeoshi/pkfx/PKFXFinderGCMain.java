@@ -133,10 +133,16 @@ public class PKFXFinderGCMain {
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.86;
         if (isInUpperTIme()) {
-            mag *= 1.5;
+            mag *= 1.65;
         } else {
             mag *= 0.5;
         }
+        if (isInRange(candle)) {
+            mag *= 1.1;
+        } else {
+            mag *= 1;
+        }
+
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
