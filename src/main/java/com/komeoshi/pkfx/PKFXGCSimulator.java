@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class PKFXSimulatorGC {
+public class PKFXGCSimulator {
 
-    private static final Logger log = LoggerFactory.getLogger(PKFXSimulatorGC.class);
+    private static final Logger log = LoggerFactory.getLogger(PKFXGCSimulator.class);
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -33,7 +33,7 @@ public class PKFXSimulatorGC {
     private double diff = 0.0;
 
     public static void main(String[] args) {
-        SpringApplication.run(PKFXSimulatorGC.class, args);
+        SpringApplication.run(PKFXGCSimulator.class, args);
     }
 
     @Bean

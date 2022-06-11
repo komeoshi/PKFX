@@ -18,12 +18,12 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
-public class PKFXFinderGCMain {
+public class PKFXGCTrader {
 
-    private static final Logger log = LoggerFactory.getLogger(PKFXFinderGCMain.class);
+    private static final Logger log = LoggerFactory.getLogger(PKFXGCTrader.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(PKFXFinderGCMain.class, args);
+        SpringApplication.run(PKFXGCTrader.class, args);
     }
 
     @Bean
@@ -44,7 +44,7 @@ public class PKFXFinderGCMain {
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;
 
-                PKFXFinderAnalyzer anal = new PKFXFinderAnalyzer();
+                PKFXAnalyzer anal = new PKFXAnalyzer();
                 anal.setPosition(instrument.getCandles(), false);
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 

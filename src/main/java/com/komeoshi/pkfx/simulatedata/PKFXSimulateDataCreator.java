@@ -3,7 +3,7 @@ package com.komeoshi.pkfx.simulatedata;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
-import com.komeoshi.pkfx.PKFXFinderAnalyzer;
+import com.komeoshi.pkfx.PKFXAnalyzer;
 import com.komeoshi.pkfx.restclient.PKFXSimulatorRestClient;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Candles;
@@ -59,7 +59,7 @@ public class PKFXSimulateDataCreator {
     private Candles getCandles() {
         PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
         List<Candle> cs = client.runWithManyCandles(new RestTemplate());
-        new PKFXFinderAnalyzer().setPosition(cs, true);
+        new PKFXAnalyzer().setPosition(cs, true);
 
         Candles candles = new Candles();
         candles.setCandles(cs);

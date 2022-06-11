@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PKFXFinderAnalyzer {
+public class PKFXAnalyzer {
 
-    private static final Logger log = LoggerFactory.getLogger(PKFXFinderAnalyzer.class);
+    private static final Logger log = LoggerFactory.getLogger(PKFXAnalyzer.class);
 
     /**
      * シグナル点灯を判定
