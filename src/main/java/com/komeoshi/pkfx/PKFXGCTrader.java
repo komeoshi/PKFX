@@ -60,7 +60,9 @@ public class PKFXGCTrader {
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
                     int h = LocalDateTime.now().getHour();
+                    int m = LocalDateTime.now().getMinute();
                     boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
+                    boolean isDeadMinute = m == 59;
 
                     boolean checkMacd = candle.getMacd() < 0.040;
 
@@ -71,7 +73,8 @@ public class PKFXGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle) && checkMacd) {
+                        if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
+                                && checkMacd && !isDeadMinute) {
                             log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -84,7 +87,8 @@ public class PKFXGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle) && checkMacd) {
+                        if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
+                                && checkMacd && !isDeadMinute) {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
@@ -198,12 +202,12 @@ public class PKFXGCTrader {
         return i;
     }
 
-    private boolean isInRange(Candle candle) {
+    private boolean isNotInRange(Candle candle) {
         final double mag = 1.0004;
         boolean isUpperRange = isUpperRange(candle, mag);
         boolean isLowerRange = isLowerRange(candle, mag);
 
-        return !isUpperRange && !isLowerRange;
+        return isUpperRange || isLowerRange;
     }
 
     private boolean isLowerRange(Candle candle, double mag) {

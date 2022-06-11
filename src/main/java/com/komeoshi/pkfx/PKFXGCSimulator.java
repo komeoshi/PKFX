@@ -62,7 +62,9 @@ public class PKFXGCSimulator {
                     boolean isVmaOver = candle.getLongVma() > 0.1;
 
                     int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
+                    int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
                     boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
+                    boolean isDeadMinute = m == 59;
 
                     boolean checkMacd = candle.getMacd() < 0.040;
 
@@ -73,7 +75,8 @@ public class PKFXGCSimulator {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle) && checkMacd) {
+                        if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
+                                && checkMacd && !isDeadMinute) {
                             buy();
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -85,7 +88,8 @@ public class PKFXGCSimulator {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle) && checkMacd) {
+                        if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
+                                && checkMacd && !isDeadMinute) {
                             sell();
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -192,12 +196,12 @@ public class PKFXGCSimulator {
         return status;
     }
 
-    private boolean isInRange(Candle candle) {
+    private boolean isNotInRange(Candle candle) {
         final double mag = 1.0004;
         boolean isUpperRange = isUpperRange(candle, mag);
         boolean isLowerRange = isLowerRange(candle, mag);
 
-        return !isUpperRange && !isLowerRange;
+        return isUpperRange || isLowerRange;
     }
 
     private boolean isLowerRange(Candle candle, double mag) {
@@ -285,7 +289,7 @@ public class PKFXGCSimulator {
         }
 
         if (openCandle.getTime().isAfter(LocalDateTime.now().minusMonths(1))) {
-            if (Math.abs(thisDiff) > 0.2) {
+            if (Math.abs(thisDiff) > 0.18) {
                 log.info(
                         "【" + openCandle.getNumber() + "】 " +
                                 openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
