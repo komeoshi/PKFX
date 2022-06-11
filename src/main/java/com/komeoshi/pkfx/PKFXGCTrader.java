@@ -157,7 +157,7 @@ public class PKFXGCTrader {
 
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 12.1;
         if (isInUpperTIme()) {
-            mag *= 1.65;
+            mag *= 1.653;
         } else {
             mag *= 0.5;
         }

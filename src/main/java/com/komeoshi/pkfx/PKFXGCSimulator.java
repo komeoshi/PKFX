@@ -59,7 +59,7 @@ public class PKFXGCSimulator {
 
                 if (candle.getPosition() != lastPosition) {
                     boolean isSigOver = candle.getShortSig() > PKFXConst.GC_SIG_MAGNIFICATION;
-                    boolean isVmaOver = candle.getLongVma() > 0.1;
+                    boolean isVmaOver = candle.getLongVma() > 1;
 
                     int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                     int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
@@ -166,7 +166,7 @@ public class PKFXGCSimulator {
 
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 12.1;
         if (isInUpperTIme(openCandle)) {
-            mag *= 1.65;
+            mag *= 1.653;
         } else {
             mag *= 0.5;
         }
@@ -289,7 +289,7 @@ public class PKFXGCSimulator {
         }
 
         if (openCandle.getTime().isAfter(LocalDateTime.now().minusMonths(1))) {
-            if (Math.abs(thisDiff) > 0.18) {
+            if (Math.abs(thisDiff) > 0.17) {
                 log.info(
                         "【" + openCandle.getNumber() + "】 " +
                                 openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
