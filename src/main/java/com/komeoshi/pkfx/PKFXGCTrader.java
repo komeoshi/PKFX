@@ -114,42 +114,57 @@ public class PKFXGCTrader {
             lossCutMag *= 1.45;
         }
 
+        // RSI超過ならロスカットしやすくなる
+        double rsiMag = 5.0;
+        boolean isRsiHot = candle.getRsi() > 100 - rsiMag;
+        boolean isRsiCold = candle.getRsi() < rsiMag;
+        if (isRsiHot || isRsiCold) {
+            lossCutMag /= 300;
+        }
+
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
-        if (status == Status.HOLDING_BUY &&
-                lossCutRateBuy > candle.getMid().getC()) {
 
-            log.info("<<signal (buy)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-            client.complete(restTemplate);
-            status = Status.NONE;
-        } else if (status == Status.HOLDING_SELL &&
-                lossCutRateSell < candle.getMid().getC()) {
+        boolean isUpper = candle.getPastCandle().getLongMa() < candle.getLongMa();
 
-            log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-            client.complete(restTemplate);
-            status = Status.NONE;
+        if (status == Status.HOLDING_BUY) {
+            if (lossCutRateBuy > candle.getMid().getC() && isUpper) {
+
+                log.info("<<signal (buy)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                client.complete(restTemplate);
+                status = Status.NONE;
+            }
+        } else if (status == Status.HOLDING_SELL) {
+            if (lossCutRateSell < candle.getMid().getC() && !isUpper) {
+
+                log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                client.complete(restTemplate);
+                status = Status.NONE;
+            }
         }
         return status;
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.86;
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 12.1;
         if (isInUpperTIme()) {
             mag *= 1.65;
         } else {
             mag *= 0.5;
         }
 
-        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
-        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
-
-        boolean isUpperCloud = candle.getLongMa() < candle.getMid().getC();
+        boolean isUpperCloudLong = candle.getLongMa() < candle.getMid().getH();
+        boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
 
         boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
         boolean checkMacd = candle.getMacd() < candle.getSig() * 1.5;
 
+        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
+        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+
+
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC() && isUpperCloud && checkVma && checkMacd) {
+            if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma && checkMacd) {
 
                 log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                 client.complete(restTemplate);
@@ -157,7 +172,7 @@ public class PKFXGCTrader {
 
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() && !isUpperCloud && checkVma && checkMacd) {
+            if (targetRateSell > candle.getMid().getC() && isUpperCloudShort && checkVma && checkMacd) {
 
                 log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                 client.complete(restTemplate);

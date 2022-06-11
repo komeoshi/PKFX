@@ -82,7 +82,7 @@ public class PKFXGCSimulator {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime&& !isInRange(candle)) {
+                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle)) {
                             sell();
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -125,6 +125,14 @@ public class PKFXGCSimulator {
             lossCutMag *= 1.45;
         }
 
+        // RSI超過ならロスカットしやすくなる
+        double rsiMag = 5.0;
+        boolean isRsiHot = candle.getRsi() > 100 - rsiMag;
+        boolean isRsiCold = candle.getRsi() < rsiMag;
+        if (isRsiHot || isRsiCold) {
+            lossCutMag /= 300;
+        }
+
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
 
@@ -147,21 +155,21 @@ public class PKFXGCSimulator {
     }
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 10.86;
-        if (isInUpperTIme(candle)) {
+        double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 12.1;
+        if (isInUpperTIme(openCandle)) {
             mag *= 1.65;
         } else {
             mag *= 0.5;
         }
-
-        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
-        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
         boolean isUpperCloudLong = candle.getLongMa() < candle.getMid().getH();
         boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
 
         boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
         boolean checkMacd = candle.getMacd() < candle.getSig() * 1.5;
+
+        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
+        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma && checkMacd) {
