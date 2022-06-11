@@ -1,10 +1,10 @@
-package com.komeoshi.pkfx.SimulateData;
+package com.komeoshi.pkfx.simulatedata;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.komeoshi.pkfx.PKFXFinderAnalyzer;
-import com.komeoshi.pkfx.PKFXSimulatorRestClient;
+import com.komeoshi.pkfx.restclient.PKFXSimulatorRestClient;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Candles;
 import org.slf4j.Logger;

@@ -1,6 +1,7 @@
 package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
+import com.komeoshi.pkfx.enumerator.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

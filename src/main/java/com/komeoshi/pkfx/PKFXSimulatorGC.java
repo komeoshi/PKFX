@@ -1,6 +1,9 @@
 package com.komeoshi.pkfx;
 
-import com.komeoshi.pkfx.SimulateData.PKFXSimulateDataReader;
+import com.komeoshi.pkfx.enumerator.Position;
+import com.komeoshi.pkfx.enumerator.Reason;
+import com.komeoshi.pkfx.enumerator.Status;
+import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import com.komeoshi.pkfx.dto.Candle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

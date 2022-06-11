@@ -1,4 +1,4 @@
-package com.komeoshi.pkfx;
+package com.komeoshi.pkfx.enumerator;
 
 public enum Position {
     NONE,

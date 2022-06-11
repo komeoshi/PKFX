@@ -1,4 +1,4 @@
-package com.komeoshi.pkfx.SimulateData;
+package com.komeoshi.pkfx.simulatedata;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;

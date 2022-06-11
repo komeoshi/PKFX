@@ -1,12 +1,11 @@
 package com.komeoshi.pkfx.dto;
 
-import com.komeoshi.pkfx.Position;
+import com.komeoshi.pkfx.enumerator.Position;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter

@@ -1,5 +1,6 @@
-package com.komeoshi.pkfx;
+package com.komeoshi.pkfx.restclient;
 
+import com.komeoshi.pkfx.PKFXConst;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Instrument;
 import org.slf4j.Logger;
