@@ -153,11 +153,6 @@ public class PKFXGCSimulator {
         } else {
             mag *= 0.5;
         }
-        if (isInRange(candle)) {
-            mag *= 1.1;
-        } else {
-            mag *= 1;
-        }
 
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
@@ -274,10 +269,6 @@ public class PKFXGCSimulator {
                     }
                 }
                 break;
-        }
-
-        if(Math.abs(thisDiff)>0.15){
-            log.info(openCandle.getTime() + "-"  + closeCandle.getTime() +" " + thisDiff);
         }
     }
 }
