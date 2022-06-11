@@ -78,7 +78,7 @@ public class PKFXGCSimulator {
                         // 売り→買い
 
                         if (status != Status.NONE) {
-                            completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
+                            completeOrder(openCandle, candle, Reason.TIMEOUT, status);
                             status = Status.NONE;
                         }
                         if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
@@ -91,7 +91,7 @@ public class PKFXGCSimulator {
                         // 買い→売り
 
                         if (status != Status.NONE) {
-                            completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
+                            completeOrder(openCandle, candle, Reason.TIMEOUT, status);
                             status = Status.NONE;
                         }
                         if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
@@ -168,13 +168,13 @@ public class PKFXGCSimulator {
         if (status == Status.HOLDING_BUY) {
             if (lossCutRateBuy > candle.getMid().getC() && isUpper) {
 
-                completeOrder(openCandle, candle, Reason.LOSSCUT, Position.LONG);
+                completeOrder(openCandle, candle, Reason.LOSSCUT, status);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
             if (lossCutRateSell < candle.getMid().getC() && !isUpper) {
 
-                completeOrder(openCandle, candle, Reason.LOSSCUT, Position.SHORT);
+                completeOrder(openCandle, candle, Reason.LOSSCUT, status);
                 status = Status.NONE;
             }
         }
@@ -203,13 +203,13 @@ public class PKFXGCSimulator {
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma && checkMacd) {
 
-                completeOrder(openCandle, candle, Reason.REACHED, Position.LONG);
+                completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getMid().getC() && isUpperCloudShort && checkMacd) {
 
-                completeOrder(openCandle, candle, Reason.REACHED, Position.SHORT);
+                completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
             }
         }
@@ -264,9 +264,9 @@ public class PKFXGCSimulator {
     }
 
 
-    private void completeOrder(Candle openCandle, Candle closeCandle, Reason reason, Position position) {
+    private void completeOrder(Candle openCandle, Candle closeCandle, Reason reason, Status status) {
 
-        if (position == Position.LONG) {
+        if (status == Status.HOLDING_BUY) {
             if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
                 countWin++;
             } else {
@@ -281,7 +281,7 @@ public class PKFXGCSimulator {
         }
         totalCount++;
         double thisDiff;
-        if (position == Position.LONG) {
+        if (status == Status.HOLDING_BUY) {
             thisDiff = (closeCandle.getMid().getC() - openCandle.getMid().getC());
         } else {
             thisDiff = (openCandle.getMid().getC() - closeCandle.getMid().getC());
@@ -296,7 +296,7 @@ public class PKFXGCSimulator {
                 countReached++;
                 break;
             case TIMEOUT:
-                if (position == Position.LONG) {
+                if (status == Status.HOLDING_BUY) {
                     if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
                         countTimeoutWin++;
                     } else {
