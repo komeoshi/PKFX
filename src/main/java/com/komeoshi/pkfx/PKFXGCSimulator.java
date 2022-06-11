@@ -68,10 +68,13 @@ public class PKFXGCSimulator {
 
                     boolean checkMacd = candle.getMacd() < 0.040;
 
+                    boolean isRsiHot = candle.getRsi() > 55;
+                    boolean isRsiCold = candle.getRsi() < 45;
+
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
 
-                        if (status == Status.HOLDING_SELL) {
+                        if (status != Status.NONE) {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
@@ -84,7 +87,7 @@ public class PKFXGCSimulator {
                     } else if (candle.getPosition() == Position.SHORT) {
                         // 買い→売り
 
-                        if (status == Status.HOLDING_BUY) {
+                        if (status != Status.NONE) {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
@@ -95,6 +98,19 @@ public class PKFXGCSimulator {
                             openCandle = candle;
                         }
                     }
+
+                    if(status == Status.NONE) {
+                        if (isRsiHot) {
+                            sell();
+                            status = Status.HOLDING_SELL;
+                            openCandle = candle;
+                        } else if (isRsiCold) {
+                            buy();
+                            status = Status.HOLDING_BUY;
+                            openCandle = candle;
+                        }
+                    }
+
                 }
                 lastPosition = candle.getPosition();
 

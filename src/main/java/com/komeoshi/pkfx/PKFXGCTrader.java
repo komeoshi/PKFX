@@ -66,9 +66,12 @@ public class PKFXGCTrader {
 
                     boolean checkMacd = candle.getMacd() < 0.040;
 
+                    boolean isRsiHot = candle.getRsi() > 80;
+                    boolean isRsiCold = candle.getRsi() < 20;
+
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
-                        if (status == Status.HOLDING_SELL) {
+                        if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.complete(restTemplate);
                             status = Status.NONE;
@@ -82,7 +85,7 @@ public class PKFXGCTrader {
                         }
                     } else if (candle.getPosition() == Position.SHORT) {
                         // 買い→売り
-                        if (status == Status.HOLDING_BUY) {
+                        if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.complete(restTemplate);
                             status = Status.NONE;
@@ -92,6 +95,18 @@ public class PKFXGCTrader {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
+                            openCandle = candle;
+                        }
+                    }
+
+                    if(status == Status.NONE) {
+                        if (isRsiHot) {
+                            client.sell(candle.getMid().getH(), restTemplate);
+                            status = Status.HOLDING_SELL;
+                            openCandle = candle;
+                        } else if (isRsiCold) {
+                            client.buy(candle.getMid().getH(), restTemplate);
+                            status = Status.HOLDING_BUY;
                             openCandle = candle;
                         }
                     }
