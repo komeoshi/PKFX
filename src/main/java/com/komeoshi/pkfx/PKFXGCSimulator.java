@@ -64,7 +64,7 @@ public class PKFXGCSimulator {
                     int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                     boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
 
-                    boolean checkMacd = candle.getMacd() < 0.045;
+                    boolean checkMacd = candle.getMacd() < 0.040;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い

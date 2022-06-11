@@ -62,7 +62,7 @@ public class PKFXGCTrader {
                     int h = LocalDateTime.now().getHour();
                     boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
 
-                    boolean checkMacd = candle.getMacd() < 0.045;
+                    boolean checkMacd = candle.getMacd() < 0.040;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -162,7 +162,7 @@ public class PKFXGCTrader {
         boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
 
         boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
-        boolean checkMacd = candle.getMacd() < candle.getSig() * 1.5;
+        boolean checkMacd = candle.getMacd() < candle.getSig() * macdMag;
 
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
