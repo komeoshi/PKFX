@@ -66,8 +66,8 @@ public class PKFXGCTrader {
 
                     boolean checkMacd = candle.getMacd() < 0.040;
 
-                    boolean isRsiHot = candle.getRsi() > 80;
-                    boolean isRsiCold = candle.getRsi() < 20;
+                    boolean isRsiHot = candle.getRsi() > 50;
+                    boolean isRsiCold = candle.getRsi() <= 50;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -104,7 +104,8 @@ public class PKFXGCTrader {
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
-                        } else if (isRsiCold) {
+                        }
+                        if (isRsiCold) {
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;

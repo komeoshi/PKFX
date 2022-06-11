@@ -3,6 +3,7 @@ package com.komeoshi.pkfx;
 import com.komeoshi.pkfx.enumerator.Position;
 import com.komeoshi.pkfx.enumerator.Reason;
 import com.komeoshi.pkfx.enumerator.Status;
+import com.komeoshi.pkfx.enumerator.TradeReason;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import com.komeoshi.pkfx.dto.Candle;
 import org.slf4j.Logger;
@@ -23,6 +24,8 @@ import java.util.List;
 public class PKFXGCSimulator {
 
     private static final Logger log = LoggerFactory.getLogger(PKFXGCSimulator.class);
+
+    private boolean isLogging = true;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -68,8 +71,8 @@ public class PKFXGCSimulator {
 
                     boolean checkMacd = candle.getMacd() < 0.040;
 
-                    boolean isRsiHot = candle.getRsi() > 55;
-                    boolean isRsiCold = candle.getRsi() < 45;
+                    boolean isRsiHot = candle.getRsi() > 50;
+                    boolean isRsiCold = candle.getRsi() <= 50;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -80,7 +83,7 @@ public class PKFXGCSimulator {
                         }
                         if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
                                 && checkMacd && !isDeadMinute) {
-                            buy();
+                            buy(TradeReason.GC, candle);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
                         }
@@ -93,7 +96,7 @@ public class PKFXGCSimulator {
                         }
                         if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
                                 && checkMacd && !isDeadMinute) {
-                            sell();
+                            sell(TradeReason.DC, candle);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
                         }
@@ -101,11 +104,12 @@ public class PKFXGCSimulator {
 
                     if(status == Status.NONE) {
                         if (isRsiHot) {
-                            sell();
+                            sell(TradeReason.RSI_HOT, candle);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
-                        } else if (isRsiCold) {
-                            buy();
+                        }
+                        if (isRsiCold) {
+                            buy(TradeReason.RSI_COLD, candle);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
                         }
@@ -249,10 +253,14 @@ public class PKFXGCSimulator {
                 h == 23;
     }
 
-    private void buy() {
+    private void buy(TradeReason tradeReason, Candle openCandle) {
+        if (isLogging)
+            log.info("signal >> " + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " " + tradeReason);
     }
 
-    private void sell() {
+    private void sell(TradeReason tradeReason, Candle openCandle) {
+        if (isLogging)
+            log.info("signal >> " + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " " + tradeReason);
     }
 
 
@@ -304,8 +312,17 @@ public class PKFXGCSimulator {
                 break;
         }
 
+        if (isLogging)
+            log.info("<< signal " + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
+                    closeCandle.getNumber() + "】" +
+                    openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
+                    countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
+                    diff + "(" + (diff / totalCount) + "), " + reason +
+                    " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
+            );
+
         if (openCandle.getTime().isAfter(LocalDateTime.now().minusMonths(1))) {
-            if (Math.abs(thisDiff) > 0.17) {
+            if (Math.abs(thisDiff) > 0.20) {
                 log.info(
                         "【" + openCandle.getNumber() + "】 " +
                                 openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
