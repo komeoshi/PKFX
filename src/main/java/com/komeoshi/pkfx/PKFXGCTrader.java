@@ -56,10 +56,13 @@ public class PKFXGCTrader {
                     // クロスした
                     boolean isSigOver = candle.getSig() > PKFXConst.GC_SIG_MAGNIFICATION;
                     boolean isVmaOver = candle.getLongVma() > 0.1;
-                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() + " longVma:" + candle.getLongVma());
+                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() +
+                            " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
                     int h = LocalDateTime.now().getHour();
-                    boolean isDeadTime = h==6 || h==17 || h==18 || h==20 || h==21;
+                    boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
+
+                    boolean checkMacd = candle.getMacd() < 0.045;
 
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
@@ -68,7 +71,7 @@ public class PKFXGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle)) {
+                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle) && checkMacd) {
                             log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -81,7 +84,7 @@ public class PKFXGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle)) {
+                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle) && checkMacd) {
                             log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
@@ -146,6 +149,8 @@ public class PKFXGCTrader {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
+        double macdMag = 1.5;
+
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 12.1;
         if (isInUpperTIme()) {
             mag *= 1.65;

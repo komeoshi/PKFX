@@ -14,6 +14,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,8 @@ public class PKFXGCSimulator {
                     int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                     boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
 
+                    boolean checkMacd = candle.getMacd() < 0.045;
+
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
 
@@ -70,7 +73,7 @@ public class PKFXGCSimulator {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.SHORT);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle)) {
+                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle) && checkMacd) {
                             buy();
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -82,7 +85,7 @@ public class PKFXGCSimulator {
                             completeOrder(openCandle, candle, Reason.TIMEOUT, Position.LONG);
                             status = Status.NONE;
                         }
-                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle)) {
+                        if (isSigOver && isVmaOver && !isDeadTime && !isInRange(candle) && checkMacd) {
                             sell();
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -155,6 +158,8 @@ public class PKFXGCSimulator {
     }
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
+        double macdMag = 1.5;
+
         double mag = PKFXConst.GC_CANDLE_TARGET_MAGNIFICATION * 12.1;
         if (isInUpperTIme(openCandle)) {
             mag *= 1.65;
@@ -166,7 +171,7 @@ public class PKFXGCSimulator {
         boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
 
         boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
-        boolean checkMacd = candle.getMacd() < candle.getSig() * 1.5;
+        boolean checkMacd = candle.getMacd() < candle.getSig() * macdMag;
 
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
@@ -277,6 +282,25 @@ public class PKFXGCSimulator {
                     }
                 }
                 break;
+        }
+
+        if (openCandle.getTime().isAfter(LocalDateTime.now().minusMonths(1))) {
+            if (Math.abs(thisDiff) > 0.2) {
+                log.info(
+                        "【" + openCandle.getNumber() + "】 " +
+                                openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
+                                " " + openCandle.getPosition() +
+                                " openMacd:" + openCandle.getMacd() + " pastMacd:" + openCandle.getPastCandle().getMacd() +
+                                " openShortMa:" + openCandle.getShortMa() + " openLongMa:" + openCandle.getLongMa() + " " +
+                                " pastShortMa:" + openCandle.getPastCandle().getShortMa() + " pastLongMa:" + openCandle.getPastCandle().getLongMa() +
+                                " pastShortMa-openShortMa:" + Math.abs(openCandle.getShortMa() - openCandle.getPastCandle().getShortMa()) +
+                                " pastLongMa-openLongMa:" + Math.abs(openCandle.getLongMa() - openCandle.getPastCandle().getLongMa()) +
+                                " pastSuperLongMa-openSuperLongMa:" + Math.abs(openCandle.getSuperLongMa() - openCandle.getPastCandle().getSuperLongMa()) +
+                                " "
+
+                );
+            }
+
         }
     }
 }
