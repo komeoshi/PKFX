@@ -182,7 +182,7 @@ public class PKFXSimulatorGC {
     }
 
     private boolean isInRange(Candle candle) {
-        final double mag = 1.0003;
+        final double mag = 1.0004;
         boolean isUpperRange = isUpperRange(candle, mag);
         boolean isLowerRange = isLowerRange(candle, mag);
 
@@ -271,6 +271,10 @@ public class PKFXSimulatorGC {
                     }
                 }
                 break;
+        }
+
+        if(Math.abs(thisDiff)>0.15){
+            log.info(openCandle.getTime() + "-"  + closeCandle.getTime() +" " + thisDiff);
         }
     }
 }

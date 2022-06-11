@@ -13,7 +13,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @SpringBootApplication
 public class PKFXFinderGCMain {
@@ -182,16 +181,23 @@ public class PKFXFinderGCMain {
     }
 
     private boolean isInRange(Candle candle) {
-        final double mag = 1.0003;
-        boolean b1 = candle.getShortMa() * mag > candle.getLongMa();
-        boolean b2 = candle.getLongMa() * mag > candle.getSuperLongMa();
-        boolean isUpperRange = b1 && b2;
-
-        boolean bb1 = candle.getShortMa() < candle.getLongMa() * mag;
-        boolean bb2 = candle.getLongMa() < candle.getSuperLongMa() * mag;
-        boolean isLowerRange = bb1 && bb2;
+        final double mag = 1.0004;
+        boolean isUpperRange = isUpperRange(candle, mag);
+        boolean isLowerRange = isLowerRange(candle, mag);
 
         return !isUpperRange && !isLowerRange;
+    }
+
+    private boolean isLowerRange(Candle candle, double mag) {
+        boolean bb1 = candle.getShortMa() < candle.getLongMa() * mag;
+        boolean bb2 = candle.getLongMa() < candle.getSuperLongMa() * mag;
+        return bb1 && bb2;
+    }
+
+    private boolean isUpperRange(Candle candle, double mag) {
+        boolean b1 = candle.getShortMa() * mag > candle.getLongMa();
+        boolean b2 = candle.getLongMa() * mag > candle.getSuperLongMa();
+        return b1 && b2;
     }
 
     private boolean isInUpperTIme() {
