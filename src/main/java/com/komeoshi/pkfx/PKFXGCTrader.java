@@ -61,7 +61,9 @@ public class PKFXGCTrader {
 
                     int h = LocalDateTime.now().getHour();
                     int m = LocalDateTime.now().getMinute();
-                    boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
+                    boolean isDeadTime =
+                            h == 2 || h == 5 || h == 6 || h == 7 || h == 10 || h == 16 ||
+                                    h == 17 || h == 18 || h == 19 || h == 20 || h == 21 || h == 22;
                     boolean isDeadMinute = m == 59;
 
                     boolean checkMacd = candle.getMacd() < 0.040;

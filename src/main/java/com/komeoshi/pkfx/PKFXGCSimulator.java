@@ -25,7 +25,7 @@ public class PKFXGCSimulator {
 
     private static final Logger log = LoggerFactory.getLogger(PKFXGCSimulator.class);
 
-    private boolean isLogging = true;
+    private boolean isLogging = false;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -66,7 +66,9 @@ public class PKFXGCSimulator {
 
                     int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                     int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
-                    boolean isDeadTime = h == 6 || h == 17 || h == 18 || h == 20 || h == 21;
+                    boolean isDeadTime =
+                            h == 2 || h == 5 || h == 6 || h == 7 || h == 10 || h == 16 ||
+                                    h == 17 || h == 18 || h == 19 || h == 20 || h == 21 || h == 22;
                     boolean isDeadMinute = m == 59;
 
                     boolean checkMacd = candle.getMacd() < 0.040;
