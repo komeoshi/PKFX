@@ -67,17 +67,6 @@ public class PKFXConst {
      */
     public static final String GRANULARITY = "M1";
 
-    /**
-     * シグナル点灯閾値.
-     */
-    public static final Double CANDLE_LENGTH_MAGNIFICATION = 1.0002;
-    /**
-     * シグナル終了閾値.
-     */
-    public static final Double CANDLE_TARGET_MAGNIFICATION = 1.00015;
-
-    public static final Double CANDLE_LOSSCUT_MAGNIFICATION = 0.999;
-
     public static final Double GC_CANDLE_TARGET_MAGNIFICATION = 0.000024;
 
     /** 0.0無効 */
@@ -89,15 +78,4 @@ public class PKFXConst {
     public static final int MA_LONG_PERIOD = 50;
     public static final int VMA_SHORT_PERIOD = 1;
     public static final int VMA_LONG_PERIOD = 10;
-
-    /**
-     * シグナル終了待ち時間.
-     */
-    public static final int WAIT_TIME = 10;
-
-    /**
-     * インターバル. ミリ秒.
-     */
-    public static final long SLEEP_INTERVAL = 10;
-
 }
