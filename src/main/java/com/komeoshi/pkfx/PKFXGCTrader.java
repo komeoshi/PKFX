@@ -80,7 +80,7 @@ public class PKFXGCTrader {
                         }
                         if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
                                 && checkMacd && !isDeadMinute) {
-                            log.info("signal (buy) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -94,7 +94,7 @@ public class PKFXGCTrader {
                         }
                         if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
                                 && checkMacd && !isDeadMinute) {
-                            log.info("signal (sell) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
@@ -103,11 +103,13 @@ public class PKFXGCTrader {
 
                     if(status == Status.NONE) {
                         if (isRsiHot) {
+                            log.info("signal (HOT) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
                         }
                         if (isRsiCold) {
+                            log.info("signal (COLD) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
@@ -214,7 +216,7 @@ public class PKFXGCTrader {
         try {
             i = client.getInstrument(restTemplate);
         } catch (RestClientException e) {
-            log.error("", e);
+            log.error(" " + e.getLocalizedMessage());
             return null;
         }
         return i;
