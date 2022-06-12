@@ -3,10 +3,12 @@ package com.komeoshi.pkfx.restclient;
 import com.komeoshi.pkfx.PKFXConst;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Instrument;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -3846,7 +3848,9 @@ public class PKFXSimulatorRestClient {
         };
         for(String day : days){
             log.info(day);
-            candles.addAll(run(new RestTemplate(), day).getCandles());
+            HttpComponentsClientHttpRequestFactory httpComponents =
+                    new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
+            candles.addAll(run(new RestTemplate(httpComponents), day).getCandles());
         }
 
         log.info("size:" + candles.size());
@@ -3861,6 +3865,7 @@ public class PKFXSimulatorRestClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
+        headers.add("Accept-Encoding","gzip, deflate");
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
@@ -3884,6 +3889,7 @@ public class PKFXSimulatorRestClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
+        headers.add("Accept-Encoding","gzip, deflate");
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
