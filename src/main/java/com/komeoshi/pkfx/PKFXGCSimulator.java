@@ -155,7 +155,7 @@ public class PKFXGCSimulator {
         }
 
         // RSI超過ならロスカットしやすくなる
-        double rsiMag = 5.0;
+        double rsiMag = 4.8;
         boolean isRsiHot = candle.getRsi() > 100 - rsiMag;
         boolean isRsiCold = candle.getRsi() < rsiMag;
         if (isRsiHot || isRsiCold) {
