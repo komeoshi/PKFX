@@ -23,14 +23,15 @@ public class PKFXSimulateDataCreator {
 
     public static void main(String[] args) {
         try {
-            new PKFXSimulateDataCreator().execute();
+            new PKFXSimulateDataCreator().execute1();
+            new PKFXSimulateDataCreator().execute2();
         } catch (Exception e) {
             log.error("", e);
         }
     }
 
-    public void execute() throws IOException {
-        Candles candles = getCandles();
+    public void execute1() throws IOException {
+        Candles candles = getCandles1();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = new Output(baos);
@@ -56,9 +57,46 @@ public class PKFXSimulateDataCreator {
 
     }
 
-    private Candles getCandles() {
+    private Candles getCandles1() {
         PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
         List<Candle> cs = client.runWithManyCandles(new RestTemplate());
+        new PKFXAnalyzer().setPosition(cs, true);
+
+        Candles candles = new Candles();
+        candles.setCandles(cs);
+        return candles;
+    }
+
+    public void execute2() throws IOException {
+        Candles candles = getCandles2();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = new Output(baos);
+
+        Kryo kryo = new Kryo();
+        kryo.register(Candles.class, new JavaSerializer());
+
+        kryo.writeObject(output, candles);
+
+        output.flush();
+        output.close();
+
+        byte[] binary = baos.toByteArray();
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream("minData.dat");
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);) {
+
+            // 特定のクラスのオブジェクトの状態をストリームに書き込む
+            objectOutputStream.writeObject(binary);
+            objectOutputStream.flush();
+
+        }
+
+    }
+
+    private Candles getCandles2() {
+        PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
+        List<Candle> cs = client.runMins(new RestTemplate());
         new PKFXAnalyzer().setPosition(cs, true);
 
         Candles candles = new Candles();
