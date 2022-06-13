@@ -144,7 +144,6 @@ public class PKFXGCTrader {
             lossCutMag *= 1.45;
         }
 
-
         if (Math.abs(candle.getMid().getH() - candle.getMid().getL()) > 0.35) {
             lossCutMag /= 300;
         }

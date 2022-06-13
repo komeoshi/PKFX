@@ -83,9 +83,9 @@ public class PKFXSimulatorRestClient {
 
         for (String day : days) {
             log.info(day);
-            HttpComponentsClientHttpRequestFactory httpComponents =
-                    new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
-            candles.addAll(run(new RestTemplate(httpComponents), day, PKFXConst.GRANULARITY).getCandles());
+//            HttpComponentsClientHttpRequestFactory httpComponents =
+//                    new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
+            candles.addAll(run(new RestTemplate(), day, PKFXConst.GRANULARITY).getCandles());
         }
 
         log.info("size:" + candles.size());
@@ -95,12 +95,12 @@ public class PKFXSimulatorRestClient {
     private Instrument run(RestTemplate restTemplate, String day, String granularity) {
         String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
         url += day;
-        url += "&granularity=" + PKFXConst.GRANULARITY;
+        url += "&granularity=" + granularity;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
-        headers.add("Accept-Encoding", "gzip, deflate");
+        // headers.add("Accept-Encoding", "gzip, deflate");
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
@@ -124,7 +124,7 @@ public class PKFXSimulatorRestClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
-        headers.add("Accept-Encoding","gzip, deflate");
+        //  headers.add("Accept-Encoding","gzip, deflate");
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
