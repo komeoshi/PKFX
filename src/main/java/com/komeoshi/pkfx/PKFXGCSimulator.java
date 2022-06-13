@@ -142,8 +142,8 @@ public class PKFXGCSimulator {
     }
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
-        boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
         double lossCutMag;
+        boolean isLower = candle.getPastCandle().getLongMa() > candle.getLongMa();
         if (isLower) {
             lossCutMag = PKFXConst.GC_LOSSCUT_MAGNIFICATION / 0.20;
         } else {
@@ -152,6 +152,21 @@ public class PKFXGCSimulator {
 
         if (!isInUpperTIme(candle)) {
             lossCutMag *= 1.45;
+        }
+
+        if (Math.abs(candle.getMid().getH() - candle.getMid().getL()) > 0.35) {
+            lossCutMag /= 300;
+        }
+
+        if (candle.getMacd() > 0.3) {
+            lossCutMag /= 300;
+        }
+
+        // MACD超過ならロスカットしやすくなる
+        double macdMag = 6.0;
+        boolean checkMacd = candle.getMacd() > candle.getSig() * macdMag;
+        if (checkMacd) {
+            lossCutMag /= 300;
         }
 
         // RSI超過ならロスカットしやすくなる
