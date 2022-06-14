@@ -130,6 +130,7 @@ public class PKFXAnalyzer {
             }
             currentCandle.setPastCandle(candles.get(ii - 9));
 
+            double superShortMa = getMa(currentCandles, 1);
             double shortMa = getMa(currentCandles, PKFXConst.MA_SHORT_PERIOD);
             double longMa = getMa(currentCandles, PKFXConst.MA_MID_PERIOD);
             double superLongMa = getMa(currentCandles, PKFXConst.MA_LONG_PERIOD);
@@ -137,6 +138,7 @@ public class PKFXAnalyzer {
             double shortVma = getVma(currentCandles, PKFXConst.VMA_SHORT_PERIOD);
             double longVma = getVma(currentCandles, PKFXConst.VMA_LONG_PERIOD);
 
+            currentCandle.setSuperShortMa(superShortMa);
             currentCandle.setShortMa(shortMa);
             currentCandle.setLongMa(longMa);
             currentCandle.setSuperLongMa(superLongMa);

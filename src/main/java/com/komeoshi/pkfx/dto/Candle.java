@@ -19,6 +19,7 @@ public class Candle implements Serializable {
     private int number = -1;
     private Position position = Position.NONE;
     private Position semiPosition = Position.NONE;
+    private double superShortMa;
     private double shortMa;
     private double longMa;
     private double superLongMa;
