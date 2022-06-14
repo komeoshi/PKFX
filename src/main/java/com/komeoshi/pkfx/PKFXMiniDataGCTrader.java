@@ -60,6 +60,8 @@ public class PKFXMiniDataGCTrader {
                     log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
+                    boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
+
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
@@ -67,10 +69,12 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                        client.buy(candle.getMid().getH(), restTemplate);
-                        status = Status.HOLDING_BUY;
-                        openCandle = candle;
+                        if (checkDiff) {
+                            log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            client.buy(candle.getMid().getH(), restTemplate);
+                            status = Status.HOLDING_BUY;
+                            openCandle = candle;
+                        }
 
                     } else if (candle.getPosition() == Position.SHORT) {
                         // 買い→売り
@@ -79,10 +83,12 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                        client.sell(candle.getMid().getH(), restTemplate);
-                        status = Status.HOLDING_SELL;
-                        openCandle = candle;
+                        if (checkDiff) {
+                            log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            client.sell(candle.getMid().getH(), restTemplate);
+                            status = Status.HOLDING_SELL;
+                            openCandle = candle;
+                        }
 
                     }
                 }
@@ -107,14 +113,14 @@ public class PKFXMiniDataGCTrader {
         if (status == Status.HOLDING_BUY) {
             if (lossCutRateBuy > candle.getMid().getC()) {
 
-                log.info("<<signal (buy)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (buy_losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
             if (lossCutRateSell < candle.getMid().getC()) {
 
-                log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (sell_losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }
@@ -131,7 +137,7 @@ public class PKFXMiniDataGCTrader {
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getMid().getC()) {
 
-                log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (buy_reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
 
@@ -139,7 +145,7 @@ public class PKFXMiniDataGCTrader {
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getMid().getC()) {
 
-                log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (sell_reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }

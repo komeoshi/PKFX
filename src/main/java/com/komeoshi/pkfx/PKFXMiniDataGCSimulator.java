@@ -52,6 +52,8 @@ public class PKFXMiniDataGCSimulator {
 
             if (candle.getPosition() != lastPosition) {
 
+                boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
+
                 if (candle.getPosition() == Position.LONG) {
                     // 売り→買い
 
@@ -60,9 +62,11 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    buy(TradeReason.GC, candle);
-                    status = Status.HOLDING_BUY;
-                    openCandle = candle;
+                    if (checkDiff) {
+                        buy(TradeReason.GC, candle);
+                        status = Status.HOLDING_BUY;
+                        openCandle = candle;
+                    }
 
                 } else if (candle.getPosition() == Position.SHORT) {
                     // 買い→売り
@@ -71,10 +75,12 @@ public class PKFXMiniDataGCSimulator {
                         completeOrder(openCandle, candle, Reason.TIMEOUT, status);
                         status = Status.NONE;
                     }
-                    sell(TradeReason.DC, candle);
-                    status = Status.HOLDING_SELL;
-                    openCandle = candle;
 
+                    if (checkDiff) {
+                        sell(TradeReason.DC, candle);
+                        status = Status.HOLDING_SELL;
+                        openCandle = candle;
+                    }
                 }
             }
             lastPosition = candle.getPosition();
@@ -124,13 +130,13 @@ public class PKFXMiniDataGCSimulator {
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC() ) {
+            if (targetRateBuy < candle.getMid().getC()) {
 
                 completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() ) {
+            if (targetRateSell > candle.getMid().getC()) {
 
                 completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
