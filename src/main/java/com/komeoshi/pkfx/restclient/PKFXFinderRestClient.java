@@ -26,18 +26,20 @@ public class PKFXFinderRestClient {
 
         return response.getBody().getAccount();
     }
-
+    public Instrument getInstrument(RestTemplate restTemplate) {
+        return getInstrument(restTemplate, PKFXConst.GRANULARITY);
+    }
     /**
      * 最新のローソク情報を取得する.
      *
      * @param restTemplate RestTemplate
      * @return Instrument
      */
-    public Instrument getInstrument(RestTemplate restTemplate) {
+    public Instrument getInstrument(RestTemplate restTemplate, String granularity) {
 
         String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
         url += "count=300";
-        url += "&granularity=" + PKFXConst.GRANULARITY;
+        url += "&granularity=" + granularity;
 
         HttpHeaders headers = getHttpHeaders();
 
