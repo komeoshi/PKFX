@@ -19,7 +19,6 @@ public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
     private boolean isLogging = false;
 
-
     private int countLosscut = 0;
     private int countReached = 0;
     private int countTimeoutWin = 0;
@@ -96,11 +95,10 @@ public class PKFXMiniDataGCSimulator {
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.00008;
+        double lossCutMag = 0.000085;
 
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
-
 
         if (status == Status.HOLDING_BUY) {
             if (lossCutRateBuy > candle.getMid().getC()) {
@@ -120,7 +118,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.0003;
+        double mag = 0.000275;
 
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
