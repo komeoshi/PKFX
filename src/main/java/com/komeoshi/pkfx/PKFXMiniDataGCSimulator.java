@@ -99,9 +99,10 @@ public class PKFXMiniDataGCSimulator {
         }
 
         log.info(countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
-                diff + ", " +
+                diff + "(" + (diff * 100 / totalCount) + "), " +
                 "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
         );
+
         System.exit(0);
 
     }
@@ -217,8 +218,8 @@ public class PKFXMiniDataGCSimulator {
         }
 
         if (isLogging)
-            log.info("<< signal " + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
-                    closeCandle.getNumber() + "】" +
+            log.info("<< signal " + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
+                    " 【" + closeCandle.getNumber() + "】" +
                     openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
                     countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
                     diff + "(" + (diff / totalCount) + "), " + reason +
