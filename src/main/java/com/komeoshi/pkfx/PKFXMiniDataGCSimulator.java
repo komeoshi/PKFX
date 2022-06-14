@@ -41,7 +41,7 @@ public class PKFXMiniDataGCSimulator {
         Candle openCandle = null;
         for (Candle candle : candles) {
 
-            if (candle.getSuperShortPosition() == Position.NONE) {
+            if (candle.getPosition() == Position.NONE) {
                 continue;
             }
 
@@ -50,11 +50,11 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            if (candle.getSuperShortPosition() != lastPosition) {
+            if (candle.getPosition() != lastPosition) {
 
                 boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
 
-                if (candle.getSuperShortPosition() == Position.LONG) {
+                if (candle.getPosition() == Position.LONG) {
                     // 売り→買い
 
                     if (status != Status.NONE) {
@@ -68,7 +68,7 @@ public class PKFXMiniDataGCSimulator {
                         openCandle = candle;
                     }
 
-                } else if (candle.getSuperShortPosition() == Position.SHORT) {
+                } else if (candle.getPosition() == Position.SHORT) {
                     // 買い→売り
 
                     if (status != Status.NONE) {
@@ -83,7 +83,7 @@ public class PKFXMiniDataGCSimulator {
                     }
                 }
             }
-            lastPosition = candle.getSuperShortPosition();
+            lastPosition = candle.getPosition();
 
             if (status != Status.NONE) {
                 status = targetReach(status, openCandle, candle);
@@ -223,7 +223,7 @@ public class PKFXMiniDataGCSimulator {
                 log.info(
                         "【" + openCandle.getNumber() + "】 " +
                                 openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
-                                " " + openCandle.getSuperShortPosition() +
+                                " " + openCandle.getPosition() +
                                 " openMacd:" + openCandle.getMacd() + " pastMacd:" + openCandle.getPastCandle().getMacd() +
                                 " openShortMa:" + openCandle.getShortMa() + " openLongMa:" + openCandle.getLongMa() + " " +
                                 " pastShortMa:" + openCandle.getPastCandle().getShortMa() + " pastLongMa:" + openCandle.getPastCandle().getLongMa() +

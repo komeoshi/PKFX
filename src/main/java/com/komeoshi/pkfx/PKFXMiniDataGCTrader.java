@@ -49,21 +49,21 @@ public class PKFXMiniDataGCTrader {
                 anal.setPosition(instrument.getCandles(), false);
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
-                if (candle.getSuperShortPosition() == Position.NONE) {
+                if (candle.getPosition() == Position.NONE) {
                     continue;
                 }
                 if (!anal.checkActiveTime()) {
                     continue;
                 }
 
-                if (candle.getSuperShortPosition() != lastPosition) {
+                if (candle.getPosition() != lastPosition) {
                     // クロスした
-                    log.info("cross detected. " + candle.getSuperShortPosition() + " sig:" + candle.getSig() +
+                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
                     boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
 
-                    if (candle.getSuperShortPosition() == Position.LONG) {
+                    if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
@@ -77,7 +77,7 @@ public class PKFXMiniDataGCTrader {
                             openCandle = candle;
                         }
 
-                    } else if (candle.getSuperShortPosition() == Position.SHORT) {
+                    } else if (candle.getPosition() == Position.SHORT) {
                         // 買い→売り
                         if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
@@ -93,7 +93,7 @@ public class PKFXMiniDataGCTrader {
 
                     }
                 }
-                lastPosition = candle.getSuperShortPosition();
+                lastPosition = candle.getPosition();
 
                 if (status != Status.NONE) {
                     status = targetReach(restTemplate, client, status, openCandle, candle);
