@@ -164,6 +164,12 @@ public class PKFXAnalyzer {
                 currentCandle.setPosition(Position.SHORT);
             }
 
+            if (superShortMa > longMa) {
+                currentCandle.setSuperShortPosition(Position.LONG);
+            } else {
+                currentCandle.setSuperShortPosition(Position.SHORT);
+            }
+
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();
                 log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition() +
