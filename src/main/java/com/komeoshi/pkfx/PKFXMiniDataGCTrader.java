@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 @SpringBootApplication
 public class PKFXMiniDataGCTrader {
@@ -49,7 +50,13 @@ public class PKFXMiniDataGCTrader {
                 anal.setPosition(instrument.getCandles(), false);
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
+                Candle longCandle = getLongCandle(restTemplate, client);
+
+
                 if (candle.getPosition() == Position.NONE) {
+                    continue;
+                }
+                if (longCandle == null) {
                     continue;
                 }
                 if (!anal.checkActiveTime()) {
@@ -72,7 +79,8 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff && checkTime) {
+                        if (checkDiff && checkTime &&
+                                longCandle.getPosition() == Position.LONG) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -86,7 +94,8 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff && checkTime) {
+                        if (checkDiff && checkTime &&
+                                longCandle.getPosition() == Position.SHORT) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
@@ -171,6 +180,20 @@ public class PKFXMiniDataGCTrader {
             return null;
         }
         return i;
+    }
+
+    private Candle getLongCandle(RestTemplate restTemplate, PKFXFinderRestClient client) {
+        Instrument i;
+        try {
+            i = client.getInstrument(restTemplate, "M1");
+        } catch (RestClientException e) {
+            log.error(" " + e.getLocalizedMessage());
+            return null;
+        }
+        PKFXAnalyzer anal = new PKFXAnalyzer();
+        anal.setPosition(i.getCandles(), false);
+
+        return i.getCandles().get(i.getCandles().size() - 1);
     }
 
     private boolean isInUpperTIme() {

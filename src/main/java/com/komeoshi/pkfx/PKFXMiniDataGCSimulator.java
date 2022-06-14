@@ -8,12 +8,11 @@ import com.komeoshi.pkfx.enumerator.TradeReason;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
@@ -35,6 +34,7 @@ public class PKFXMiniDataGCSimulator {
 
     public void run() {
         List<Candle> candles = getCandles();
+        Map<String, Candle> longCandles = getLongCandles();
 
         Status status = Status.NONE;
         Position lastPosition = Position.NONE;
@@ -57,6 +57,8 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkTime = h != 0 && h != 1 && h != 5 &&
                         h != 14 && h != 19 && h != 21;
 
+                Candle longCandle = getCandleAt(longCandles, candle.getTime());
+
                 if (candle.getPosition() == Position.LONG) {
                     // 売り→買い
 
@@ -65,7 +67,8 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkDiff && checkTime) {
+                    if (checkDiff && checkTime &&
+                            longCandle.getPosition() == Position.LONG) {
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
                         openCandle = candle;
@@ -79,7 +82,8 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkDiff && checkTime) {
+                    if (checkDiff && checkTime &&
+                            longCandle.getPosition() == Position.SHORT) {
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;
                         openCandle = candle;
@@ -246,6 +250,25 @@ public class PKFXMiniDataGCSimulator {
         List<Candle> candles = reader.read().getCandles();
 
         return new ArrayList<>(candles);
+    }
+
+    private Map<String, Candle> getLongCandles() {
+        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("data.dat");
+        List<Candle> candles = reader.read().getCandles();
+
+        Map<String, Candle> map = new HashMap<>();
+        for (Candle candle : candles) {
+            map.put(
+                    candle.getTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")),
+                    candle
+            );
+        }
+
+        return map;
+    }
+
+    private Candle getCandleAt(Map<String, Candle> candles, LocalDateTime time) {
+        return candles.get(time.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
     }
 
     private boolean isInUpperTIme(Candle candle) {
