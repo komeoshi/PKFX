@@ -150,7 +150,7 @@ public class PKFXMiniDataGCTrader {
     private Instrument getInstrument(RestTemplate restTemplate, PKFXFinderRestClient client) {
         Instrument i;
         try {
-            i = client.getInstrument(restTemplate, "S1");
+            i = client.getInstrument(restTemplate, "S5");
         } catch (RestClientException e) {
             log.error(" " + e.getLocalizedMessage());
             return null;
