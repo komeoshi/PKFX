@@ -126,6 +126,12 @@ public class PKFXMiniDataGCSimulator {
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
         double mag = 0.000275;
 
+        if (isInUpperTIme(openCandle)) {
+            mag *= 1.6;
+        } else {
+            mag *= 0.6;
+        }
+
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
@@ -239,4 +245,20 @@ public class PKFXMiniDataGCSimulator {
         return new ArrayList<>(candles);
     }
 
+    private boolean isInUpperTIme(Candle candle) {
+        int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
+        return h == 0 ||
+                h == 1 ||
+                h == 3 ||
+                h == 4 ||
+                h == 5 ||
+                h == 8 ||
+                h == 9 ||
+                h == 11 ||
+                h == 12 ||
+                h == 13 ||
+                h == 14 ||
+                h == 15 ||
+                h == 23;
+    }
 }

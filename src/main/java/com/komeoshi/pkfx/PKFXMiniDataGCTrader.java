@@ -16,6 +16,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @SpringBootApplication
 public class PKFXMiniDataGCTrader {
@@ -131,6 +132,12 @@ public class PKFXMiniDataGCTrader {
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
         double mag = 0.000275;
 
+        if (isInUpperTIme()) {
+            mag *= 1.6;
+        } else {
+            mag *= 0.6;
+        }
+
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
         double targetRateSell = openCandle.getMid().getC() * (1 - mag);
 
@@ -164,4 +171,20 @@ public class PKFXMiniDataGCTrader {
         return i;
     }
 
+    private boolean isInUpperTIme() {
+        int h = LocalDateTime.now().getHour();
+        return h == 0 ||
+                h == 1 ||
+                h == 3 ||
+                h == 4 ||
+                h == 5 ||
+                h == 8 ||
+                h == 9 ||
+                h == 11 ||
+                h == 12 ||
+                h == 13 ||
+                h == 14 ||
+                h == 15 ||
+                h == 23;
+    }
 }
