@@ -75,7 +75,9 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkDiff && checkTime && checkLongAbs && isUpper(candle) &&
+                    if (checkDiff && checkTime && checkLongAbs &&
+                            isUpper(longCandle) &&
+                            longCandle.getMid().getL() > longCandle.getLongMa() &&
                             longCandle.getPosition() == Position.LONG) {
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
@@ -90,7 +92,9 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkDiff && checkTime && checkLongAbs && isLower(candle) &&
+                    if (checkDiff && checkTime && checkLongAbs &&
+                            isLower(longCandle) &&
+                            longCandle.getMid().getH() < longCandle.getLongMa() &&
                             longCandle.getPosition() == Position.SHORT) {
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;
@@ -281,33 +285,35 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private boolean isUpper(Candle candle) {
-        int size = 60;
+        int size = 20;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
         double total = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
-            if (candle.getMid().getH() > candle.getLongMa()) {
+            Candle c = candles.get(ii);
+            if (c.getMid().getL() > c.getLongMa()) {
                 count++;
             }
             total++;
         }
-        return count / total > 0.8;
+        return count / total > param;
     }
 
     private boolean isLower(Candle candle) {
-        int size = 60;
+        int size = 20;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
         double total = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
-            if (candle.getMid().getL() < candle.getLongMa()) {
+            Candle c = candles.get(ii);
+            if (c.getMid().getH() < c.getLongMa()) {
                 count++;
             }
             total++;
         }
-        return count / total > 0.8;
+        return count / total > param;
     }
 
     private boolean isInUpperTIme(Candle candle) {
