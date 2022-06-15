@@ -26,8 +26,8 @@ public class PKFXSimulatorRestClient {
     }
 
     private List<String> getMins() {
-        LocalDateTime from = LocalDateTime.of(2020, 1, 1, 0, 0, 0, 0);
-        LocalDateTime to = LocalDateTime.of(2020, 1, 1, 1, 0, 0, 0);
+        LocalDateTime from = LocalDateTime.of(2022, 1, 1, 0, 0, 0, 0);
+        LocalDateTime to = LocalDateTime.of(2022, 1, 1, 1, 0, 0, 0);
 
         List<String> days = new ArrayList<>();
         while (from.isBefore(LocalDateTime.of(2022, 6, 11, 0, 0, 0, 0))) {
