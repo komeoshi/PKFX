@@ -124,7 +124,6 @@ public class PKFXAnalyzer {
             }
 
             ArrayList<Candle> currentCandles = new ArrayList<>();
-
             for (int jj = ii - MAXSIZE; jj < ii; jj++) {
                 currentCandles.add(candles.get(jj));
             }
@@ -158,7 +157,11 @@ public class PKFXAnalyzer {
             double rsi = getRsi(currentCandles);
             currentCandle.setRsi(rsi);
 
-            currentCandle.setCandles(currentCandles);
+            ArrayList<Candle> candlesForSave = new ArrayList<>();
+            for (int jj = ii - 20; jj < ii; jj++) {
+                candlesForSave.add(candles.get(jj));
+            }
+            currentCandle.setCandles(candlesForSave);
 
             if (shortMa > longMa) {
                 currentCandle.setPosition(Position.LONG);
