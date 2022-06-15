@@ -64,7 +64,9 @@ public class PKFXMiniDataGCSimulator {
 
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
-                        > 0.030;
+                        > 0.027;
+
+
 
                 if (candle.getPosition() == Position.LONG) {
                     // 売り→買い
@@ -139,7 +141,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = param;
+        double mag = 0.000280;
 
         if (isInUpperTIme(openCandle)) {
             mag *= 1.6;

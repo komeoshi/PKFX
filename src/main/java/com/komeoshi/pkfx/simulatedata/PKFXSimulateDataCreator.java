@@ -24,7 +24,8 @@ public class PKFXSimulateDataCreator {
     public static void main(String[] args) {
         try {
             new PKFXSimulateDataCreator().execute1();
-            // new PKFXSimulateDataCreator().execute2();
+            new PKFXSimulateDataCreator().execute2();
+            new PKFXSimulateDataCreator().execute3();
         } catch (Exception e) {
             log.error("", e);
         }
@@ -97,6 +98,44 @@ public class PKFXSimulateDataCreator {
     private Candles getCandles2() {
         PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
         List<Candle> cs = client.runMins(new RestTemplate());
+        new PKFXAnalyzer().setPosition(cs, true);
+
+        Candles candles = new Candles();
+        candles.setCandles(cs);
+        return candles;
+    }
+
+
+    public void execute3() throws IOException {
+        Candles candles = getCandles3();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = new Output(baos);
+
+        Kryo kryo = new Kryo();
+        kryo.register(Candles.class, new JavaSerializer());
+
+        kryo.writeObject(output, candles);
+
+        output.flush();
+        output.close();
+
+        byte[] binary = baos.toByteArray();
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream("5MinData.dat");
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);) {
+
+            // 特定のクラスのオブジェクトの状態をストリームに書き込む
+            objectOutputStream.writeObject(binary);
+            objectOutputStream.flush();
+
+        }
+
+    }
+
+    private Candles getCandles3() {
+        PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
+        List<Candle> cs = client.run5Mins(new RestTemplate());
         new PKFXAnalyzer().setPosition(cs, true);
 
         Candles candles = new Candles();

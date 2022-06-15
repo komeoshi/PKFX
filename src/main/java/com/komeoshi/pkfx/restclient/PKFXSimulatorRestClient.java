@@ -26,8 +26,8 @@ public class PKFXSimulatorRestClient {
     }
 
     private List<String> getMins() {
-        LocalDateTime from = LocalDateTime.of(2012, 1, 1, 0, 0, 0, 0);
-        LocalDateTime to = LocalDateTime.of(2012, 1, 1, 1, 0, 0, 0);
+        LocalDateTime from = LocalDateTime.of(2020, 1, 1, 0, 0, 0, 0);
+        LocalDateTime to = LocalDateTime.of(2020, 1, 1, 1, 0, 0, 0);
 
         List<String> days = new ArrayList<>();
         while (from.isBefore(LocalDateTime.of(2022, 6, 11, 0, 0, 0, 0))) {
@@ -60,6 +60,23 @@ public class PKFXSimulatorRestClient {
 
         return days;
     }
+
+
+    public List<Candle> run5Mins(RestTemplate restTemplate) {
+        List<Candle> candles = new ArrayList<>();
+        List<String> mins = getMins();
+
+        for (String min : mins) {
+            log.info(min);
+            HttpComponentsClientHttpRequestFactory httpComponents =
+                    new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
+            candles.addAll(run(new RestTemplate(httpComponents), min, "M5").getCandles());
+        }
+
+        log.info("size:" + candles.size());
+        return candles;
+    }
+
 
     public List<Candle> runMins(RestTemplate restTemplate) {
         List<Candle> candles = new ArrayList<>();

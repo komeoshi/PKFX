@@ -67,7 +67,7 @@ public class PKFXMiniDataGCTrader {
 
                     double longAbs = longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC();
                     boolean checkLongAbs = Math.abs(longAbs)
-                            > 0.030;
+                            > 0.027;
 
                     log.info("cross detected. " + candle.getPosition() + " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
@@ -145,7 +145,7 @@ public class PKFXMiniDataGCTrader {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000275;
+        double mag = 0.000280;
 
         if (isInUpperTIme()) {
             mag *= 1.6;
