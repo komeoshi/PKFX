@@ -33,7 +33,8 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private double param;
-    public void setParam(double param){
+
+    public void setParam(double param) {
         this.param = param;
     }
 
@@ -66,8 +67,6 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
                         > 0.027;
 
-
-
                 if (candle.getPosition() == Position.LONG) {
                     // 売り→買い
 
@@ -76,7 +75,7 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkDiff && checkTime && checkLongAbs &&
+                    if (checkDiff && checkTime && checkLongAbs && isUpper(candle) &&
                             longCandle.getPosition() == Position.LONG) {
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
@@ -91,7 +90,7 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkDiff && checkTime && checkLongAbs &&
+                    if (checkDiff && checkTime && checkLongAbs && isLower(candle) &&
                             longCandle.getPosition() == Position.SHORT) {
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;
@@ -112,7 +111,7 @@ public class PKFXMiniDataGCSimulator {
                 "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
         );
 
-       // System.exit(0);
+        // System.exit(0);
 
     }
 
@@ -279,6 +278,36 @@ public class PKFXMiniDataGCSimulator {
 
     private Candle getCandleAt(Map<String, Candle> candles, LocalDateTime time) {
         return candles.get(time.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
+    }
+
+    private boolean isUpper(Candle candle) {
+        int size = 60;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        double total = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            if (candle.getMid().getH() > candle.getLongMa()) {
+                count++;
+            }
+            total++;
+        }
+        return count / total > 0.8;
+    }
+
+    private boolean isLower(Candle candle) {
+        int size = 60;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        double total = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            if (candle.getMid().getL() < candle.getLongMa()) {
+                count++;
+            }
+            total++;
+        }
+        return count / total > 0.8;
     }
 
     private boolean isInUpperTIme(Candle candle) {
