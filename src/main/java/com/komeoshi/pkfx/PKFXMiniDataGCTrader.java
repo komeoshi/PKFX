@@ -51,6 +51,7 @@ public class PKFXMiniDataGCTrader {
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
                 Candle longCandle = getLongCandle(restTemplate, client);
+                Candle fiveMinCandle = getFiveMinCandle(restTemplate, client);
 
                 if (candle.getPosition() == Position.NONE) {
                     continue;
@@ -83,8 +84,13 @@ public class PKFXMiniDataGCTrader {
                             status = Status.NONE;
                         }
                         if (checkDiff && checkTime && checkLongAbs &&
+                                isUpper(longCandle) &&
                                 longCandle.getMid().getL() > longCandle.getLongMa() &&
-                                longCandle.getPosition() == Position.LONG) {
+                                (
+                                        fiveMinCandle.getPosition() == Position.LONG ||
+                                                longCandle.getPosition() == Position.LONG
+                                )
+                        ) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
@@ -99,8 +105,13 @@ public class PKFXMiniDataGCTrader {
                             status = Status.NONE;
                         }
                         if (checkDiff && checkTime && checkLongAbs &&
+                                isLower(longCandle) &&
                                 longCandle.getMid().getH() < longCandle.getLongMa() &&
-                                longCandle.getPosition() == Position.SHORT) {
+                                (
+                                        fiveMinCandle.getPosition() == Position.SHORT ||
+                                                longCandle.getPosition() == Position.SHORT
+                                )
+                        ) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
@@ -199,6 +210,52 @@ public class PKFXMiniDataGCTrader {
         anal.setPosition(i.getCandles(), false);
 
         return i.getCandles().get(i.getCandles().size() - 1);
+    }
+
+    private Candle getFiveMinCandle(RestTemplate restTemplate, PKFXFinderRestClient client) {
+        Instrument i;
+        try {
+            i = client.getInstrument(restTemplate, "M5");
+        } catch (RestClientException e) {
+            log.error(" " + e.getLocalizedMessage());
+            return null;
+        }
+        PKFXAnalyzer anal = new PKFXAnalyzer();
+        anal.setPosition(i.getCandles(), false);
+
+        return i.getCandles().get(i.getCandles().size() - 1);
+    }
+
+    private boolean isUpper(Candle candle) {
+        int size = 60;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        double total = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+            if (c.getMid().getL() > c.getLongMa()) {
+                count++;
+            }
+            total++;
+        }
+        return count / total > 0.0;
+    }
+
+    private boolean isLower(Candle candle) {
+        int size = 60;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        double total = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+            if (c.getMid().getH() < c.getLongMa()) {
+                count++;
+            }
+            total++;
+        }
+        return count / total > 0.0;
     }
 
     private boolean isInUpperTIme() {

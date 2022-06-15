@@ -41,6 +41,7 @@ public class PKFXMiniDataGCSimulator {
     public void run() {
         List<Candle> candles = getCandles();
         Map<String, Candle> longCandles = getLongCandles();
+        List<Candle> fiveMinCandles = get5MinCandles();
 
         Status status = Status.NONE;
         Position lastPosition = Position.NONE;
@@ -57,12 +58,13 @@ public class PKFXMiniDataGCSimulator {
             }
 
             if (candle.getPosition() != lastPosition) {
+                Candle longCandle = getCandleAt(longCandles, candle.getTime());
+                Candle fiveMinCandle = getCandleAt(fiveMinCandles, candle.getTime());
 
                 boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTime = true;
 
-                Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
                         > 0.027;
 
@@ -77,7 +79,11 @@ public class PKFXMiniDataGCSimulator {
                     if (checkDiff && checkTime && checkLongAbs &&
                             isUpper(longCandle) &&
                             longCandle.getMid().getL() > longCandle.getLongMa() &&
-                            longCandle.getPosition() == Position.LONG) {
+                            (
+                                    fiveMinCandle.getPosition() == Position.LONG ||
+                                    longCandle.getPosition() == Position.LONG
+                            )
+                    ) {
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
                         openCandle = candle;
@@ -94,7 +100,11 @@ public class PKFXMiniDataGCSimulator {
                     if (checkDiff && checkTime && checkLongAbs &&
                             isLower(longCandle) &&
                             longCandle.getMid().getH() < longCandle.getLongMa() &&
-                            longCandle.getPosition() == Position.SHORT) {
+                            (
+                                    fiveMinCandle.getPosition() == Position.SHORT ||
+                                            longCandle.getPosition() == Position.SHORT
+                            )
+                    ) {
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;
                         openCandle = candle;
@@ -283,8 +293,29 @@ public class PKFXMiniDataGCSimulator {
         return candles.get(time.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
     }
 
+    private List<Candle> get5MinCandles() {
+        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("5MinData.dat");
+        List<Candle> candles = reader.read().getCandles();
+
+        return new ArrayList<>(candles);
+    }
+
+    private Candle getCandleAt(List<Candle> candles, LocalDateTime time) {
+
+        Candle candle = null;
+        for (Candle c : candles) {
+            if (c.getTime().isAfter(time)) {
+                break;
+            } else {
+                candle = c;
+            }
+        }
+
+        return candle;
+    }
+
     private boolean isUpper(Candle candle) {
-        int size = 20;
+        int size = 60;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
@@ -300,7 +331,7 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private boolean isLower(Candle candle) {
-        int size = 20;
+        int size = 60;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
