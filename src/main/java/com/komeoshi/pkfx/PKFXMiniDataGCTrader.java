@@ -64,7 +64,12 @@ public class PKFXMiniDataGCTrader {
 
                 if (candle.getPosition() != lastPosition) {
                     // クロスした
-                    log.info("cross detected. " + candle.getPosition() + " sig:" + candle.getSig() +
+
+                    double longAbs = longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC();
+                    boolean checkLongAbs = Math.abs(longAbs)
+                            > 0.030;
+
+                    log.info("cross detected. " + candle.getPosition() + " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
                     boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
@@ -78,7 +83,7 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff && checkTime &&
+                        if (checkDiff && checkTime && checkLongAbs &&
                                 longCandle.getPosition() == Position.LONG) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
@@ -93,7 +98,7 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff && checkTime &&
+                        if (checkDiff && checkTime && checkLongAbs &&
                                 longCandle.getPosition() == Position.SHORT) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
