@@ -32,6 +32,11 @@ public class PKFXMiniDataGCSimulator {
         sim.run();
     }
 
+    private double param;
+    public void setParam(double param){
+        this.param = param;
+    }
+
     public void run() {
         List<Candle> candles = getCandles();
         Map<String, Candle> longCandles = getLongCandles();
@@ -105,13 +110,13 @@ public class PKFXMiniDataGCSimulator {
                 "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
         );
 
-        System.exit(0);
+       // System.exit(0);
 
     }
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.000190;
+        double lossCutMag = 0.000500;
 
         double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
@@ -134,7 +139,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000275;
+        double mag = param;
 
         if (isInUpperTIme(openCandle)) {
             mag *= 1.6;
