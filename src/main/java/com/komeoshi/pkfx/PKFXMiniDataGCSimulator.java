@@ -60,8 +60,7 @@ public class PKFXMiniDataGCSimulator {
 
                 boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-                boolean checkTime = h != 0 && h != 1 && h != 5 &&
-                        h != 14 && h != 19 && h != 21;
+                boolean checkTime = true;
 
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
@@ -297,7 +296,7 @@ public class PKFXMiniDataGCSimulator {
             }
             total++;
         }
-        return count / total > param;
+        return count / total > 0.0;
     }
 
     private boolean isLower(Candle candle) {
@@ -313,23 +312,34 @@ public class PKFXMiniDataGCSimulator {
             }
             total++;
         }
-        return count / total > param;
+        return count / total > 0.0;
     }
 
     private boolean isInUpperTIme(Candle candle) {
         int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
         return h == 0 ||
                 h == 1 ||
+                h == 2 ||
                 h == 3 ||
                 h == 4 ||
                 h == 5 ||
+                h == 6 ||
+                h == 7 ||
                 h == 8 ||
                 h == 9 ||
+                h == 10 ||
                 h == 11 ||
                 h == 12 ||
                 h == 13 ||
                 h == 14 ||
                 h == 15 ||
+                h == 16 ||
+                // h == 17 ||
+                h == 18 ||
+                h == 19 ||
+                h == 20 ||
+                h == 21 ||
+                h == 22 ||
                 h == 23;
     }
 }

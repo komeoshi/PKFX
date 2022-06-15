@@ -74,8 +74,7 @@ public class PKFXMiniDataGCTrader {
 
                     boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
                     int h = LocalDateTime.now().getHour();
-                    boolean checkTime = h != 0 && h != 1 && h != 5 &&
-                            h != 14 && h != 19 && h != 21;
+                    boolean checkTime = true;
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
@@ -206,16 +205,27 @@ public class PKFXMiniDataGCTrader {
         int h = LocalDateTime.now().getHour();
         return h == 0 ||
                 h == 1 ||
+                h == 2 ||
                 h == 3 ||
                 h == 4 ||
                 h == 5 ||
+                h == 6 ||
+                h == 7 ||
                 h == 8 ||
                 h == 9 ||
+                h == 10 ||
                 h == 11 ||
                 h == 12 ||
                 h == 13 ||
                 h == 14 ||
                 h == 15 ||
+                h == 16 ||
+                // h == 17 ||
+                h == 18 ||
+                h == 19 ||
+                h == 20 ||
+                h == 21 ||
+                h == 22 ||
                 h == 23;
     }
 }
