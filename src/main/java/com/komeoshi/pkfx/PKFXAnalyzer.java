@@ -158,6 +158,8 @@ public class PKFXAnalyzer {
             double rsi = getRsi(currentCandles);
             currentCandle.setRsi(rsi);
 
+            currentCandle.setCandles(currentCandles);
+
             if (shortMa > longMa) {
                 currentCandle.setPosition(Position.LONG);
             } else {

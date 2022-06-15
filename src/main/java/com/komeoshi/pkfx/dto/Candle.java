@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,6 +17,7 @@ public class Candle implements Serializable {
 
     private Mid mid;
 
+    private List<Candle> candles;
     private int number = -1;
     private Position position = Position.NONE;
     private Position superShortPosition = Position.NONE;
