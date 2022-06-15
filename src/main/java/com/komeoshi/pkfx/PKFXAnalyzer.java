@@ -123,7 +123,7 @@ public class PKFXAnalyzer {
                 continue;
             }
 
-            List<Candle> currentCandles = new ArrayList<>();
+            ArrayList<Candle> currentCandles = new ArrayList<>();
 
             for (int jj = ii - MAXSIZE; jj < ii; jj++) {
                 currentCandles.add(candles.get(jj));
