@@ -81,7 +81,6 @@ public class PKFXMiniDataGCSimulator {
 
             if (candle.getSuperShortPosition() != lastPosition) {
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
-                Candle fiveMinCandle = getCandleAt(fiveMinCandles, candle.getTime());
 
                 boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.03;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
@@ -89,9 +88,6 @@ public class PKFXMiniDataGCSimulator {
 
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
                         > 0.094;
-                boolean checkFiveMinCandleAbs = Math.abs(fiveMinCandle.getMid().getL() - fiveMinCandle.getMid().getH())
-                        > 0.10;
-                boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
                 boolean checkRange = checkRange(longCandle, 0.06, 0.5);
 
                 if (candle.getSuperShortPosition() == Position.LONG) {
@@ -104,7 +100,7 @@ public class PKFXMiniDataGCSimulator {
 
                     if (checkDiff &&
                             checkRange &&
-                            checkAbs &&
+                            checkLongAbs &&
                             longCandle.getMid().getL() > longCandle.getLongMa() &&
                             longCandle.getSuperShortPosition() == Position.LONG
                     ) {
@@ -123,7 +119,7 @@ public class PKFXMiniDataGCSimulator {
 
                     if (checkDiff &&
                             checkRange &&
-                            checkAbs &&
+                            checkLongAbs &&
                             longCandle.getMid().getH() < longCandle.getLongMa() &&
                             longCandle.getSuperShortPosition() == Position.SHORT
                     ) {
@@ -178,7 +174,7 @@ public class PKFXMiniDataGCSimulator {
         double mag = 0.000080;
 
         if (isInUpperTIme(openCandle)) {
-            mag *= 1.6;
+            mag *= 1.1;
         } else {
             mag *= 0.5;
         }
