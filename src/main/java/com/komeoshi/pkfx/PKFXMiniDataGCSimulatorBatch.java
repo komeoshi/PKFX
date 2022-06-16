@@ -15,28 +15,26 @@ public class PKFXMiniDataGCSimulatorBatch {
         batch.run();
     }
 
-    public void run(){
+    public void run() {
 
         double[] params = {
-                0.0,
-                0.1,
-                0.2,
-                0.3,
-                0.4,
-                0.5,
-                0.6,
-                0.7,
-                0.8,
-                0.9,
-                1.0,
+                0.014,
+                0.024,
+                0.034,
+                0.044,
+                0.054,
+                0.064,
+                0.074,
+                0.084,
+                0.094,
         };
 
-        List<Candle> candles =null;
-        Map<String, Candle> longCandles =null;
-        List<Candle> fiveMinCandles =null;
+        List<Candle> candles = null;
+        Map<String, Candle> longCandles = null;
+        List<Candle> fiveMinCandles = null;
 
-        for(double param : params) {
-            log.info("" + (param*1000));
+        for (double param : params) {
+            log.info("" + (param * 1000));
 
             PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
             sim1.setParam(param);
@@ -45,7 +43,7 @@ public class PKFXMiniDataGCSimulatorBatch {
             sim1.setFiveMinCandles(fiveMinCandles);
             sim1.run();
 
-            if(candles == null){
+            if (candles == null) {
                 candles = sim1.getCandles();
                 longCandles = sim1.getLongCandles();
                 fiveMinCandles = sim1.getFiveMinCandles();

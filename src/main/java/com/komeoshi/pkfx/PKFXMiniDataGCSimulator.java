@@ -88,7 +88,7 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkTime = true;
 
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
-                        > 0.034;
+                        > 0.094;
                 boolean checkFiveMinCandleAbs = Math.abs(fiveMinCandle.getMid().getL() - fiveMinCandle.getMid().getH())
                         > 0.100;
                 boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
@@ -446,7 +446,7 @@ public class PKFXMiniDataGCSimulator {
             total++;
         }
         double rate = count / total;
-        return rate > param;
+        return rate > 0.5;
     }
 
     private boolean checkSen(Candle candle, Status status) {
