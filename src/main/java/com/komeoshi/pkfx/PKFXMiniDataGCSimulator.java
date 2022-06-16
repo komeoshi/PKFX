@@ -175,7 +175,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000280;
+        double mag = 0.000080;
 
         if (isInUpperTIme(openCandle)) {
             mag *= 1.6;
