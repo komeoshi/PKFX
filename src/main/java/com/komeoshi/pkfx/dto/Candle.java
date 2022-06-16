@@ -24,6 +24,7 @@ public class Candle implements Serializable {
     private Position superShortPosition = Position.NONE;
     private Position semiPosition = Position.NONE;
     private double superShortMa;
+    private double superShortLongMa;
     private double shortMa;
     private double longMa;
     private double superLongMa;
