@@ -67,8 +67,11 @@ public class PKFXMiniDataGCTrader {
                     // クロスした
 
                     double longAbs = longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC();
-                    boolean checkLongAbs = Math.abs(longAbs)
-                            > 0.027;
+                    boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
+                            > 0.024;
+                    boolean checkFiveMinCandleAbs = Math.abs(fiveMinCandle.getMid().getL() - fiveMinCandle.getMid().getH())
+                            > 0.100;
+                    boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
 
                     log.info("cross detected. " + candle.getSuperShortPosition() + " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
@@ -83,7 +86,7 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff && checkTime && checkLongAbs &&
+                        if (checkDiff && checkTime && checkAbs &&
                                 isUpper(longCandle) &&
                                 longCandle.getMid().getL() > longCandle.getLongMa() &&
                                 (
@@ -104,7 +107,7 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff && checkTime && checkLongAbs &&
+                        if (checkDiff && checkTime && checkAbs &&
                                 isLower(longCandle) &&
                                 longCandle.getMid().getH() < longCandle.getLongMa() &&
                                 (
