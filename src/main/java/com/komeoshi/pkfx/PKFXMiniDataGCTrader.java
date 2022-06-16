@@ -87,8 +87,9 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff && checkTime && checkAbs &&
-                                isUpper(longCandle) &&
+                        if (checkDiff &&
+                                checkRange(longCandle) &&
+                                checkAbs &&
                                 longCandle.getMid().getL() > longCandle.getLongMa() &&
                                 (
                                         fiveMinCandle.getPosition() == Position.LONG ||
@@ -108,8 +109,9 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff && checkTime && checkAbs &&
-                                isLower(longCandle) &&
+                        if (checkDiff &&
+                                checkRange(longCandle) &&
+                                checkAbs &&
                                 longCandle.getMid().getH() < longCandle.getLongMa() &&
                                 (
                                         fiveMinCandle.getPosition() == Position.SHORT ||
@@ -320,6 +322,26 @@ public class PKFXMiniDataGCTrader {
             }
         }
         return count > 1;
+    }
+
+    private boolean checkRange(Candle baseCandle) {
+        int size = 30;
+        double thresholdHigh = baseCandle.getMid().getC() + 0.08;
+        double thresholdLow = baseCandle.getMid().getC() - 0.08;
+
+        List<Candle> candles = baseCandle.getCandles();
+        double count = 0;
+        double total = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+            double currentRate = c.getMid().getC();
+            if (currentRate > thresholdHigh || thresholdLow > currentRate) {
+                count++;
+            }
+            total++;
+        }
+        double rate = count / total;
+        return rate > 0.5;
     }
 
     private boolean checkSen(Candle candle, Status status) {
