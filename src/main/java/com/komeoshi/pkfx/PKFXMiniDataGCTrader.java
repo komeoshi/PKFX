@@ -66,14 +66,15 @@ public class PKFXMiniDataGCTrader {
                 if (candle.getSuperShortPosition() != lastPosition) {
                     // クロスした
 
-                    double longAbs = longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC();
-                    boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
+                    double longAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC());
+                    boolean checkLongAbs = longAbs
                             > 0.024;
                     boolean checkFiveMinCandleAbs = Math.abs(fiveMinCandle.getMid().getL() - fiveMinCandle.getMid().getH())
                             > 0.100;
                     boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
 
-                    log.info("cross detected. " + candle.getSuperShortPosition() + " abs:" + longAbs + " sig:" + candle.getSig() +
+                    log.info("cross detected. " + candle.getSuperShortPosition() + " " + longCandle.getPosition() +
+                            " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
                     boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
