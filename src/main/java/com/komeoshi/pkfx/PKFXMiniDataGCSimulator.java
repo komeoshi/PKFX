@@ -6,6 +6,8 @@ import com.komeoshi.pkfx.enumerator.Reason;
 import com.komeoshi.pkfx.enumerator.Status;
 import com.komeoshi.pkfx.enumerator.TradeReason;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +16,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+@Getter
+@Setter
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
     private boolean isLogging = false;
@@ -38,17 +42,35 @@ public class PKFXMiniDataGCSimulator {
         this.param = param;
     }
 
+    private List<Candle> candles = null;
+    private Map<String, Candle> longCandles = null;
+    private List<Candle> fiveMinCandles = null;
+
+    private void init() {
+        countLosscut = 0;
+        countReached = 0;
+        countTimeoutWin = 0;
+        countTimeoutLose = 0;
+        countWin = 0;
+        countLose = 0;
+        totalCount = 0;
+        diff = 0.0;
+    }
+
     public void run() {
-        List<Candle> candles = getCandles();
-        Map<String, Candle> longCandles = getLongCandles();
-        List<Candle> fiveMinCandles = get5MinCandles();
+        init();
+        if (candles == null) {
+            this.candles = getCandlesFromFile();
+            this.longCandles = getLongCandlesFromFile();
+            this.fiveMinCandles = get5MinCandlesFromFile();
+        }
 
         Status status = Status.NONE;
         Position lastPosition = Position.NONE;
         Candle openCandle = null;
         for (Candle candle : candles) {
 
-            if (candle.getPosition() == Position.NONE) {
+            if (candle.getSuperShortPosition() == Position.NONE) {
                 continue;
             }
 
@@ -57,7 +79,7 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            if (candle.getPosition() != lastPosition) {
+            if (candle.getSuperShortPosition() != lastPosition) {
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 Candle fiveMinCandle = getCandleAt(fiveMinCandles, candle.getTime());
 
@@ -68,7 +90,7 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
                         > 0.027;
 
-                if (candle.getPosition() == Position.LONG) {
+                if (candle.getSuperShortPosition() == Position.LONG) {
                     // 売り→買い
 
                     if (status != Status.NONE) {
@@ -81,7 +103,7 @@ public class PKFXMiniDataGCSimulator {
                             longCandle.getMid().getL() > longCandle.getLongMa() &&
                             (
                                     fiveMinCandle.getPosition() == Position.LONG ||
-                                    longCandle.getPosition() == Position.LONG
+                                            longCandle.getPosition() == Position.LONG
                             )
                     ) {
                         buy(TradeReason.GC, candle);
@@ -89,7 +111,7 @@ public class PKFXMiniDataGCSimulator {
                         openCandle = candle;
                     }
 
-                } else if (candle.getPosition() == Position.SHORT) {
+                } else if (candle.getSuperShortPosition() == Position.SHORT) {
                     // 買い→売り
 
                     if (status != Status.NONE) {
@@ -111,7 +133,7 @@ public class PKFXMiniDataGCSimulator {
                     }
                 }
             }
-            lastPosition = candle.getPosition();
+            lastPosition = candle.getSuperShortPosition();
 
             if (status != Status.NONE) {
                 status = targetReach(status, openCandle, candle);
@@ -158,6 +180,23 @@ public class PKFXMiniDataGCSimulator {
         if (isInUpperTIme(openCandle)) {
             mag *= 1.6;
         } else {
+            mag *= 0.6;
+        }
+
+        if (candle.getSuperShortMa() < candle.getShortMa() &&
+                status == Status.HOLDING_BUY) {
+            mag *= 0.6;
+        }
+        if (candle.getSuperShortMa() > candle.getShortMa() &&
+                status == Status.HOLDING_SELL) {
+            mag *= 0.6;
+        }
+
+        if (hasLongCandle(candle)) {
+            mag *= 0.6;
+        }
+
+        if (checkSen(candle, status)) {
             mag *= 0.6;
         }
 
@@ -252,7 +291,7 @@ public class PKFXMiniDataGCSimulator {
                 log.info(
                         "【" + openCandle.getNumber() + "】 " +
                                 openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
-                                " " + openCandle.getPosition() +
+                                " " + openCandle.getSuperShortPosition() +
                                 " openMacd:" + openCandle.getMacd() + " pastMacd:" + openCandle.getPastCandle().getMacd() +
                                 " openShortMa:" + openCandle.getShortMa() + " openLongMa:" + openCandle.getLongMa() + " " +
                                 " pastShortMa:" + openCandle.getPastCandle().getShortMa() + " pastLongMa:" + openCandle.getPastCandle().getLongMa() +
@@ -267,14 +306,14 @@ public class PKFXMiniDataGCSimulator {
         }
     }
 
-    private List<Candle> getCandles() {
+    private List<Candle> getCandlesFromFile() {
         PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
         List<Candle> candles = reader.read().getCandles();
 
         return new ArrayList<>(candles);
     }
 
-    private Map<String, Candle> getLongCandles() {
+    private Map<String, Candle> getLongCandlesFromFile() {
         PKFXSimulateDataReader reader = new PKFXSimulateDataReader("data.dat");
         List<Candle> candles = reader.read().getCandles();
 
@@ -293,7 +332,7 @@ public class PKFXMiniDataGCSimulator {
         return candles.get(time.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
     }
 
-    private List<Candle> get5MinCandles() {
+    private List<Candle> get5MinCandlesFromFile() {
         PKFXSimulateDataReader reader = new PKFXSimulateDataReader("5MinData.dat");
         List<Candle> candles = reader.read().getCandles();
 
@@ -372,5 +411,38 @@ public class PKFXMiniDataGCSimulator {
                 h == 21 ||
                 h == 22 ||
                 h == 23;
+    }
+
+    private boolean hasLongCandle(Candle candle) {
+        int size = 20;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+            double threshold = c.getMid().getC() * 0.00030;
+            if (Math.abs(c.getMid().getL() - c.getMid().getH()) > threshold) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
+
+    private boolean checkSen(Candle candle, Status status) {
+        int size = 20;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        double total = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+            if (status == Status.HOLDING_BUY && c.isInsen()) {
+                count++;
+            } else if (status == Status.HOLDING_SELL && c.isYousen()) {
+                count++;
+            }
+            total++;
+        }
+        return count / total > 0.8;
     }
 }

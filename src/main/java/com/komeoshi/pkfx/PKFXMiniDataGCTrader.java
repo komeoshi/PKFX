@@ -53,7 +53,7 @@ public class PKFXMiniDataGCTrader {
                 Candle longCandle = getLongCandle(restTemplate, client);
                 Candle fiveMinCandle = getFiveMinCandle(restTemplate, client);
 
-                if (candle.getPosition() == Position.NONE) {
+                if (candle.getSuperShortPosition() == Position.NONE) {
                     continue;
                 }
                 if (longCandle == null) {
@@ -63,20 +63,20 @@ public class PKFXMiniDataGCTrader {
                     continue;
                 }
 
-                if (candle.getPosition() != lastPosition) {
+                if (candle.getSuperShortPosition() != lastPosition) {
                     // クロスした
 
                     double longAbs = longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC();
                     boolean checkLongAbs = Math.abs(longAbs)
                             > 0.027;
 
-                    log.info("cross detected. " + candle.getPosition() + " abs:" + longAbs + " sig:" + candle.getSig() +
+                    log.info("cross detected. " + candle.getSuperShortPosition() + " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
                     boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
                     int h = LocalDateTime.now().getHour();
                     boolean checkTime = true;
-                    if (candle.getPosition() == Position.LONG) {
+                    if (candle.getSuperShortPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
@@ -97,7 +97,7 @@ public class PKFXMiniDataGCTrader {
                             openCandle = candle;
                         }
 
-                    } else if (candle.getPosition() == Position.SHORT) {
+                    } else if (candle.getSuperShortPosition() == Position.SHORT) {
                         // 買い→売り
                         if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
@@ -120,7 +120,7 @@ public class PKFXMiniDataGCTrader {
 
                     }
                 }
-                lastPosition = candle.getPosition();
+                lastPosition = candle.getSuperShortPosition();
 
                 if (status != Status.NONE) {
                     status = targetReach(restTemplate, client, status, openCandle, candle);
@@ -162,6 +162,23 @@ public class PKFXMiniDataGCTrader {
         if (isInUpperTIme()) {
             mag *= 1.6;
         } else {
+            mag *= 0.6;
+        }
+
+        if (candle.getSuperShortMa() < candle.getShortMa() &&
+                status == Status.HOLDING_BUY) {
+            mag *= 0.6;
+        }
+        if (candle.getSuperShortMa() > candle.getShortMa() &&
+                status == Status.HOLDING_SELL) {
+            mag *= 0.6;
+        }
+
+        if (hasLongCandle(candle)) {
+            mag *= 0.6;
+        }
+
+        if (checkSen(candle, status)) {
             mag *= 0.6;
         }
 
@@ -284,5 +301,38 @@ public class PKFXMiniDataGCTrader {
                 h == 21 ||
                 h == 22 ||
                 h == 23;
+    }
+
+    private boolean hasLongCandle(Candle candle) {
+        int size = 20;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+            double threshold = c.getMid().getC() * 0.00030;
+            if (Math.abs(c.getMid().getL() - c.getMid().getH()) > threshold) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
+
+    private boolean checkSen(Candle candle, Status status) {
+        int size = 20;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        double total = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+            if (status == Status.HOLDING_BUY && c.isInsen()) {
+                count++;
+            } else if (status == Status.HOLDING_SELL && c.isYousen()) {
+                count++;
+            }
+            total++;
+        }
+        return count / total > 0.8;
     }
 }

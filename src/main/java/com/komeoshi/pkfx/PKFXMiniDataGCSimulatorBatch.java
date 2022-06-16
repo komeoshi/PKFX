@@ -1,7 +1,11 @@
 package com.komeoshi.pkfx;
 
+import com.komeoshi.pkfx.dto.Candle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 public class PKFXMiniDataGCSimulatorBatch {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulatorBatch.class);
@@ -14,34 +18,37 @@ public class PKFXMiniDataGCSimulatorBatch {
     public void run(){
 
         double[] params = {
-                1.00,
-                1.01,
-                1.02,
-                1.03,
-                1.04,
-                1.05,
-                1.06,
-                1.07,
-                1.08,
-                1.09,
-                1.10,
-                1.20,
-                1.31,
-                1.42,
-                1.53,
-                1.64,
-                1.75,
-                1.86,
-                1.97,
-                2.08,
-
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.5,
+                0.6,
+                0.7,
+                0.8,
+                0.9,
+                1.0,
         };
+
+        List<Candle> candles =null;
+        Map<String, Candle> longCandles =null;
+        List<Candle> fiveMinCandles =null;
+
         for(double param : params) {
             log.info("" + param);
 
             PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
             sim1.setParam(param);
+            sim1.setCandles(candles);
+            sim1.setLongCandles(longCandles);
+            sim1.setFiveMinCandles(fiveMinCandles);
             sim1.run();
+
+            if(candles == null){
+                candles = sim1.getCandles();
+                longCandles = sim1.getLongCandles();
+                fiveMinCandles = sim1.getFiveMinCandles();
+            }
         }
     }
 }
