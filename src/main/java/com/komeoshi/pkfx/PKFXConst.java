@@ -74,7 +74,7 @@ public class PKFXConst {
 
     public static final Double GC_LOSSCUT_MAGNIFICATION = 0.00081;
     public static final int MA_SHORT_PERIOD = 9;
-    public static final int MA_MID_PERIOD = 26;
+    public static final int MA_MID_PERIOD = 13;
     public static final int MA_LONG_PERIOD = 50;
     public static final int VMA_SHORT_PERIOD = 1;
     public static final int VMA_LONG_PERIOD = 10;
