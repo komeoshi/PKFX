@@ -106,7 +106,7 @@ public class PKFXMiniDataGCSimulator {
                             checkRange &&
                             checkAbs &&
                             longCandle.getMid().getL() > longCandle.getLongMa() &&
-                            longCandle.getPosition() == Position.LONG
+                            longCandle.getSuperShortPosition() == Position.LONG
                     ) {
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
@@ -125,7 +125,7 @@ public class PKFXMiniDataGCSimulator {
                             checkRange &&
                             checkAbs &&
                             longCandle.getMid().getH() < longCandle.getLongMa() &&
-                            longCandle.getPosition() == Position.SHORT
+                            longCandle.getSuperShortPosition() == Position.SHORT
                     ) {
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;

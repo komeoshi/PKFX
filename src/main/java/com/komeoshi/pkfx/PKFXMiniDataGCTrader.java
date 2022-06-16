@@ -74,7 +74,7 @@ public class PKFXMiniDataGCTrader {
                     boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
                     boolean checkRange = checkRange(longCandle, 0.06, 0.5);
 
-                    log.info("cross detected. " + candle.getSuperShortPosition() + " " + longCandle.getPosition() +
+                    log.info("cross detected. " + candle.getSuperShortPosition() + " " + longCandle.getSuperShortPosition() +
                             " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
@@ -92,7 +92,7 @@ public class PKFXMiniDataGCTrader {
                                 checkRange &&
                                 checkAbs &&
                                 longCandle.getMid().getL() > longCandle.getLongMa() &&
-                                longCandle.getPosition() == Position.LONG
+                                longCandle.getSuperShortPosition() == Position.LONG
                         ) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
@@ -111,7 +111,7 @@ public class PKFXMiniDataGCTrader {
                                 checkRange &&
                                 checkAbs &&
                                 longCandle.getMid().getH() < longCandle.getLongMa() &&
-                                longCandle.getPosition() == Position.SHORT
+                                longCandle.getSuperShortPosition() == Position.SHORT
                         ) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
