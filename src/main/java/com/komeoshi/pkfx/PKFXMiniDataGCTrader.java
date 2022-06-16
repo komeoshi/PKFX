@@ -72,6 +72,7 @@ public class PKFXMiniDataGCTrader {
                     boolean checkFiveMinCandleAbs = Math.abs(fiveMinCandle.getMid().getL() - fiveMinCandle.getMid().getH())
                             > 0.100;
                     boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
+                    boolean checkRange = checkRange(longCandle, 0.06, 0.5);
 
                     log.info("cross detected. " + candle.getSuperShortPosition() + " " + longCandle.getPosition() +
                             " abs:" + longAbs + " sig:" + candle.getSig() +
@@ -88,13 +89,10 @@ public class PKFXMiniDataGCTrader {
                             status = Status.NONE;
                         }
                         if (checkDiff &&
-                                checkRange(longCandle) &&
+                                checkRange &&
                                 checkAbs &&
                                 longCandle.getMid().getL() > longCandle.getLongMa() &&
-                                (
-                                        fiveMinCandle.getPosition() == Position.LONG ||
-                                                longCandle.getPosition() == Position.LONG
-                                )
+                                longCandle.getPosition() == Position.LONG
                         ) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
@@ -110,13 +108,10 @@ public class PKFXMiniDataGCTrader {
                             status = Status.NONE;
                         }
                         if (checkDiff &&
-                                checkRange(longCandle) &&
+                                checkRange &&
                                 checkAbs &&
                                 longCandle.getMid().getH() < longCandle.getLongMa() &&
-                                (
-                                        fiveMinCandle.getPosition() == Position.SHORT ||
-                                                longCandle.getPosition() == Position.SHORT
-                                )
+                                longCandle.getPosition() == Position.SHORT
                         ) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
@@ -324,10 +319,10 @@ public class PKFXMiniDataGCTrader {
         return count > 1;
     }
 
-    private boolean checkRange(Candle baseCandle) {
+    private boolean checkRange(Candle baseCandle, double range, double targetRate) {
         int size = 30;
-        double thresholdHigh = baseCandle.getMid().getC() + 0.08;
-        double thresholdLow = baseCandle.getMid().getC() - 0.08;
+        double thresholdHigh = baseCandle.getMid().getC() + range;
+        double thresholdLow = baseCandle.getMid().getC() - range;
 
         List<Candle> candles = baseCandle.getCandles();
         double count = 0;
@@ -341,7 +336,7 @@ public class PKFXMiniDataGCTrader {
             total++;
         }
         double rate = count / total;
-        return rate > 0.5;
+        return rate > targetRate;
     }
 
     private boolean checkSen(Candle candle, Status status) {
