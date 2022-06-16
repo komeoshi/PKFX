@@ -68,7 +68,7 @@ public class PKFXMiniDataGCTrader {
 
                     double longAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC());
                     boolean checkLongAbs = longAbs
-                            > 0.034;
+                            > 0.094;
                     boolean checkFiveMinCandleAbs = Math.abs(fiveMinCandle.getMid().getL() - fiveMinCandle.getMid().getH())
                             > 0.100;
                     boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
