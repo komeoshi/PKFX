@@ -83,12 +83,12 @@ public class PKFXMiniDataGCSimulator {
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 Candle fiveMinCandle = getCandleAt(fiveMinCandles, candle.getTime());
 
-                boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
+                boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.03;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTime = true;
 
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
-                        > 0.024;
+                        > 0.034;
                 boolean checkFiveMinCandleAbs = Math.abs(fiveMinCandle.getMid().getL() - fiveMinCandle.getMid().getH())
                         > 0.100;
                 boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
@@ -101,8 +101,8 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkDiff && checkTime && checkAbs &&
-                            isUpper(longCandle) &&
+                    if (checkDiff &&
+                            checkAbs &&
                             longCandle.getMid().getL() > longCandle.getLongMa() &&
                             (
                                     fiveMinCandle.getPosition() == Position.LONG ||
@@ -122,8 +122,8 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkDiff && checkTime && checkAbs &&
-                            isLower(longCandle) &&
+                    if (checkDiff &&
+                            checkAbs &&
                             longCandle.getMid().getH() < longCandle.getLongMa() &&
                             (
                                     fiveMinCandle.getPosition() == Position.SHORT ||

@@ -68,7 +68,7 @@ public class PKFXMiniDataGCTrader {
 
                     double longAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC());
                     boolean checkLongAbs = longAbs
-                            > 0.024;
+                            > 0.034;
                     boolean checkFiveMinCandleAbs = Math.abs(fiveMinCandle.getMid().getL() - fiveMinCandle.getMid().getH())
                             > 0.100;
                     boolean checkAbs = checkLongAbs || checkFiveMinCandleAbs;
@@ -77,7 +77,7 @@ public class PKFXMiniDataGCTrader {
                             " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
-                    boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.08;
+                    boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.03;
                     int h = LocalDateTime.now().getHour();
                     boolean checkTime = true;
                     if (candle.getSuperShortPosition() == Position.LONG) {
