@@ -175,12 +175,12 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000280;
+        double mag = param;
 
         if (isInUpperTIme(openCandle)) {
             mag *= 1.6;
         } else {
-            mag *= 0.6;
+            mag *= 0.5;
         }
 
         if (candle.getSuperShortMa() < candle.getShortMa() &&
@@ -193,11 +193,11 @@ public class PKFXMiniDataGCSimulator {
         }
 
         if (hasLongCandle(candle)) {
-            mag *= 0.6;
+            mag *= 0.7;
         }
 
         if (checkSen(candle, status)) {
-            mag *= 0.6;
+            mag *= 0.4;
         }
 
         double targetRateBuy = openCandle.getMid().getC() * (1 + mag);

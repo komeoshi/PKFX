@@ -18,16 +18,16 @@ public class PKFXMiniDataGCSimulatorBatch {
     public void run(){
 
         double[] params = {
-                0.1,
-                0.2,
-                0.3,
-                0.4,
-                0.5,
-                0.6,
-                0.7,
-                0.8,
-                0.9,
-                1.0,
+                0.000080,
+                0.000180,
+                0.000280,
+                0.000380,
+                0.000480,
+                0.000580,
+                0.000680,
+                0.000780,
+                0.000880,
+                0.000980,
         };
 
         List<Candle> candles =null;
@@ -35,7 +35,7 @@ public class PKFXMiniDataGCSimulatorBatch {
         List<Candle> fiveMinCandles =null;
 
         for(double param : params) {
-            log.info("" + param);
+            log.info("" + (param*1000));
 
             PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
             sim1.setParam(param);
