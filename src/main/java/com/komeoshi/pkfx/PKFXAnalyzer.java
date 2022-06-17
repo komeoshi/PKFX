@@ -31,8 +31,8 @@ public class PKFXAnalyzer {
         double aveLong = getMa(candles, PKFXConst.MA_LONG_PERIOD);
 
         Candle lastCandle = candles.get(candles.size() - 1);
-        boolean b1 = lastCandle.getMid().getL() < aveShort;
-        boolean b2 = lastCandle.getMid().getH() > aveShort;
+        boolean b1 = lastCandle.getAsk().getL() < aveShort;
+        boolean b2 = lastCandle.getAsk().getH() > aveShort;
 
         boolean b11 = aveShort > aveMid;
         boolean b12 = aveMid > aveLong;
@@ -66,13 +66,25 @@ public class PKFXAnalyzer {
         return ave;
     }
 
+    public double getSpreadMa(final List<Candle> candles, final int term) {
+        int lastBar = candles.size() - 1;
+        int firstBar = lastBar - term + 1;
+
+        double ave = 0;
+        for (int i = firstBar; i <= lastBar; i++) {
+            ave += candles.get(i).getSpread();
+        }
+        ave = (ave / term);
+        return ave;
+    }
+
     public double getMa(final List<Candle> candles, final int term) {
         int lastBar = candles.size() - 1;
         int firstBar = lastBar - term + 1;
 
         double ave = 0;
         for (int i = firstBar; i <= lastBar; i++) {
-            ave += candles.get(i).getMid().getC();
+            ave += candles.get(i).getAsk().getC();
         }
         ave = (ave / term);
         return ave;
@@ -89,10 +101,10 @@ public class PKFXAnalyzer {
     public static double calculateEmasHelper(List<Candle> candles, double term, int i, double[] results) {
 
         if (i == 0) {
-            results[0] = candles.get(0).getMid().getC();
+            results[0] = candles.get(0).getAsk().getC();
             return results[0];
         } else {
-            double close = candles.get(i).getMid().getC();
+            double close = candles.get(i).getAsk().getC();
             double factor = (2.0 / (term + 1));
             double ema = close * factor + (1 - factor) * calculateEmasHelper(candles, term, i - 1, results);
             results[i] = ema;
@@ -113,7 +125,7 @@ public class PKFXAnalyzer {
 
         double aveGain = 0, aveLoss = 0;
         for (int bar = firstBar + 1; bar <= lastBar; bar++) {
-            double change = candles.get(bar).getMid().getC() - candles.get(bar - 1).getMid().getC();
+            double change = candles.get(bar).getAsk().getC() - candles.get(bar - 1).getAsk().getC();
             if (change >= 0) {
                 aveGain += change;
             } else {
@@ -209,6 +221,11 @@ public class PKFXAnalyzer {
             } else {
                 currentCandle.setEmaPosition(Position.SHORT);
             }
+
+            double spread = Math.abs(currentCandle.getAsk().getC() - currentCandle.getBid().getC());
+            currentCandle.setSpread(spread);
+            double spreadMa = getSpreadMa(currentCandles, 9);
+            currentCandle.setSpreadMa(spreadMa);
 
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();

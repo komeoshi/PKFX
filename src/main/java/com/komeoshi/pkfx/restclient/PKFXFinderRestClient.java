@@ -40,6 +40,7 @@ public class PKFXFinderRestClient {
         String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
         url += "count=300";
         url += "&granularity=" + granularity;
+        url += "&price=BA";
 
         HttpHeaders headers = getHttpHeaders();
 

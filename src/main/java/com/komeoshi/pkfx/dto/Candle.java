@@ -16,7 +16,11 @@ public class Candle implements Serializable {
     private int volume;
     private boolean complete;
 
-    private Mid mid;
+    // private Mid mid;
+    private Mid bid;
+    private Mid ask;
+    private double spread;
+    private double spreadMa;
 
     private ArrayList<Candle> candles;
     private int number = -1;
@@ -42,7 +46,7 @@ public class Candle implements Serializable {
 
     public boolean isYousen() {
         // 始値よりも終値が高ければ陽線
-        return this.getMid().getC() > this.getMid().getO();
+        return this.getAsk().getC() > this.getAsk().getO();
     }
 
     public boolean isInsen() {
@@ -57,8 +61,8 @@ public class Candle implements Serializable {
      */
     public boolean isLengthEnough(double candleLengthMagnification) {
         // ローソクの長さ閾値
-        double threshold = (this.getMid().getO() * candleLengthMagnification);
-        return this.getMid().getC() > threshold;
+        double threshold = (this.getAsk().getO() * candleLengthMagnification);
+        return this.getAsk().getC() > threshold;
     }
 
     public String toString(){
@@ -67,7 +71,8 @@ public class Candle implements Serializable {
         s.append("time:" + time + "\n");
         s.append("volume:" + volume + "\n");
         s.append("complete:" + complete + "\n");
-        s.append("mid:" + mid + "\n");
+        s.append("ask:" + ask + "\n");
+        s.append("bid:" + bid + "\n");
 
         return s.toString();
     }

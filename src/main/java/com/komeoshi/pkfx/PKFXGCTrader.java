@@ -77,28 +77,28 @@ public class PKFXGCTrader {
                     if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
-                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
                         if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
                                 && checkMacd && !isDeadMinute) {
-                            log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                            client.buy(candle.getMid().getH(), restTemplate);
+                            log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
+                            client.buy(candle.getAsk().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
                         }
                     } else if (candle.getPosition() == Position.SHORT) {
                         // 買い→売り
                         if (status != Status.NONE) {
-                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
                         if (isSigOver && isVmaOver && !isDeadTime && isNotInRange(candle)
                                 && checkMacd && !isDeadMinute) {
-                            log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                            client.sell(candle.getMid().getH(), restTemplate);
+                            log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
+                            client.sell(candle.getAsk().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
                         }
@@ -106,14 +106,14 @@ public class PKFXGCTrader {
 
                     if(status == Status.NONE) {
                         if (isRsiHot) {
-                            log.info("signal (HOT) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                            client.sell(candle.getMid().getH(), restTemplate);
+                            log.info("signal (HOT) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
+                            client.sell(candle.getAsk().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
                         }
                         if (isRsiCold) {
-                            log.info("signal (COLD) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                            client.buy(candle.getMid().getH(), restTemplate);
+                            log.info("signal (COLD) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
+                            client.buy(candle.getAsk().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
                         }
@@ -144,7 +144,7 @@ public class PKFXGCTrader {
             lossCutMag *= 1.45;
         }
 
-        if (Math.abs(candle.getMid().getH() - candle.getMid().getL()) > 0.35) {
+        if (Math.abs(candle.getAsk().getH() - candle.getAsk().getL()) > 0.35) {
             lossCutMag /= 300;
         }
 
@@ -167,22 +167,22 @@ public class PKFXGCTrader {
             lossCutMag /= 300;
         }
 
-        double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
-        double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
+        double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
+        double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
 
         boolean isUpper = candle.getPastCandle().getLongMa() < candle.getLongMa();
 
         if (status == Status.HOLDING_BUY) {
-            if (lossCutRateBuy > candle.getMid().getC() && isUpper) {
+            if (lossCutRateBuy > candle.getAsk().getC() && isUpper) {
 
-                log.info("<<signal (buy)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (buy)(losscut)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (lossCutRateSell < candle.getMid().getC() && !isUpper) {
+            if (lossCutRateSell < candle.getAsk().getC() && !isUpper) {
 
-                log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (sell)(losscut)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }
@@ -200,28 +200,28 @@ public class PKFXGCTrader {
             mag *= 0.5;
         }
 
-        boolean isUpperCloudLong = candle.getLongMa() < candle.getMid().getH();
-        boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
+        boolean isUpperCloudLong = candle.getLongMa() < candle.getAsk().getH();
+        boolean isUpperCloudShort = candle.getShortMa() > candle.getAsk().getH();
 
         boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
         boolean checkMacd = candle.getMacd() < candle.getSig() * macdMag;
 
-        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
-        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+        double targetRateBuy = openCandle.getAsk().getC() * (1 + mag);
+        double targetRateSell = openCandle.getAsk().getC() * (1 - mag);
 
 
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma && checkMacd) {
+            if (targetRateBuy < candle.getAsk().getC() && isUpperCloudLong && checkVma && checkMacd) {
 
-                log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (buy)(reached)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
 
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() && isUpperCloudShort && checkVma && checkMacd) {
+            if (targetRateSell > candle.getAsk().getC() && isUpperCloudShort && checkVma && checkMacd) {
 
-                log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (sell)(reached)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }

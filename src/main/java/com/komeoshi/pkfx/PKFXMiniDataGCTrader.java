@@ -65,7 +65,7 @@ public class PKFXMiniDataGCTrader {
                 if (candle.getEmaPosition() != lastPosition) {
                     // クロスした
 
-                    double longAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC());
+                    double longAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC());
                     boolean checkLongAbs = longAbs
                             > 0.014;
                     boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
@@ -77,16 +77,16 @@ public class PKFXMiniDataGCTrader {
                     if (candle.getEmaPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
-                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
                         if (checkLongRange &&
                                 checkLongAbs &&
-                                longCandle.getMid().getL() > longCandle.getLongMa()
+                                longCandle.getAsk().getL() > longCandle.getLongMa()
                         ) {
-                            log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                            client.buy(candle.getMid().getH(), restTemplate);
+                            log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
+                            client.buy(candle.getAsk().getH(), restTemplate);
                             status = Status.HOLDING_BUY;
                             openCandle = candle;
                         }
@@ -94,16 +94,16 @@ public class PKFXMiniDataGCTrader {
                     } else if (candle.getEmaPosition() == Position.SHORT) {
                         // 買い→売り
                         if (status != Status.NONE) {
-                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                            log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
                         if (checkLongRange &&
                                 checkLongAbs &&
-                                longCandle.getMid().getH() < longCandle.getLongMa()
+                                longCandle.getAsk().getH() < longCandle.getLongMa()
                         ) {
-                            log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
-                            client.sell(candle.getMid().getH(), restTemplate);
+                            log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
+                            client.sell(candle.getAsk().getH(), restTemplate);
                             status = Status.HOLDING_SELL;
                             openCandle = candle;
                         }
@@ -125,20 +125,20 @@ public class PKFXMiniDataGCTrader {
         // 小さくするとロスカットしやすくなる
         double lossCutMag = 0.000500;
 
-        double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
-        double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
+        double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
+        double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
 
         if (status == Status.HOLDING_BUY) {
-            if (lossCutRateBuy > candle.getMid().getC()) {
+            if (lossCutRateBuy > candle.getAsk().getC()) {
 
-                log.info("<<signal (buy_losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (buy_losscut)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (lossCutRateSell < candle.getMid().getC()) {
+            if (lossCutRateSell < candle.getAsk().getC()) {
 
-                log.info("<<signal (sell_losscut)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (sell_losscut)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }
@@ -172,21 +172,21 @@ public class PKFXMiniDataGCTrader {
             mag *= 0.6;
         }
 
-        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
-        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+        double targetRateBuy = openCandle.getAsk().getC() * (1 + mag);
+        double targetRateSell = openCandle.getAsk().getC() * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC()) {
+            if (targetRateBuy < candle.getAsk().getC()) {
 
-                log.info("<<signal (buy_reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (buy_reached)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
 
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC()) {
+            if (targetRateSell > candle.getAsk().getC()) {
 
-                log.info("<<signal (sell_reached)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
+                log.info("<<signal (sell_reached)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
                 status = Status.NONE;
             }
@@ -241,7 +241,7 @@ public class PKFXMiniDataGCTrader {
         double total = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
-            if (c.getMid().getL() > c.getLongMa()) {
+            if (c.getAsk().getL() > c.getLongMa()) {
                 count++;
             }
             total++;
@@ -257,7 +257,7 @@ public class PKFXMiniDataGCTrader {
         double total = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
-            if (c.getMid().getH() < c.getLongMa()) {
+            if (c.getAsk().getH() < c.getLongMa()) {
                 count++;
             }
             total++;
@@ -300,8 +300,8 @@ public class PKFXMiniDataGCTrader {
         double count = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
-            double threshold = c.getMid().getC() * 0.00030;
-            if (Math.abs(c.getMid().getL() - c.getMid().getH()) > threshold) {
+            double threshold = c.getAsk().getC() * 0.00030;
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > threshold) {
                 count++;
             }
         }
@@ -310,15 +310,15 @@ public class PKFXMiniDataGCTrader {
 
     private boolean checkRange(Candle baseCandle, double range, double targetRate) {
         int size = 30;
-        double thresholdHigh = baseCandle.getMid().getC() + range;
-        double thresholdLow = baseCandle.getMid().getC() - range;
+        double thresholdHigh = baseCandle.getAsk().getC() + range;
+        double thresholdLow = baseCandle.getAsk().getC() - range;
 
         List<Candle> candles = baseCandle.getCandles();
         double count = 0;
         double total = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
-            double currentRate = c.getMid().getC();
+            double currentRate = c.getAsk().getC();
             if (currentRate > thresholdHigh || thresholdLow > currentRate) {
                 count++;
             }

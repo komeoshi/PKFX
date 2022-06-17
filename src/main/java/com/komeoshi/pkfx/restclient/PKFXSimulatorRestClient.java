@@ -21,8 +21,9 @@ public class PKFXSimulatorRestClient {
 
     public static void main(String[] args) {
         PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
-        log.info("" + client.getMins());
+        List<Candle> candles  = client.runWithManyCandles(new RestTemplate());
 
+        log.info("" + candles.size());
     }
 
     private List<String> getMins() {
@@ -113,35 +114,12 @@ public class PKFXSimulatorRestClient {
         String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
         url += day;
         url += "&granularity=" + granularity;
+        url += "&price=BA";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
         // headers.add("Accept-Encoding", "gzip, deflate");
-
-        ResponseEntity<Instrument> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                new ParameterizedTypeReference<Instrument>() {
-                });
-        Instrument instrument = response.getBody();
-
-        log.info("response size:" + instrument.getCandles().size());
-
-        return instrument;
-    }
-
-    public Instrument run(RestTemplate restTemplate) {
-
-        String url = "https://" + PKFXConst.getApiDomain() + "/v3/instruments/" + PKFXConst.CURRENCY + "/candles?";
-        url += "count=5000";
-        url += "&granularity=" + PKFXConst.GRANULARITY;
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
-        //  headers.add("Accept-Encoding","gzip, deflate");
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,

@@ -154,7 +154,7 @@ public class PKFXGCSimulator {
             lossCutMag *= 1.45;
         }
 
-        if (Math.abs(candle.getMid().getH() - candle.getMid().getL()) > 0.35) {
+        if (Math.abs(candle.getAsk().getH() - candle.getAsk().getL()) > 0.35) {
             lossCutMag /= 300;
         }
 
@@ -177,19 +177,19 @@ public class PKFXGCSimulator {
             lossCutMag /= 300;
         }
 
-        double lossCutRateBuy = openCandle.getMid().getC() * (1 - lossCutMag);
-        double lossCutRateSell = openCandle.getMid().getC() * (1 + lossCutMag);
+        double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
+        double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
 
         boolean isUpper = candle.getPastCandle().getLongMa() < candle.getLongMa();
 
         if (status == Status.HOLDING_BUY) {
-            if (lossCutRateBuy > candle.getMid().getC() && isUpper) {
+            if (lossCutRateBuy > candle.getAsk().getC() && isUpper) {
 
                 completeOrder(openCandle, candle, Reason.LOSSCUT, status);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (lossCutRateSell < candle.getMid().getC() && !isUpper) {
+            if (lossCutRateSell < candle.getAsk().getC() && !isUpper) {
 
                 completeOrder(openCandle, candle, Reason.LOSSCUT, status);
                 status = Status.NONE;
@@ -208,23 +208,23 @@ public class PKFXGCSimulator {
             mag *= 0.5;
         }
 
-        boolean isUpperCloudLong = candle.getLongMa() < candle.getMid().getH();
-        boolean isUpperCloudShort = candle.getShortMa() > candle.getMid().getH();
+        boolean isUpperCloudLong = candle.getLongMa() < candle.getAsk().getH();
+        boolean isUpperCloudShort = candle.getShortMa() > candle.getAsk().getH();
 
         boolean checkVma = candle.getLongVma() * 1.005 < candle.getShortVma();
         boolean checkMacd = candle.getMacd() < candle.getSig() * macdMag;
 
-        double targetRateBuy = openCandle.getMid().getC() * (1 + mag);
-        double targetRateSell = openCandle.getMid().getC() * (1 - mag);
+        double targetRateBuy = openCandle.getAsk().getC() * (1 + mag);
+        double targetRateSell = openCandle.getAsk().getC() * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
-            if (targetRateBuy < candle.getMid().getC() && isUpperCloudLong && checkVma && checkMacd) {
+            if (targetRateBuy < candle.getAsk().getC() && isUpperCloudLong && checkVma && checkMacd) {
 
                 completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
-            if (targetRateSell > candle.getMid().getC() && isUpperCloudShort && checkMacd) {
+            if (targetRateSell > candle.getAsk().getC() && isUpperCloudShort && checkMacd) {
 
                 completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
@@ -284,13 +284,13 @@ public class PKFXGCSimulator {
     private void completeOrder(Candle openCandle, Candle closeCandle, Reason reason, Status status) {
 
         if (status == Status.HOLDING_BUY) {
-            if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
+            if (openCandle.getAsk().getC() < closeCandle.getAsk().getC()) {
                 countWin++;
             } else {
                 countLose++;
             }
         } else {
-            if (openCandle.getMid().getC() > closeCandle.getMid().getC()) {
+            if (openCandle.getAsk().getC() > closeCandle.getAsk().getC()) {
                 countWin++;
             } else {
                 countLose++;
@@ -299,9 +299,9 @@ public class PKFXGCSimulator {
         totalCount++;
         double thisDiff;
         if (status == Status.HOLDING_BUY) {
-            thisDiff = (closeCandle.getMid().getC() - openCandle.getMid().getC());
+            thisDiff = (closeCandle.getAsk().getC() - openCandle.getAsk().getC());
         } else {
-            thisDiff = (openCandle.getMid().getC() - closeCandle.getMid().getC());
+            thisDiff = (openCandle.getAsk().getC() - closeCandle.getAsk().getC());
         }
         diff += thisDiff;
 
@@ -314,13 +314,13 @@ public class PKFXGCSimulator {
                 break;
             case TIMEOUT:
                 if (status == Status.HOLDING_BUY) {
-                    if (openCandle.getMid().getC() < closeCandle.getMid().getC()) {
+                    if (openCandle.getAsk().getC() < closeCandle.getAsk().getC()) {
                         countTimeoutWin++;
                     } else {
                         countTimeoutLose++;
                     }
                 } else {
-                    if (openCandle.getMid().getC() > closeCandle.getMid().getC()) {
+                    if (openCandle.getAsk().getC() > closeCandle.getAsk().getC()) {
                         countTimeoutWin++;
                     } else {
                         countTimeoutLose++;
@@ -332,7 +332,7 @@ public class PKFXGCSimulator {
         if (isLogging)
             log.info("<< signal " + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " 【" +
                     closeCandle.getNumber() + "】" +
-                    openCandle.getMid().getC() + " -> " + closeCandle.getMid().getC() + "(" + thisDiff + "), " +
+                    openCandle.getAsk().getC() + " -> " + closeCandle.getAsk().getC() + "(" + thisDiff + "), " +
                     countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
                     diff + "(" + (diff / totalCount) + "), " + reason +
                     " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
