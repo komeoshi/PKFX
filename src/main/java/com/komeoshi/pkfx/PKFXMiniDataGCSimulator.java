@@ -83,7 +83,7 @@ public class PKFXMiniDataGCSimulator {
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
 
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
-                        > 0.094;
+                        > 0.014;
                 boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
 
                 if (candle.getSuperShortPosition() == Position.LONG) {

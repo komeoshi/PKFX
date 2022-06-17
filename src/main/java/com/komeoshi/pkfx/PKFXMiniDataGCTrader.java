@@ -67,7 +67,7 @@ public class PKFXMiniDataGCTrader {
 
                     double longAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC());
                     boolean checkLongAbs = longAbs
-                            > 0.094;
+                            > 0.014;
                     boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
 
                     log.info("cross detected. " + candle.getSuperShortPosition() + " " + longCandle.getSuperShortPosition() +
