@@ -69,8 +69,11 @@ public class PKFXMiniDataGCTrader {
                     boolean checkLongAbs = longAbs
                             > 0.014;
                     boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
+                    boolean checkSpread = candle.getSpreadMa() < 0.020;
 
-                    log.info("cross detected. " + candle.getEmaPosition() + " " + longCandle.getEmaPosition() +
+                    log.info("cross detected. "  +
+                            "spread:" + candle.getSpreadMa() + " "
+                            + candle.getEmaPosition() + " " + longCandle.getEmaPosition() +
                             " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
@@ -82,6 +85,7 @@ public class PKFXMiniDataGCTrader {
                             status = Status.NONE;
                         }
                         if (checkLongRange &&
+                                checkSpread &&
                                 checkLongAbs &&
                                 longCandle.getAsk().getL() > longCandle.getLongMa()
                         ) {
@@ -99,6 +103,7 @@ public class PKFXMiniDataGCTrader {
                             status = Status.NONE;
                         }
                         if (checkLongRange &&
+                                checkSpread &&
                                 checkLongAbs &&
                                 longCandle.getAsk().getH() < longCandle.getLongMa()
                         ) {
@@ -147,7 +152,7 @@ public class PKFXMiniDataGCTrader {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000280;
+        double mag = 0.000001;
 
         if (isInUpperTIme()) {
             mag *= 1.1;

@@ -80,11 +80,13 @@ public class PKFXMiniDataGCSimulator {
             }
 
             if (candle.getEmaPosition() != lastPosition) {
+
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
 
                 boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
                         > 0.014;
                 boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
+                boolean checkSpread = candle.getSpreadMa() < 0.020;
 
                 if (candle.getEmaPosition() == Position.LONG) {
                     // 売り→買い
@@ -96,6 +98,7 @@ public class PKFXMiniDataGCSimulator {
 
                     if (checkLongRange
                             && checkLongAbs
+                            && checkSpread
                             && longCandle.getAsk().getL() > longCandle.getLongMa()
                     ) {
                         buy(TradeReason.GC, candle);
@@ -113,6 +116,7 @@ public class PKFXMiniDataGCSimulator {
 
                     if (checkLongRange
                             && checkLongAbs
+                            && checkSpread
                             && longCandle.getAsk().getH() < longCandle.getLongMa()
                     ) {
                         sell(TradeReason.DC, candle);
@@ -163,7 +167,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = param;
+        double mag = 0.000001;
 
         if (isInUpperTIme(openCandle)) {
             mag *= 1.1;
