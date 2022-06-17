@@ -18,11 +18,17 @@ public class PKFXMiniDataGCSimulatorBatch {
     public void run() {
 
         double[] params = {
-                0.000080,
-                0.000180,
-                0.000280,
-                0.000380,
-                0.000480,
+                1.0,
+                1.1,
+                1.2,
+                1.3,
+                1.4,
+                1.5,
+                1.6,
+                1.7,
+                1.8,
+                1.9,
+                2.0,
         };
 
         List<Candle> candles = null;

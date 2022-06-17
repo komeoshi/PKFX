@@ -68,7 +68,7 @@ public class PKFXMiniDataGCTrader {
                     double longAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC());
                     boolean checkLongAbs = longAbs
                             > 0.094;
-                    boolean checkRange = checkRange(longCandle, 0.06, 0.5);
+                    boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
 
                     log.info("cross detected. " + candle.getSuperShortPosition() + " " + longCandle.getSuperShortPosition() +
                             " abs:" + longAbs + " sig:" + candle.getSig() +
@@ -85,10 +85,9 @@ public class PKFXMiniDataGCTrader {
                             status = Status.NONE;
                         }
                         if (checkDiff &&
-                                checkRange &&
+                                checkLongRange &&
                                 checkLongAbs &&
-                                longCandle.getMid().getL() > longCandle.getLongMa() &&
-                                longCandle.getSuperShortPosition() == Position.LONG
+                                longCandle.getMid().getL() > longCandle.getLongMa()
                         ) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
@@ -104,10 +103,9 @@ public class PKFXMiniDataGCTrader {
                             status = Status.NONE;
                         }
                         if (checkDiff &&
-                                checkRange &&
+                                checkLongRange &&
                                 checkLongAbs &&
-                                longCandle.getMid().getH() < longCandle.getLongMa() &&
-                                longCandle.getSuperShortPosition() == Position.SHORT
+                                longCandle.getMid().getH() < longCandle.getLongMa()
                         ) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
