@@ -25,7 +25,7 @@ public class PKFXAnalyzer {
                 candle.isLengthEnough(candleLengthMagnification);
     }
 
-    public boolean isMaOk(final List<Candle> candles){
+    public boolean isMaOk(final List<Candle> candles) {
         double aveShort = getMa(candles, PKFXConst.MA_SHORT_PERIOD);
         double aveMid = getMa(candles, PKFXConst.MA_MID_PERIOD);
         double aveLong = getMa(candles, PKFXConst.MA_LONG_PERIOD);
@@ -41,40 +41,64 @@ public class PKFXAnalyzer {
         // return b1 && b2 && lastCandle.isYousen() && b11 && b12;
 
     }
-    public double getVma(final List<Candle> candles, final int term){
+
+    public double getVma(final List<Candle> candles, final int term) {
         int lastBar = candles.size() - 1;
         int firstBar = lastBar - term + 1;
 
         double ave = 0;
-        for(int i= firstBar ; i <= lastBar; i++){
+        for (int i = firstBar; i <= lastBar; i++) {
             ave += candles.get(i).getVolume();
         }
         ave = (ave / term);
         return ave;
     }
 
-    public double getSig(final List<Candle> candles, final int term){
+    public double getSig(final List<Candle> candles, final int term) {
         int lastBar = candles.size() - 1;
         int firstBar = lastBar - term + 1;
 
         double ave = 0;
-        for(int i= firstBar ; i <= lastBar; i++){
+        for (int i = firstBar; i <= lastBar; i++) {
             ave += candles.get(i).getMacd();
         }
         ave = (ave / term);
         return ave;
     }
 
-    public double getMa(final List<Candle> candles, final int term){
+    public double getMa(final List<Candle> candles, final int term) {
         int lastBar = candles.size() - 1;
         int firstBar = lastBar - term + 1;
 
         double ave = 0;
-        for(int i= firstBar ; i <= lastBar; i++){
+        for (int i = firstBar; i <= lastBar; i++) {
             ave += candles.get(i).getMid().getC();
         }
         ave = (ave / term);
         return ave;
+    }
+
+    public double getEma(List<Candle> candles, int term) {
+        double[] results = new double[candles.size()];
+
+        calculateEmasHelper(candles, term, candles.size() - 1, results);
+
+        return results[candles.size()-1];
+    }
+
+    public static double calculateEmasHelper(List<Candle> candles, double term, int i, double[] results) {
+
+        if (i == 0) {
+            results[0] = candles.get(0).getMid().getC();
+            return results[0];
+        } else {
+            double close = candles.get(i).getMid().getC();
+            double factor = (2.0 / (term + 1));
+            double ema = close * factor + (1 - factor) * calculateEmasHelper(candles, term, i - 1, results);
+            results[i] = ema;
+            return ema;
+        }
+
     }
 
     public double getRsi(final List<Candle> candles) {
@@ -147,6 +171,9 @@ public class PKFXAnalyzer {
             currentCandle.setShortVma(shortVma);
             currentCandle.setLongVma(longVma);
 
+            double shortEma = getEma(currentCandles, 9);
+            double longEma = getEma(currentCandles, 26);
+
             double macd = Math.abs(longMa - shortMa);
             currentCandle.setMacd(macd);
 
@@ -175,6 +202,12 @@ public class PKFXAnalyzer {
                 currentCandle.setSuperShortPosition(Position.LONG);
             } else {
                 currentCandle.setSuperShortPosition(Position.SHORT);
+            }
+
+            if(shortEma > longEma){
+                currentCandle.setEmaPosition(Position.LONG);
+            } else {
+                currentCandle.setEmaPosition(Position.SHORT);
             }
 
             if (logging && ii % 10000 == 0) {
