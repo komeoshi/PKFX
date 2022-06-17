@@ -69,7 +69,7 @@ public class PKFXMiniDataGCTrader {
                     boolean checkLongAbs = longAbs
                             > 0.014;
                     boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
-                    boolean checkSpread = candle.getSpreadMa() < 0.020;
+                    boolean checkSpread = candle.getSpreadMa() < 0.022;
 
                     log.info("cross detected. "  +
                             "spread:" + candle.getSpreadMa() + " "
@@ -177,8 +177,8 @@ public class PKFXMiniDataGCTrader {
             mag *= 0.6;
         }
 
-        double targetRateBuy = openCandle.getAsk().getC() * (1 + mag);
-        double targetRateSell = openCandle.getAsk().getC() * (1 - mag);
+        double targetRateBuy = (openCandle.getAsk().getC() + 0.004) * (1 + mag);
+        double targetRateSell = (openCandle.getAsk().getC() - 0.004) * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
