@@ -52,7 +52,7 @@ public class PKFXMiniDataGCTrader {
 
                 Candle longCandle = getLongCandle(restTemplate, client);
 
-                if (candle.getPosition() == Position.NONE) {
+                if (candle.getEmaPosition() == Position.NONE) {
                     continue;
                 }
                 if (longCandle == null) {
@@ -62,7 +62,7 @@ public class PKFXMiniDataGCTrader {
                     continue;
                 }
 
-                if (candle.getPosition() != lastPosition) {
+                if (candle.getEmaPosition() != lastPosition) {
                     // クロスした
 
                     double longAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC());
@@ -70,20 +70,18 @@ public class PKFXMiniDataGCTrader {
                             > 0.014;
                     boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
 
-                    log.info("cross detected. " + candle.getPosition() + " " + longCandle.getPosition() +
+                    log.info("cross detected. " + candle.getEmaPosition() + " " + longCandle.getEmaPosition() +
                             " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
-                    if (candle.getPosition() == Position.LONG) {
+                    if (candle.getEmaPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkLongRange &&
-                                checkLongAbs &&
-                                longCandle.getMid().getL() > longCandle.getLongMa()
+                        if (true
                         ) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.buy(candle.getMid().getH(), restTemplate);
@@ -91,16 +89,14 @@ public class PKFXMiniDataGCTrader {
                             openCandle = candle;
                         }
 
-                    } else if (candle.getPosition() == Position.SHORT) {
+                    } else if (candle.getEmaPosition() == Position.SHORT) {
                         // 買い→売り
                         if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkLongRange &&
-                                checkLongAbs &&
-                                longCandle.getMid().getH() < longCandle.getLongMa()
+                        if (true
                         ) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
                             client.sell(candle.getMid().getH(), restTemplate);
@@ -110,7 +106,7 @@ public class PKFXMiniDataGCTrader {
 
                     }
                 }
-                lastPosition = candle.getPosition();
+                lastPosition = candle.getEmaPosition();
 
                 if (status != Status.NONE) {
                     status = targetReach(restTemplate, client, status, openCandle, candle);

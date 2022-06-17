@@ -70,23 +70,27 @@ public class PKFXMiniDataGCSimulator {
         Candle openCandle = null;
         for (Candle candle : candles) {
 
-            if (candle.getSuperShortPosition() == Position.NONE) {
+            if (candle.getEmaPosition() == Position.NONE) {
                 continue;
             }
 
-            LocalDateTime from = LocalDateTime.of(2022, 1, 1, 0, 0, 0, 0);
+            LocalDateTime from = LocalDateTime.of(2022, 1, 4, 0, 0, 0, 0);
             if (candle.getTime().isBefore(from)) {
                 continue;
             }
 
-            if (candle.getPosition() != lastPosition) {
+            if (candle.getEmaPosition() != lastPosition) {
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
+                if(longCandle==null || longCandle.getPastCandle() == null){
+                    log.info(""+longCandle.getTime() + " is null,");
+                    continue;
+                }
 
                 boolean checkLongAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC())
                         > 0.014;
                 boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
 
-                if (candle.getPosition() == Position.LONG) {
+                if (candle.getEmaPosition() == Position.LONG) {
                     // 売り→買い
 
                     if (status != Status.NONE) {
@@ -94,16 +98,14 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkLongRange
-                            && checkLongAbs
-                            && longCandle.getMid().getL() > longCandle.getLongMa()
+                    if (true
                     ) {
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
                         openCandle = candle;
                     }
 
-                } else if (candle.getPosition() == Position.SHORT) {
+                } else if (candle.getEmaPosition() == Position.SHORT) {
                     // 買い→売り
 
                     if (status != Status.NONE) {
@@ -111,9 +113,7 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkLongRange
-                            && checkLongAbs
-                            && longCandle.getMid().getH() < longCandle.getLongMa()
+                    if (true
                     ) {
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;
@@ -121,7 +121,7 @@ public class PKFXMiniDataGCSimulator {
                     }
                 }
             }
-            lastPosition = candle.getPosition();
+            lastPosition = candle.getEmaPosition();
 
             if (status != Status.NONE) {
                 status = targetReach(status, openCandle, candle);
@@ -279,7 +279,7 @@ public class PKFXMiniDataGCSimulator {
                 log.info(
                         "【" + openCandle.getNumber() + "】 " +
                                 openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
-                                " " + openCandle.getPosition() +
+                                " " + openCandle.getEmaPosition() +
                                 " openMacd:" + openCandle.getMacd() + " pastMacd:" + openCandle.getPastCandle().getMacd() +
                                 " openShortMa:" + openCandle.getShortMa() + " openLongMa:" + openCandle.getLongMa() + " " +
                                 " pastShortMa:" + openCandle.getPastCandle().getShortMa() + " pastLongMa:" + openCandle.getPastCandle().getLongMa() +
