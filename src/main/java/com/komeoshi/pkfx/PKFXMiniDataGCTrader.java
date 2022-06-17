@@ -84,7 +84,10 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkSpread
+                        if (checkLongRange
+                                && checkLongAbs
+                                && checkSpread
+                                && longCandle.getAsk().getL() > longCandle.getLongMa()
                         ) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                             client.buy(candle.getAsk().getH(), restTemplate);
@@ -99,7 +102,10 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkSpread
+                        if (checkLongRange
+                                && checkLongAbs
+                                && checkSpread
+                                && longCandle.getAsk().getH() < longCandle.getLongMa()
                         ) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                             client.sell(candle.getAsk().getH(), restTemplate);
