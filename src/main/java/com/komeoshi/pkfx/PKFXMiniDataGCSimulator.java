@@ -192,8 +192,8 @@ public class PKFXMiniDataGCSimulator {
             mag *= 0.4;
         }
 
-        double targetRateBuy = openCandle.getAsk().getC() * (1 + mag);
-        double targetRateSell = openCandle.getAsk().getC() * (1 - mag);
+        double targetRateBuy = openCandle.getAsk().getC() + 0.004 * (1 + mag);
+        double targetRateSell = openCandle.getAsk().getC() - 0.004 * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
