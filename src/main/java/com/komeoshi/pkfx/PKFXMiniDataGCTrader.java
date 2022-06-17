@@ -74,9 +74,6 @@ public class PKFXMiniDataGCTrader {
                             " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
-                    boolean checkDiff = Math.abs(candle.getShortMa() - candle.getMid().getC()) < 0.03;
-                    int h = LocalDateTime.now().getHour();
-                    boolean checkTime = true;
                     if (candle.getSuperShortPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
@@ -84,8 +81,7 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff &&
-                                checkLongRange &&
+                        if (checkLongRange &&
                                 checkLongAbs &&
                                 longCandle.getMid().getL() > longCandle.getLongMa()
                         ) {
@@ -102,8 +98,7 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkDiff &&
-                                checkLongRange &&
+                        if (checkLongRange &&
                                 checkLongAbs &&
                                 longCandle.getMid().getH() < longCandle.getLongMa()
                         ) {
