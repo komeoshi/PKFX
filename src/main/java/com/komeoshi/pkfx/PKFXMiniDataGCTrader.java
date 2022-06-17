@@ -154,7 +154,7 @@ public class PKFXMiniDataGCTrader {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000080;
+        double mag = 0.000280;
 
         if (isInUpperTIme()) {
             mag *= 1.1;
