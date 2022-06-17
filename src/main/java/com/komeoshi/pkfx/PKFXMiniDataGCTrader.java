@@ -52,7 +52,7 @@ public class PKFXMiniDataGCTrader {
 
                 Candle longCandle = getLongCandle(restTemplate, client);
 
-                if (candle.getSuperShortPosition() == Position.NONE) {
+                if (candle.getPosition() == Position.NONE) {
                     continue;
                 }
                 if (longCandle == null) {
@@ -62,7 +62,7 @@ public class PKFXMiniDataGCTrader {
                     continue;
                 }
 
-                if (candle.getSuperShortPosition() != lastPosition) {
+                if (candle.getPosition() != lastPosition) {
                     // クロスした
 
                     double longAbs = Math.abs(longCandle.getMid().getC() - longCandle.getPastCandle().getMid().getC());
@@ -70,11 +70,11 @@ public class PKFXMiniDataGCTrader {
                             > 0.014;
                     boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
 
-                    log.info("cross detected. " + candle.getSuperShortPosition() + " " + longCandle.getSuperShortPosition() +
+                    log.info("cross detected. " + candle.getPosition() + " " + longCandle.getPosition() +
                             " abs:" + longAbs + " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
-                    if (candle.getSuperShortPosition() == Position.LONG) {
+                    if (candle.getPosition() == Position.LONG) {
                         // 売り→買い
                         if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
@@ -91,7 +91,7 @@ public class PKFXMiniDataGCTrader {
                             openCandle = candle;
                         }
 
-                    } else if (candle.getSuperShortPosition() == Position.SHORT) {
+                    } else if (candle.getPosition() == Position.SHORT) {
                         // 買い→売り
                         if (status != Status.NONE) {
                             log.info("<<signal (timeout)" + candle.getTime() + ", OPEN:" + candle.getMid().getO() + ", HIGH:" + candle.getMid().getH());
@@ -110,7 +110,7 @@ public class PKFXMiniDataGCTrader {
 
                     }
                 }
-                lastPosition = candle.getSuperShortPosition();
+                lastPosition = candle.getPosition();
 
                 if (status != Status.NONE) {
                     status = targetReach(restTemplate, client, status, openCandle, candle);
