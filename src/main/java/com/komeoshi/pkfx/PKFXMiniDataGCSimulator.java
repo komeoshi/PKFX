@@ -319,76 +319,6 @@ public class PKFXMiniDataGCSimulator {
         return new ArrayList<>(candles);
     }
 
-    private Candle getCandleAt(List<Candle> candles, LocalDateTime time) {
-
-        Candle candle = null;
-        for (Candle c : candles) {
-            if (c.getTime().isAfter(time)) {
-                break;
-            } else {
-                candle = c;
-            }
-        }
-
-        return candle;
-    }
-
-    private boolean isUpper(Candle candle, int size) {
-        List<Candle> candles = candle.getCandles();
-        double count = 0;
-        double total = 0;
-        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
-            Candle c = candles.get(ii);
-            if (c.getAsk().getL() > c.getLongMa()) {
-                count++;
-            }
-            total++;
-        }
-        return count / total > 0.0;
-    }
-
-    private boolean isLower(Candle candle, int size) {
-        List<Candle> candles = candle.getCandles();
-        double count = 0;
-        double total = 0;
-        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
-            Candle c = candles.get(ii);
-            if (c.getAsk().getH() < c.getLongMa()) {
-                count++;
-            }
-            total++;
-        }
-        return count / total > 0.0;
-    }
-
-    private boolean isInUpperTIme(Candle candle) {
-        int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-        return h == 0 ||
-                h == 1 ||
-                h == 2 ||
-                h == 3 ||
-                h == 4 ||
-                h == 5 ||
-                h == 6 ||
-                h == 7 ||
-                h == 8 ||
-                h == 9 ||
-                h == 10 ||
-                h == 11 ||
-                h == 12 ||
-                h == 13 ||
-                h == 14 ||
-                h == 15 ||
-                h == 16 ||
-                // h == 17 ||
-                h == 18 ||
-                h == 19 ||
-                h == 20 ||
-                h == 21 ||
-                h == 22 ||
-                h == 23;
-    }
-
     private boolean hasLongCandle(Candle candle) {
         int size = 20;
 
@@ -402,43 +332,5 @@ public class PKFXMiniDataGCSimulator {
             }
         }
         return count > 1;
-    }
-
-    private boolean checkRange(Candle baseCandle, double range, double targetRate) {
-        int size = 30;
-        double thresholdHigh = baseCandle.getAsk().getC() + range;
-        double thresholdLow = baseCandle.getAsk().getC() - range;
-
-        List<Candle> candles = baseCandle.getCandles();
-        double count = 0;
-        double total = 0;
-        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
-            Candle c = candles.get(ii);
-            double currentRate = c.getAsk().getC();
-            if (currentRate > thresholdHigh || thresholdLow > currentRate) {
-                count++;
-            }
-            total++;
-        }
-        double rate = count / total;
-        return rate > targetRate;
-    }
-
-    private boolean checkSen(Candle candle, Status status) {
-        int size = 20;
-
-        List<Candle> candles = candle.getCandles();
-        double count = 0;
-        double total = 0;
-        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
-            Candle c = candles.get(ii);
-            if (status == Status.HOLDING_BUY && c.isInsen()) {
-                count++;
-            } else if (status == Status.HOLDING_SELL && c.isYousen()) {
-                count++;
-            }
-            total++;
-        }
-        return count / total > 0.8;
     }
 }
