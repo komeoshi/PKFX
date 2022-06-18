@@ -168,7 +168,7 @@ public class PKFXMiniDataGCTrader {
 
     private Status losscut(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.000400;
+        double lossCutMag = 0.000390;
 
         double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
