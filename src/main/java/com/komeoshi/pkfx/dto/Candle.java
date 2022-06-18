@@ -25,9 +25,8 @@ public class Candle implements Serializable {
     private ArrayList<Candle> candles;
     private int number = -1;
     private Position position = Position.NONE;
-    private Position superShortPosition = Position.NONE;
-    private Position semiPosition = Position.NONE;
     private Position emaPosition = Position.NONE;
+    private Position sigPosition = Position.NONE;
     private double superShortMa;
     private double superShortLongMa;
     private double shortMa;
@@ -37,6 +36,10 @@ public class Candle implements Serializable {
     private double longVma;
     private double shortEma;
     private double longEma;
+    private double tr;
+    private double atr;
+    private Dm dm;
+    private Adx adx;
 
     private double macd;
     private double sig;

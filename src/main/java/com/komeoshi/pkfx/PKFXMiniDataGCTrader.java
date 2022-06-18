@@ -65,16 +65,18 @@ public class PKFXMiniDataGCTrader {
                 if (candle.getEmaPosition() != lastPosition) {
                     // クロスした
 
-                    double longAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC());
-                    boolean checkLongAbs = longAbs
-                            > 0.014;
-                    boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
-                    boolean checkSpread = candle.getSpreadMa() < 0.022;
+                    boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
+                            > 0.082;
+                    boolean checkSpread = candle.getSpreadMa() < 0.023;
+                    int h = LocalDateTime.now().getHour();
+                    boolean checkTime = h != 3 && h != 16 && h != 17;
+
+                    boolean hasLongCandle = hasLongCandle(longCandle);
 
                     log.info("cross detected. "  +
                             "spread:" + candle.getSpreadMa() + " "
                             + candle.getEmaPosition() + " " + longCandle.getEmaPosition() +
-                            " abs:" + longAbs + " sig:" + candle.getSig() +
+                            " sig:" + candle.getSig() +
                             " longVma:" + candle.getLongVma() + " macd:" + candle.getMacd());
 
                     if (candle.getEmaPosition() == Position.LONG) {
@@ -84,9 +86,10 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkLongRange
-                                && checkLongAbs
+                        if (checkLongAbs
+                                && checkTime
                                 && checkSpread
+                                && !hasLongCandle
                                 && longCandle.getAsk().getL() > longCandle.getLongMa()
                         ) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
@@ -102,9 +105,10 @@ public class PKFXMiniDataGCTrader {
                             client.complete(restTemplate);
                             status = Status.NONE;
                         }
-                        if (checkLongRange
-                                && checkLongAbs
+                        if (checkLongAbs
+                                && checkTime
                                 && checkSpread
+                                && !hasLongCandle
                                 && longCandle.getAsk().getH() < longCandle.getLongMa()
                         ) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
@@ -152,30 +156,7 @@ public class PKFXMiniDataGCTrader {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000280;
-
-        if (isInUpperTIme()) {
-            mag *= 1.1;
-        } else {
-            mag *= 0.6;
-        }
-
-        if (candle.getSuperShortMa() < candle.getShortMa() &&
-                status == Status.HOLDING_BUY) {
-            mag *= 0.6;
-        }
-        if (candle.getSuperShortMa() > candle.getShortMa() &&
-                status == Status.HOLDING_SELL) {
-            mag *= 0.6;
-        }
-
-        if (hasLongCandle(candle)) {
-            mag *= 0.6;
-        }
-
-        if (checkSen(candle, status)) {
-            mag *= 0.6;
-        }
+        double mag = 0.000000;
 
         double targetRateBuy = (openCandle.getAsk().getC() + 0.004) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - 0.004) * (1 - mag);
@@ -305,8 +286,8 @@ public class PKFXMiniDataGCTrader {
         double count = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
-            double threshold = c.getAsk().getC() * 0.00030;
-            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > threshold) {
+
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.07) {
                 count++;
             }
         }

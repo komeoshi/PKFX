@@ -1,10 +1,13 @@
 package com.komeoshi.pkfx;
 
+import com.komeoshi.pkfx.dto.Adx;
 import com.komeoshi.pkfx.dto.Candle;
+import com.komeoshi.pkfx.dto.Dm;
 import com.komeoshi.pkfx.enumerator.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.DatabaseMetaData;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -90,12 +93,24 @@ public class PKFXAnalyzer {
         return ave;
     }
 
+    public double getAtr(final List<Candle> candles, final int term) {
+        int lastBar = candles.size() - 1;
+        int firstBar = lastBar - term + 1;
+
+        double ave = 0;
+        for (int i = firstBar; i <= lastBar; i++) {
+            ave += candles.get(i).getTr();
+        }
+        ave = (ave / term);
+        return ave;
+    }
+
     public double getEma(List<Candle> candles, int term) {
         double[] results = new double[candles.size()];
 
         calculateEmasHelper(candles, term, candles.size() - 1, results);
 
-        return results[candles.size()-1];
+        return results[candles.size() - 1];
     }
 
     public static double calculateEmasHelper(List<Candle> candles, double term, int i, double[] results) {
@@ -146,6 +161,89 @@ public class PKFXAnalyzer {
         return w != DayOfWeek.MONDAY || h != 6;
     }
 
+    private double getTrueRange(List<Candle> candles) {
+        Candle currentCandle = candles.get(candles.size() - 1);
+        Candle lastCandle = candles.get(candles.size() - 2);
+
+        double a1 = currentCandle.getAsk().getH() - currentCandle.getAsk().getL();
+        double a2 = currentCandle.getAsk().getH() - currentCandle.getAsk().getC();
+        double a3 = lastCandle.getAsk().getC() - currentCandle.getAsk().getL();
+        return Math.max(Math.max(a1, a2), a3);
+    }
+
+    private Adx getDx(List<Candle> candles) {
+        int term = 14;
+
+        double totalPlusDm = 0.0;
+        double totalMinusDm = 0.0;
+        double totalTrueRange = 0.0;
+        int lastBar = candles.size() - 1;
+        int firstBar = lastBar - term + 1;
+
+        for (int bar = firstBar + 1; bar <= lastBar; bar++) {
+            Candle c = candles.get(bar);
+
+            if (c.getDm() == null) {
+                continue;
+            }
+            totalPlusDm += c.getDm().getPlusDm();
+            totalMinusDm += c.getDm().getMinusDm();
+            totalTrueRange += c.getTr();
+        }
+
+        double plusDi = (totalPlusDm / totalTrueRange) * 100;
+        double minusDi = (totalMinusDm / totalTrueRange) * 100;
+        double dx = ((plusDi - minusDi) / (plusDi + minusDi)) * 100;
+
+        Adx adx = new Adx();
+        adx.setPlusDi(plusDi);
+        adx.setMinusDi(minusDi);
+        adx.setDx(dx);
+
+        return adx;
+    }
+
+    public double getAdx(final List<Candle> candles, final int term) {
+        int lastBar = candles.size() - 1;
+        int firstBar = lastBar - term + 1;
+
+        double ave = 0;
+        int count = 0;
+        for (int i = firstBar; i <= lastBar; i++) {
+            if (candles.get(i).getAdx() == null) {
+                continue;
+            }
+            count++;
+            ave += candles.get(i).getAdx().getDx();
+        }
+        ave = (ave / count);
+        return ave;
+    }
+
+    private Dm getDm(List<Candle> candles) {
+        Dm dm = new Dm();
+
+        Candle currentCandle = candles.get(candles.size() - 1);
+        Candle lastCandle = candles.get(candles.size() - 2);
+
+        double plusDM = currentCandle.getAsk().getH() - lastCandle.getAsk().getH();
+        double minusDM = lastCandle.getAsk().getL() - currentCandle.getAsk().getL();
+
+        if (plusDM < 0)
+            plusDM = 0;
+        if (minusDM < 0)
+            minusDM = 0;
+        if (plusDM > minusDM)
+            minusDM = 0;
+        if (minusDM > plusDM)
+            plusDM = 0;
+
+        dm.setPlusDm(plusDM);
+        dm.setMinusDm(minusDM);
+
+        return dm;
+    }
+
     public void setPosition(List<Candle> candles, boolean logging) {
         for (int ii = 0; ii < candles.size(); ii++) {
 
@@ -186,17 +284,23 @@ public class PKFXAnalyzer {
             double shortEma = getEma(currentCandles, 9);
             double longEma = getEma(currentCandles, 26);
 
-            double macd = Math.abs(longMa - shortMa);
+            double macd = shortEma - longEma;
             currentCandle.setMacd(macd);
 
-            double sig = getSig(currentCandles, 50);
+            double sig = getSig(currentCandles, 9);
             currentCandle.setSig(sig);
 
-            double shortSig = getSig(currentCandles, 9);
+            double shortSig = getSig(currentCandles, 1);
             currentCandle.setShortSig(shortSig);
 
             double rsi = getRsi(currentCandles);
             currentCandle.setRsi(rsi);
+
+            double tr = getTrueRange(currentCandles);
+            currentCandle.setTr(tr);
+
+            double atr = getAtr(currentCandles, 14);
+            currentCandle.setAtr(atr);
 
             ArrayList<Candle> candlesForSave = new ArrayList<>();
             for (int jj = ii - 60; jj < ii; jj++) {
@@ -210,16 +314,16 @@ public class PKFXAnalyzer {
                 currentCandle.setPosition(Position.SHORT);
             }
 
-            if (superShortMa > superShortLongMa) {
-                currentCandle.setSuperShortPosition(Position.LONG);
-            } else {
-                currentCandle.setSuperShortPosition(Position.SHORT);
-            }
-
-            if(shortEma > longEma){
+            if (shortEma > longEma) {
                 currentCandle.setEmaPosition(Position.LONG);
             } else {
                 currentCandle.setEmaPosition(Position.SHORT);
+            }
+
+            if (shortSig > sig) {
+                currentCandle.setSigPosition(Position.LONG);
+            } else {
+                currentCandle.setSigPosition(Position.SHORT);
             }
 
             double spread = Math.abs(currentCandle.getAsk().getC() - currentCandle.getBid().getC());
@@ -227,10 +331,21 @@ public class PKFXAnalyzer {
             double spreadMa = getSpreadMa(currentCandles, 9);
             currentCandle.setSpreadMa(spreadMa);
 
+            Dm dm = getDm(currentCandles);
+            currentCandle.setDm(dm);
+
+            Adx dx = getDx(currentCandles);
+            currentCandle.setAdx(dx);
+
+            double adx = getAdx(currentCandles, 14);
+            dx.setAdx(adx);
+            currentCandle.setAdx(dx);
+
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();
-                log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() + " " + currentCandle.getPosition() +
-                        " " + currentCandle.getSig() +
+                log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() +
+                        " " + currentCandle.getAdx().getAdx() +
+
                         " " + (endTime - startTime));
             }
         }

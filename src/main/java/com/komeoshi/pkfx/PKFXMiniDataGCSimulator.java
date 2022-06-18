@@ -82,11 +82,14 @@ public class PKFXMiniDataGCSimulator {
             if (candle.getEmaPosition() != lastPosition) {
 
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
-
                 boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                        > 0.014;
-                boolean checkLongRange = checkRange(longCandle, 0.06, 0.5);
-                boolean checkSpread = candle.getSpreadMa() < 0.022;
+                        > 0.082;
+                boolean checkSpread = candle.getSpreadMa() < 0.023;
+                int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
+                boolean checkTime = h != 3 && h != 16 && h != 17;
+
+                boolean hasLongCandle = hasLongCandle(longCandle);
+
 
                 if (candle.getEmaPosition() == Position.LONG) {
                     // 売り→買い
@@ -96,9 +99,10 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkLongRange
-                            && checkLongAbs
+                    if (checkLongAbs
+                            && checkTime
                             && checkSpread
+                            && !hasLongCandle
                             && longCandle.getAsk().getL() > longCandle.getLongMa()
                     ) {
                         buy(TradeReason.GC, candle);
@@ -114,9 +118,10 @@ public class PKFXMiniDataGCSimulator {
                         status = Status.NONE;
                     }
 
-                    if (checkLongRange
-                            && checkLongAbs
+                    if (checkLongAbs
+                            && checkTime
                             && checkSpread
+                            && !hasLongCandle
                             && longCandle.getAsk().getH() < longCandle.getLongMa()
                     ) {
                         sell(TradeReason.DC, candle);
@@ -167,31 +172,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000280;
-
-        if (isInUpperTIme(openCandle)) {
-            mag *= 1.1;
-        } else {
-            mag *= 0.5;
-        }
-
-        if (candle.getSuperShortMa() < candle.getShortMa() &&
-                status == Status.HOLDING_BUY) {
-            mag *= 0.6;
-        }
-        if (candle.getSuperShortMa() > candle.getShortMa() &&
-                status == Status.HOLDING_SELL) {
-            mag *= 0.6;
-        }
-
-        if (hasLongCandle(candle)) {
-            mag *= 0.7;
-        }
-
-        if (checkSen(candle, status)) {
-            mag *= 0.4;
-        }
-
+        double mag = 0.000000;
         double targetRateBuy = (openCandle.getAsk().getC() + 0.004) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - 0.004) * (1 - mag);
 
@@ -278,24 +259,31 @@ public class PKFXMiniDataGCSimulator {
                     " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
 
-        if (openCandle.getTime().isAfter(LocalDateTime.now().minusMonths(1))) {
-            if (Math.abs(thisDiff) > 0.20) {
-                log.info(
-                        "【" + openCandle.getNumber() + "】 " +
-                                openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
-                                " " + openCandle.getEmaPosition() +
-                                " openMacd:" + openCandle.getMacd() + " pastMacd:" + openCandle.getPastCandle().getMacd() +
-                                " openShortMa:" + openCandle.getShortMa() + " openLongMa:" + openCandle.getLongMa() + " " +
-                                " pastShortMa:" + openCandle.getPastCandle().getShortMa() + " pastLongMa:" + openCandle.getPastCandle().getLongMa() +
-                                " pastShortMa-openShortMa:" + Math.abs(openCandle.getShortMa() - openCandle.getPastCandle().getShortMa()) +
-                                " pastLongMa-openLongMa:" + Math.abs(openCandle.getLongMa() - openCandle.getPastCandle().getLongMa()) +
-                                " pastSuperLongMa-openSuperLongMa:" + Math.abs(openCandle.getSuperLongMa() - openCandle.getPastCandle().getSuperLongMa()) +
-                                " "
 
-                );
-            }
+        if (Math.abs(thisDiff) > 0.050) {
+            log.info(
+                    "【" + openCandle.getNumber() + "】 " +
+                            openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
+                            " " + openCandle.getEmaPosition() +
+                            " openTr:" + openCandle.getTr() +
+                            " openAtr:" + openCandle.getAtr() +
+                            " openAdx:" + openCandle.getAdx().getAdx() +
+                            " openPlusDi:" + openCandle.getAdx().getPlusDi() +
+                            " openMinusDi:" + openCandle.getAdx().getMinusDi() +
 
+                            " openSig:" + openCandle.getSig() +
+                            " openMacd:" + openCandle.getMacd() + " pastMacd:" + openCandle.getPastCandle().getMacd() +
+                            " openShortMa:" + openCandle.getShortMa() + " openLongMa:" + openCandle.getLongMa() + " " +
+                            " pastShortMa:" + openCandle.getPastCandle().getShortMa() + " pastLongMa:" + openCandle.getPastCandle().getLongMa() +
+                            " pastShortMa-openShortMa:" + Math.abs(openCandle.getShortMa() - openCandle.getPastCandle().getShortMa()) +
+                            " pastLongMa-openLongMa:" + Math.abs(openCandle.getLongMa() - openCandle.getPastCandle().getLongMa()) +
+                            " pastSuperLongMa-openSuperLongMa:" + Math.abs(openCandle.getSuperLongMa() - openCandle.getPastCandle().getSuperLongMa()) +
+                            " "
+
+            );
         }
+
+
     }
 
     private List<Candle> getCandlesFromFile() {
@@ -408,8 +396,8 @@ public class PKFXMiniDataGCSimulator {
         double count = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
-            double threshold = c.getAsk().getC() * 0.00030;
-            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > threshold) {
+
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.07) {
                 count++;
             }
         }
