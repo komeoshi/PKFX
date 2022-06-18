@@ -303,7 +303,7 @@ public class PKFXAnalyzer {
             currentCandle.setAtr(atr);
 
             ArrayList<Candle> candlesForSave = new ArrayList<>();
-            for (int jj = ii - 60; jj < ii; jj++) {
+            for (int jj = ii - 25; jj < ii; jj++) {
                 candlesForSave.add(candles.get(jj));
             }
             currentCandle.setCandles(candlesForSave);
