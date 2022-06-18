@@ -85,10 +85,12 @@ public class PKFXMiniDataGCSimulator {
 
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                        > 0.0795;
+                        > 0.0785;
                 boolean checkSpread = candle.getSpreadMa() < 0.023;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTime = h != 1 && h != 3 && h != 17 && h != 22;
+                int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
+                boolean checkMin =  m !=3 && m !=17 && m!=59;
                 boolean hasLongCandle = hasLongCandle(longCandle);
                 boolean hasShortCandle = hasShortCandle(longCandle);
 
@@ -97,6 +99,7 @@ public class PKFXMiniDataGCSimulator {
 
                     boolean doTrade = checkLongAbs
                             && checkTime
+                            && checkMin
                             && checkSpread
                             && !hasLongCandle
                             && !hasShortCandle
@@ -134,6 +137,7 @@ public class PKFXMiniDataGCSimulator {
 
                     boolean doTrade = checkLongAbs
                             && checkTime
+                            && checkMin
                             && checkSpread
                             && !hasLongCandle
                             && !hasShortCandle
