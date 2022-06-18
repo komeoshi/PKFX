@@ -83,13 +83,12 @@ public class PKFXMiniDataGCSimulator {
 
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                        > 0.082;
+                        > 0.080;
                 boolean checkSpread = candle.getSpreadMa() < 0.023;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTime = h != 3 && h != 16 && h != 17;
-
                 boolean hasLongCandle = hasLongCandle(longCandle);
-
+                boolean hasShortCandle = hasShortCandle(longCandle);
 
                 if (candle.getEmaPosition() == Position.LONG) {
                     // 売り→買い
@@ -103,7 +102,9 @@ public class PKFXMiniDataGCSimulator {
                             && checkTime
                             && checkSpread
                             && !hasLongCandle
+                            && !hasShortCandle
                             && longCandle.getAsk().getL() > longCandle.getLongMa()
+                            && hasPosition(candle, Position.SHORT)
                     ) {
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
@@ -122,7 +123,9 @@ public class PKFXMiniDataGCSimulator {
                             && checkTime
                             && checkSpread
                             && !hasLongCandle
+                            && !hasShortCandle
                             && longCandle.getAsk().getH() < longCandle.getLongMa()
+                            && hasPosition(candle, Position.LONG)
                     ) {
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;
@@ -259,8 +262,7 @@ public class PKFXMiniDataGCSimulator {
                     " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
 
-
-        if (Math.abs(thisDiff) > 0.050) {
+        if (reason == Reason.TIMEOUT && false) {
             log.info(
                     "【" + openCandle.getNumber() + "】 " +
                             openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
@@ -318,7 +320,20 @@ public class PKFXMiniDataGCSimulator {
 
         return new ArrayList<>(candles);
     }
+    private boolean hasShortCandle(Candle candle) {
+        int size = 20;
 
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) < 0.0020) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
     private boolean hasLongCandle(Candle candle) {
         int size = 20;
 
@@ -328,6 +343,20 @@ public class PKFXMiniDataGCSimulator {
             Candle c = candles.get(ii);
 
             if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.07) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
+    private boolean hasPosition(Candle candle, Position position) {
+        int size = 10;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+
+            if (c.getEmaPosition() == position) {
                 count++;
             }
         }

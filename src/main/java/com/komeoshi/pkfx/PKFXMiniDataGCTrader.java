@@ -66,12 +66,12 @@ public class PKFXMiniDataGCTrader {
                     // クロスした
 
                     boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                            > 0.082;
+                            > 0.080;
                     boolean checkSpread = candle.getSpreadMa() < 0.023;
                     int h = LocalDateTime.now().getHour();
                     boolean checkTime = h != 3 && h != 16 && h != 17;
-
                     boolean hasLongCandle = hasLongCandle(longCandle);
+                    boolean hasShortCandle = hasShortCandle(longCandle);
 
                     log.info("cross detected. "  +
                             "spread:" + candle.getSpreadMa() + " "
@@ -90,7 +90,9 @@ public class PKFXMiniDataGCTrader {
                                 && checkTime
                                 && checkSpread
                                 && !hasLongCandle
+                                && !hasShortCandle
                                 && longCandle.getAsk().getL() > longCandle.getLongMa()
+                                && hasPosition(candle, Position.SHORT)
                         ) {
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                             client.buy(candle.getAsk().getH(), restTemplate);
@@ -109,7 +111,9 @@ public class PKFXMiniDataGCTrader {
                                 && checkTime
                                 && checkSpread
                                 && !hasLongCandle
+                                && !hasShortCandle
                                 && longCandle.getAsk().getH() < longCandle.getLongMa()
+                                && hasPosition(candle, Position.LONG)
                         ) {
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                             client.sell(candle.getAsk().getH(), restTemplate);
@@ -214,6 +218,36 @@ public class PKFXMiniDataGCTrader {
             Candle c = candles.get(ii);
 
             if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.07) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
+
+    private boolean hasShortCandle(Candle candle) {
+        int size = 20;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) < 0.0020) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
+
+    private boolean hasPosition(Candle candle, Position position) {
+        int size = 10;
+
+        List<Candle> candles = candle.getCandles();
+        double count = 0;
+        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
+            Candle c = candles.get(ii);
+
+            if (c.getEmaPosition() == position) {
                 count++;
             }
         }
