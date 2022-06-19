@@ -43,7 +43,7 @@ public class PKFXMiniDataGCTrader {
             Position lastPosition = Position.NONE;
             Candle openCandle = null;
             int continueCount = 0;
-            final int CONTINUE_MAX = 1;
+            final int CONTINUE_MAX = 2;
             while (true) {
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;

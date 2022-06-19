@@ -69,7 +69,7 @@ public class PKFXMiniDataGCSimulator {
         Position lastPosition = Position.NONE;
         Candle openCandle = null;
         int continueCount = 0;
-        final int CONTINUE_MAX = 1;
+        final int CONTINUE_MAX = 2;
         for (Candle candle : candles) {
 
             if (candle.getEmaPosition() == Position.NONE) {
