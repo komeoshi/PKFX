@@ -100,6 +100,7 @@ public class PKFXMiniDataGCTrader {
                                     !doTrade) {
                                 // ﾏｹﾃﾙ
                                 continueCount++;
+                                log.info("continue. 【" + openCandle.getNumber() + "】" + continueCount);
 
                             } else if (candle.getAsk().getC() < openCandle.getAsk().getC() ||
                                     continueCount >= CONTINUE_MAX ||
@@ -135,6 +136,7 @@ public class PKFXMiniDataGCTrader {
                                     !doTrade) {
                                 // ﾏｹﾃﾙ
                                 continueCount++;
+                                log.info("continue. 【" + openCandle.getNumber() + "】" + continueCount);
 
                             } else if (candle.getAsk().getC() > openCandle.getAsk().getC() ||
                                     continueCount >= CONTINUE_MAX ||
@@ -204,6 +206,12 @@ public class PKFXMiniDataGCTrader {
 
         double targetRateBuy = (openCandle.getAsk().getC() + 0.004) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - 0.004) * (1 - mag);
+
+        if (Math.abs(candle.getMacd()) > 0.011) {
+            // ｵｶﾜﾘ
+            log.info("okawari.【" + openCandle.getNumber() + "】");
+            return status;
+        }
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
