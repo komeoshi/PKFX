@@ -194,6 +194,11 @@ public class PKFXMiniDataGCSimulator {
             lossCutMag *= (continueCount * 0.97);
         }
 
+        if (Math.abs(candle.getMacd()) > 0.011) {
+            // ロスカットしやすくなる
+            lossCutMag *= 0.98;
+        }
+
         double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
 
