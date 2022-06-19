@@ -173,7 +173,7 @@ public class PKFXMiniDataGCSimulator {
 
             if (status != Status.NONE) {
                 status = targetReach(status, openCandle, candle);
-                status = losscut(status, openCandle, candle);
+                status = losscut(status, openCandle, candle, continueCount);
                 if (status == Status.NONE) {
                     continueCount = 0;
                 }
@@ -186,9 +186,13 @@ public class PKFXMiniDataGCSimulator {
         );
     }
 
-    private Status losscut(Status status, Candle openCandle, Candle candle) {
+    private Status losscut(Status status, Candle openCandle, Candle candle, int continueCount) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.000390;
+        double lossCutMag = 0.000440;
+        if (continueCount > 0) {
+            // コンテニューがある場合、ロスカットしやすくなる
+            lossCutMag *= (continueCount * 0.97);
+        }
 
         double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
@@ -298,7 +302,7 @@ public class PKFXMiniDataGCSimulator {
                     " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
 
-        if (reason == Reason.LOSSCUT) {
+        if (reason == Reason.LOSSCUT && false) {
             log.info(
                     "【" + openCandle.getNumber() + "】 " +
                             openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +

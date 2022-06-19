@@ -160,7 +160,7 @@ public class PKFXMiniDataGCTrader {
 
                 if (status != Status.NONE) {
                     status = targetReach(restTemplate, client, status, openCandle, candle);
-                    status = losscut(restTemplate, client, status, openCandle, candle);
+                    status = losscut(restTemplate, client, status, openCandle, candle, continueCount);
                     if (status == Status.NONE) {
                         continueCount = 0;
                     }
@@ -170,9 +170,13 @@ public class PKFXMiniDataGCTrader {
 
     }
 
-    private Status losscut(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
+    private Status losscut(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle, int continueCount) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.000390;
+        double lossCutMag = 0.000440;
+        if (continueCount > 0) {
+            // コンテニューがある場合、ロスカットしやすくなる
+            lossCutMag *= (continueCount * 0.97);
+        }
 
         double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
         double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
