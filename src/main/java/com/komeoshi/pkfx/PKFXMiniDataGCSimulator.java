@@ -219,7 +219,7 @@ public class PKFXMiniDataGCSimulator {
         double targetRateBuy = (openCandle.getAsk().getC() + 0.004) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - 0.004) * (1 - mag);
 
-        if (Math.abs(candle.getMacd()) > param) {
+        if (Math.abs(candle.getMacd()) > 0.011) {
             // ｵｶﾜﾘ
             if (isLogging)
                 log.info("okawari.【" + openCandle.getNumber() + "】");
