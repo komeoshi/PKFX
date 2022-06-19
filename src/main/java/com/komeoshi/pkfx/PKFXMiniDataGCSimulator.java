@@ -44,7 +44,6 @@ public class PKFXMiniDataGCSimulator {
 
     private List<Candle> candles = null;
     private Map<String, Candle> longCandles = null;
-    private List<Candle> fiveMinCandles = null;
 
     private void init() {
         countLosscut = 0;
@@ -62,7 +61,6 @@ public class PKFXMiniDataGCSimulator {
         if (candles == null) {
             this.candles = getCandlesFromFile();
             this.longCandles = getLongCandlesFromFile();
-            this.fiveMinCandles = get5MinCandlesFromFile();
         }
 
         Status status = Status.NONE;
@@ -366,12 +364,6 @@ public class PKFXMiniDataGCSimulator {
         return candles.get(time.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
     }
 
-    private List<Candle> get5MinCandlesFromFile() {
-        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("5MinData.dat");
-        List<Candle> candles = reader.read().getCandles();
-
-        return new ArrayList<>(candles);
-    }
     private boolean hasShortCandle(Candle candle) {
         int size = 20;
 

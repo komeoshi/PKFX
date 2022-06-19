@@ -39,7 +39,6 @@ public class PKFXMiniDataGCSimulatorBatch {
 
         List<Candle> candles = null;
         Map<String, Candle> longCandles = null;
-        List<Candle> fiveMinCandles = null;
 
         for (double param : params) {
             log.info("" + (param * 1000));
@@ -48,13 +47,11 @@ public class PKFXMiniDataGCSimulatorBatch {
             sim1.setParam(param);
             sim1.setCandles(candles);
             sim1.setLongCandles(longCandles);
-            sim1.setFiveMinCandles(fiveMinCandles);
             sim1.run();
 
             if (candles == null) {
                 candles = sim1.getCandles();
                 longCandles = sim1.getLongCandles();
-                fiveMinCandles = sim1.getFiveMinCandles();
             }
         }
     }
