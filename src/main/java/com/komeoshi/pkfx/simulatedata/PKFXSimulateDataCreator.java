@@ -23,8 +23,8 @@ public class PKFXSimulateDataCreator {
 
     public static void main(String[] args) {
         try {
-            new PKFXSimulateDataCreator().execute1();
-            new PKFXSimulateDataCreator().execute3();
+            //new PKFXSimulateDataCreator().execute1();
+            //new PKFXSimulateDataCreator().execute3();
             new PKFXSimulateDataCreator().execute2();
         } catch (Exception e) {
             log.error("", e);
