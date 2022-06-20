@@ -218,8 +218,8 @@ public class PKFXMiniDataGCTrader {
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
         double mag = 0.000000;
 
-        double targetRateBuy = (openCandle.getAsk().getC() + 0.004) * (1 + mag);
-        double targetRateSell = (openCandle.getAsk().getC() - 0.004) * (1 - mag);
+        double targetRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 + mag);
+        double targetRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
