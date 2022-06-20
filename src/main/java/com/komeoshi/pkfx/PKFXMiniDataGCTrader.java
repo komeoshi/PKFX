@@ -79,8 +79,8 @@ public class PKFXMiniDataGCTrader {
 
                     log.info("crossed. " +
                             checkLongAbs +
-                            " " + hasLongCandle +
-                            " " + hasShortCandle +
+                            " " + !hasLongCandle +
+                            " " + !hasShortCandle +
                             " spread:" + candle.getSpreadMa() + " "
                             );
 
