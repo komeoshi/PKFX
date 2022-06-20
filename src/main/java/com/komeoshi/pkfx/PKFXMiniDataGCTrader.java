@@ -93,7 +93,7 @@ public class PKFXMiniDataGCTrader {
                                 && !hasLongCandle
                                 && !hasShortCandle
                                 && longCandle.getAsk().getL() > longCandle.getLongMa()
-                                && hasPosition(candle, Position.SHORT);
+                                ;
 
                         if (status != Status.NONE) {
                             if (candle.getAsk().getC() > openCandle.getAsk().getC() &&
@@ -129,7 +129,7 @@ public class PKFXMiniDataGCTrader {
                                 && !hasLongCandle
                                 && !hasShortCandle
                                 && longCandle.getAsk().getH() < longCandle.getLongMa()
-                                && hasPosition(candle, Position.LONG);
+                                ;
 
                         if (status != Status.NONE) {
                             if (candle.getAsk().getC() < openCandle.getAsk().getC() &&
@@ -286,21 +286,6 @@ public class PKFXMiniDataGCTrader {
             Candle c = candles.get(ii);
 
             if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) < 0.0020) {
-                count++;
-            }
-        }
-        return count > 1;
-    }
-
-    private boolean hasPosition(Candle candle, Position position) {
-        int size = 10;
-
-        List<Candle> candles = candle.getCandles();
-        double count = 0;
-        for (int ii = candles.size() - size; ii < candles.size(); ii++) {
-            Candle c = candles.get(ii);
-
-            if (c.getEmaPosition() == position) {
                 count++;
             }
         }
