@@ -86,9 +86,10 @@ public class PKFXMiniDataGCSimulator {
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
                         > 0.0685;
-                boolean checkSpread = candle.getSpreadMa() < 0.023;
+                boolean checkSpread = candle.getSpreadMa() < 0.038;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-                boolean checkTime = h != 3 && h != 22 && h != 23;
+                boolean checkTime = h != 1 && h != 3 && h != 5 &&
+                        h != 10 && h != 17 && h != 19 && h != 21 && h != 22;;
                 int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
                 boolean checkMin = m != 59;
                 boolean hasLongCandle = hasLongCandle(longCandle);
@@ -203,10 +204,10 @@ public class PKFXMiniDataGCSimulator {
     private Status losscut(Status status, Candle openCandle, Candle candle, int continueCount,
                            Revenge revenge) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.000440;
+        double lossCutMag = 0.000540;
         if (continueCount > 0) {
             // コンテニューがある場合、ロスカットしやすくなる
-            lossCutMag *= (continueCount * 0.97);
+            lossCutMag *= (continueCount * 0.92);
         }
 
         if (Math.abs(candle.getMacd()) > 0.011) {
@@ -237,7 +238,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000008;
+        double mag = 0.000037;
         double targetRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 - mag);
 
@@ -303,7 +304,7 @@ public class PKFXMiniDataGCSimulator {
         } else {
             thisDiff = (openCandle.getAsk().getC() - closeCandle.getAsk().getC());
         }
-        diff += thisDiff;
+        diff += (thisDiff - 0.004);
 
         switch (reason) {
             case LOSSCUT:
