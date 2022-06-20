@@ -1,6 +1,7 @@
 package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
+import com.komeoshi.pkfx.dto.Revenge;
 import com.komeoshi.pkfx.enumerator.Position;
 import com.komeoshi.pkfx.enumerator.Reason;
 import com.komeoshi.pkfx.enumerator.Status;
@@ -20,7 +21,7 @@ import java.util.*;
 @Setter
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
-    private boolean isLogging = false;
+    private boolean isLogging = true;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -68,6 +69,7 @@ public class PKFXMiniDataGCSimulator {
         Candle openCandle = null;
         int continueCount = 0;
         final int CONTINUE_MAX = 2;
+        Revenge revenge = new Revenge();
         for (Candle candle : candles) {
 
             if (candle.getEmaPosition() == Position.NONE) {
@@ -95,13 +97,16 @@ public class PKFXMiniDataGCSimulator {
                 if (candle.getEmaPosition() == Position.LONG) {
                     // 売り→買い
 
-                    boolean doTrade = checkLongAbs
-                            && checkTime
-                            && checkMin
-                            && checkSpread
-                            && !hasLongCandle
-                            && !hasShortCandle
-                            && longCandle.getAsk().getL() > longCandle.getLongMa();
+                    boolean doTrade =
+                            revenge.isRevenge() || (
+                                    checkLongAbs
+                                            && checkTime
+                                            && checkMin
+                                            && checkSpread
+                                            && !hasLongCandle
+                                            && !hasShortCandle
+                                            && longCandle.getAsk().getL() > longCandle.getLongMa()
+                            );
 
                     if (status != Status.NONE) {
 
@@ -124,21 +129,29 @@ public class PKFXMiniDataGCSimulator {
                     }
 
                     if (doTrade) {
+                        if(revenge.isRevenge()){
+                            if (isLogging)
+                                log.info("revenge. 【" + openCandle.getNumber() + "】" );
+                        }
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
                         openCandle = candle;
+                        revenge.setRevenge(false);
                     }
 
                 } else if (candle.getEmaPosition() == Position.SHORT) {
                     // 買い→売り
 
-                    boolean doTrade = checkLongAbs
-                            && checkTime
-                            && checkMin
-                            && checkSpread
-                            && !hasLongCandle
-                            && !hasShortCandle
-                            && longCandle.getAsk().getH() < longCandle.getLongMa();
+                    boolean doTrade =
+                            revenge.isRevenge() ||(
+                                    checkLongAbs
+                                            && checkTime
+                                            && checkMin
+                                            && checkSpread
+                                            && !hasLongCandle
+                                            && !hasShortCandle
+                                            && longCandle.getAsk().getH() < longCandle.getLongMa()
+                            );
 
                     if (status != Status.NONE) {
                         if (candle.getAsk().getC() < openCandle.getAsk().getC() &&
@@ -159,9 +172,14 @@ public class PKFXMiniDataGCSimulator {
                     }
 
                     if (doTrade) {
+                        if(revenge.isRevenge()){
+                            if (isLogging)
+                                log.info("revenge. 【" + openCandle.getNumber() + "】" );
+                        }
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;
                         openCandle = candle;
+                        revenge.setRevenge(false);
                     }
                 }
             }
@@ -169,7 +187,7 @@ public class PKFXMiniDataGCSimulator {
 
             if (status != Status.NONE) {
                 status = targetReach(status, openCandle, candle);
-                status = losscut(status, openCandle, candle, continueCount);
+                status = losscut(status, openCandle, candle, continueCount, revenge);
                 if (status == Status.NONE) {
                     continueCount = 0;
                 }
@@ -182,7 +200,8 @@ public class PKFXMiniDataGCSimulator {
         );
     }
 
-    private Status losscut(Status status, Candle openCandle, Candle candle, int continueCount) {
+    private Status losscut(Status status, Candle openCandle, Candle candle, int continueCount,
+                           Revenge revenge) {
         // 小さくするとロスカットしやすくなる
         double lossCutMag = 0.000440;
         if (continueCount > 0) {
@@ -203,12 +222,14 @@ public class PKFXMiniDataGCSimulator {
 
                 completeOrder(openCandle, candle, Reason.LOSSCUT, status);
                 status = Status.NONE;
+                revenge.setRevenge(true);
             }
         } else if (status == Status.HOLDING_SELL) {
             if (lossCutRateSell < candle.getAsk().getC()) {
 
                 completeOrder(openCandle, candle, Reason.LOSSCUT, status);
                 status = Status.NONE;
+                revenge.setRevenge(true);
             }
         }
         return status;
