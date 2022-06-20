@@ -81,7 +81,7 @@ public class PKFXMiniDataGCTrader {
                             checkLongAbs +
                             " " + hasLongCandle +
                             " " + hasShortCandle +
-                            "spread:" + candle.getSpreadMa() + " "
+                            " spread:" + candle.getSpreadMa() + " "
                             );
 
                     if (candle.getEmaPosition() == Position.LONG) {
@@ -264,7 +264,7 @@ public class PKFXMiniDataGCTrader {
     }
 
     private boolean hasLongCandle(Candle candle) {
-        int size = 20;
+        int size = 15;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
@@ -279,7 +279,7 @@ public class PKFXMiniDataGCTrader {
     }
 
     private boolean hasShortCandle(Candle candle) {
-        int size = 20;
+        int size = 15;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;

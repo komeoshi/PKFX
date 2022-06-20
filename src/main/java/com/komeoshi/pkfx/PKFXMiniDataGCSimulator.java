@@ -365,7 +365,7 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private boolean hasShortCandle(Candle candle) {
-        int size = 20;
+        int size = 15;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
@@ -379,7 +379,7 @@ public class PKFXMiniDataGCSimulator {
         return count > 1;
     }
     private boolean hasLongCandle(Candle candle) {
-        int size = 20;
+        int size = 15;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
