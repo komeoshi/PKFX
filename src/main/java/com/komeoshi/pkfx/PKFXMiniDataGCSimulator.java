@@ -101,8 +101,7 @@ public class PKFXMiniDataGCSimulator {
                             && checkSpread
                             && !hasLongCandle
                             && !hasShortCandle
-                            && longCandle.getAsk().getL() > longCandle.getLongMa()
-                            ;
+                            && longCandle.getAsk().getL() > longCandle.getLongMa();
 
                     if (status != Status.NONE) {
 
@@ -139,8 +138,7 @@ public class PKFXMiniDataGCSimulator {
                             && checkSpread
                             && !hasLongCandle
                             && !hasShortCandle
-                            && longCandle.getAsk().getH() < longCandle.getLongMa()
-                            ;
+                            && longCandle.getAsk().getH() < longCandle.getLongMa();
 
                     if (status != Status.NONE) {
                         if (candle.getAsk().getC() < openCandle.getAsk().getC() &&
@@ -222,21 +220,26 @@ public class PKFXMiniDataGCSimulator {
         double targetRateBuy = (openCandle.getAsk().getC() + 0.004) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - 0.004) * (1 - mag);
 
-        if (Math.abs(candle.getMacd()) > 0.011) {
-            // ｵｶﾜﾘ
-            if (isLogging)
-                log.info("okawari.【" + openCandle.getNumber() + "】");
-            return status;
-        }
-
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
+                if (Math.abs(candle.getMacd()) > 0.011) {
+                    // ｵｶﾜﾘ
+                    if (isLogging)
+                        log.info("okawari.【" + openCandle.getNumber() + "】");
+                    return status;
+                }
 
                 completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getAsk().getC()) {
+                if (Math.abs(candle.getMacd()) > 0.011) {
+                    // ｵｶﾜﾘ
+                    if (isLogging)
+                        log.info("okawari.【" + openCandle.getNumber() + "】");
+                    return status;
+                }
 
                 completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
@@ -378,6 +381,7 @@ public class PKFXMiniDataGCSimulator {
         }
         return count > 1;
     }
+
     private boolean hasLongCandle(Candle candle) {
         int size = 15;
 

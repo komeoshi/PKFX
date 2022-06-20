@@ -221,14 +221,13 @@ public class PKFXMiniDataGCTrader {
         double targetRateBuy = (openCandle.getAsk().getC() + 0.004) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - 0.004) * (1 - mag);
 
-        if (Math.abs(candle.getMacd()) > 0.011) {
-            // ｵｶﾜﾘ
-            log.info("okawari.【" + openCandle.getNumber() + "】");
-            return status;
-        }
-
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
+                if (Math.abs(candle.getMacd()) > 0.011) {
+                    // ｵｶﾜﾘ
+                    log.info("okawari.【" + openCandle.getNumber() + "】");
+                    return status;
+                }
 
                 log.info("<<signal (buy_reached)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
@@ -237,6 +236,11 @@ public class PKFXMiniDataGCTrader {
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getAsk().getC()) {
+                if (Math.abs(candle.getMacd()) > 0.011) {
+                    // ｵｶﾜﾘ
+                    log.info("okawari.【" + openCandle.getNumber() + "】");
+                    return status;
+                }
 
                 log.info("<<signal (sell_reached)" + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
                 client.complete(restTemplate);
