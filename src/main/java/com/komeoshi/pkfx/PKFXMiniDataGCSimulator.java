@@ -88,7 +88,7 @@ public class PKFXMiniDataGCSimulator {
                         > 0.0785;
                 boolean checkSpread = candle.getSpreadMa() < 0.023;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-                boolean checkTime = h != 3 && h != 20 && h != 22;
+                boolean checkTime = h != 3 && h != 22 && h != 23;
                 int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
                 boolean checkMin = m != 59;
                 boolean hasLongCandle = hasLongCandle(longCandle);
