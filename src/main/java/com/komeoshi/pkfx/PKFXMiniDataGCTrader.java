@@ -70,7 +70,7 @@ public class PKFXMiniDataGCTrader {
                     // クロスした
 
                     boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                            > 0.0785;
+                            > 0.0685;
                     boolean checkSpread = candle.getSpreadMa() < 0.023;
                     int h = LocalDateTime.now().getHour();
                     boolean checkTime = h != 3 && h != 22 && h != 23;
