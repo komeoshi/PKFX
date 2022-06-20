@@ -390,7 +390,7 @@ public class PKFXMiniDataGCSimulator {
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
 
-            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.07) {
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.10) {
                 count++;
             }
         }
