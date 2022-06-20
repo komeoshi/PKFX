@@ -21,7 +21,7 @@ import java.util.*;
 @Setter
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
-    private boolean isLogging = true;
+    private boolean isLogging = false;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -129,9 +129,9 @@ public class PKFXMiniDataGCSimulator {
                     }
 
                     if (doTrade) {
-                        if(revenge.isRevenge()){
+                        if (revenge.isRevenge()) {
                             if (isLogging)
-                                log.info("revenge. 【" + openCandle.getNumber() + "】" );
+                                log.info("revenge. 【" + openCandle.getNumber() + "】");
                         }
                         buy(TradeReason.GC, candle);
                         status = Status.HOLDING_BUY;
@@ -143,7 +143,7 @@ public class PKFXMiniDataGCSimulator {
                     // 買い→売り
 
                     boolean doTrade =
-                            revenge.isRevenge() ||(
+                            revenge.isRevenge() || (
                                     checkLongAbs
                                             && checkTime
                                             && checkMin
@@ -172,9 +172,9 @@ public class PKFXMiniDataGCSimulator {
                     }
 
                     if (doTrade) {
-                        if(revenge.isRevenge()){
+                        if (revenge.isRevenge()) {
                             if (isLogging)
-                                log.info("revenge. 【" + openCandle.getNumber() + "】" );
+                                log.info("revenge. 【" + openCandle.getNumber() + "】");
                         }
                         sell(TradeReason.DC, candle);
                         status = Status.HOLDING_SELL;
@@ -243,7 +243,8 @@ public class PKFXMiniDataGCSimulator {
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
-                if (Math.abs(candle.getMacd()) > 0.011) {
+                if (Math.abs(candle.getMacd()) > 0.011 ||
+                        Math.abs(candle.getShortSig()) > 0.010) {
                     // ｵｶﾜﾘ
                     if (isLogging)
                         log.info("okawari.【" + openCandle.getNumber() + "】");
@@ -255,7 +256,8 @@ public class PKFXMiniDataGCSimulator {
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getAsk().getC()) {
-                if (Math.abs(candle.getMacd()) > 0.011) {
+                if (Math.abs(candle.getMacd()) > 0.011 ||
+                        Math.abs(candle.getShortSig()) > 0.010) {
                     // ｵｶﾜﾘ
                     if (isLogging)
                         log.info("okawari.【" + openCandle.getNumber() + "】");
