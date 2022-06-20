@@ -232,7 +232,7 @@ public class PKFXMiniDataGCTrader {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000000;
+        double mag = 0.000008;
 
         double targetRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 - mag);
