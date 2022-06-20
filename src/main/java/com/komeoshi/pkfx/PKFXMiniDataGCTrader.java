@@ -68,7 +68,7 @@ public class PKFXMiniDataGCTrader {
                     // クロスした
 
                     boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                            > 0.0185;
+                            > 0.0785;
                     boolean checkSpread = candle.getSpreadMa() < 0.023;
                     int h = LocalDateTime.now().getHour();
                     boolean checkTime = h != 3 && h != 20 && h != 22;
@@ -77,14 +77,14 @@ public class PKFXMiniDataGCTrader {
                     boolean hasLongCandle = hasLongCandle(longCandle);
                     boolean hasShortCandle = hasShortCandle(longCandle);
 
-                    log.info("crossed."  +
+                    log.info("crossed." +
                             " spread:" + candle.getSpreadMa() +
-                                    " longAbs:" + Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                            );
+                            " longAbs:" + Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
+                    );
 
                     if (candle.getEmaPosition() == Position.LONG) {
                         // 売り→買い
-                        log.info("crossed. " +
+                        log.info("doTrade= " +
                                 checkLongAbs +
                                 " " + !hasLongCandle +
                                 " " + !hasShortCandle +
@@ -125,7 +125,7 @@ public class PKFXMiniDataGCTrader {
 
                     } else if (candle.getEmaPosition() == Position.SHORT) {
                         // 買い→売り
-                        log.info("crossed. " +
+                        log.info("doTrade= " +
                                 checkLongAbs +
                                 " " + !hasLongCandle +
                                 " " + !hasShortCandle +
