@@ -83,7 +83,7 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            if (candle.getEmaPosition() != lastPosition) {
+            if (candle.getEmaPosition() != lastPosition && lastPosition != Position.NONE) {
 
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
