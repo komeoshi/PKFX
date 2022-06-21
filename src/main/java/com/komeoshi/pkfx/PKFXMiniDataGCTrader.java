@@ -74,7 +74,7 @@ public class PKFXMiniDataGCTrader {
                     boolean checkSpread = candle.getSpreadMa() < 0.038;
                     int h = LocalDateTime.now().getHour();
                     boolean checkTime = h != 1 && h != 3 && h != 5 &&
-                            h != 10 && h != 17 && h != 19 && h != 21 && h != 22;
+                            h != 10 && h != 16 && h != 17 && h != 19 && h != 20 && h != 21 && h != 22 && h != 23;
                     int m = LocalDateTime.now().getMinute();
                     boolean checkMin = m != 59;
                     boolean hasLongCandle = hasLongCandle(longCandle);
@@ -201,7 +201,7 @@ public class PKFXMiniDataGCTrader {
         double lossCutMag = 0.000540;
         if (continueCount > 0) {
             // コンテニューがある場合、ロスカットしやすくなる
-            lossCutMag *= (continueCount * 0.97);
+            lossCutMag *= (continueCount * 0.92);
         }
 
         if (Math.abs(candle.getMacd()) > 0.011) {

@@ -89,7 +89,7 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkSpread = candle.getSpreadMa() < 0.038;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTime = h != 1 && h != 3 && h != 5 &&
-                        h != 10 && h != 17 && h != 19 && h != 21 && h != 22;
+                        h != 10 && h != 16 && h != 17 && h != 19 && h != 20 && h != 21 && h != 22 && h != 23;
                 int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
                 boolean checkMin = m != 59;
                 boolean hasLongCandle = hasLongCandle(longCandle);
@@ -134,7 +134,7 @@ public class PKFXMiniDataGCSimulator {
                             if (isLogging)
                                 log.info("revenge. 【" + openCandle.getNumber() + "】");
                         }
-                        buy(TradeReason.GC, candle);
+                        buy(TradeReason.GC, candle, longCandle);
                         status = Status.HOLDING_BUY;
                         openCandle = candle;
                         revenge.setRevenge(false);
@@ -177,7 +177,7 @@ public class PKFXMiniDataGCSimulator {
                             if (isLogging)
                                 log.info("revenge. 【" + openCandle.getNumber() + "】");
                         }
-                        sell(TradeReason.DC, candle);
+                        sell(TradeReason.DC, candle, longCandle);
                         status = Status.HOLDING_SELL;
                         openCandle = candle;
                         revenge.setRevenge(false);
@@ -272,14 +272,18 @@ public class PKFXMiniDataGCSimulator {
         return status;
     }
 
-    private void buy(TradeReason tradeReason, Candle openCandle) {
+    private void buy(TradeReason tradeReason, Candle openCandle, Candle longCandle) {
         if (isLogging)
-            log.info("signal >> buy【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " " + tradeReason);
+            log.info("signal >> buy【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
+                    " " + tradeReason +
+                    " longAbs:" + Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC()));
     }
 
-    private void sell(TradeReason tradeReason, Candle openCandle) {
+    private void sell(TradeReason tradeReason, Candle openCandle, Candle longCandle) {
         if (isLogging)
-            log.info("signal >> sell【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) + " " + tradeReason);
+            log.info("signal >> sell【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
+                    " " + tradeReason +
+                    " longAbs:" + Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC()));
     }
 
     private void completeOrder(Candle openCandle, Candle closeCandle, Reason reason, Status status) {
