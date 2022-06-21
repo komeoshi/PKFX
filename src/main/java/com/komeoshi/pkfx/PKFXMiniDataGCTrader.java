@@ -121,7 +121,7 @@ public class PKFXMiniDataGCTrader {
                             }
                         }
                         if (doTrade) {
-                            if (revenge.isRevenge()) {
+                            if (revenge.isRevenge() && openCandle != null) {
                                 log.info("revenge. 【" + openCandle.getNumber() + "】");
                             }
                             log.info("signal (GC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());
@@ -169,7 +169,7 @@ public class PKFXMiniDataGCTrader {
                             }
                         }
                         if (doTrade) {
-                            if (revenge.isRevenge()) {
+                            if (revenge.isRevenge() && openCandle != null) {
                                 log.info("revenge. 【" + openCandle.getNumber() + "】");
                             }
                             log.info("signal (DC) >> " + candle.getTime() + ", OPEN:" + candle.getAsk().getO() + ", HIGH:" + candle.getAsk().getH());

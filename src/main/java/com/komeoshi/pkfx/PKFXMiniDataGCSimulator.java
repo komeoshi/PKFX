@@ -131,10 +131,10 @@ public class PKFXMiniDataGCSimulator {
 
                     if (doTrade) {
                         if (revenge.isRevenge()) {
-                            if (isLogging)
+                            if (isLogging && openCandle != null)
                                 log.info("revenge. 【" + openCandle.getNumber() + "】");
                         }
-                        buy(TradeReason.GC, candle, longCandle);
+                        buy(candle, longCandle);
                         status = Status.HOLDING_BUY;
                         openCandle = candle;
                         revenge.setRevenge(false);
@@ -174,10 +174,10 @@ public class PKFXMiniDataGCSimulator {
 
                     if (doTrade) {
                         if (revenge.isRevenge()) {
-                            if (isLogging)
+                            if (isLogging && openCandle != null)
                                 log.info("revenge. 【" + openCandle.getNumber() + "】");
                         }
-                        sell(TradeReason.DC, candle, longCandle);
+                        sell(candle, longCandle);
                         status = Status.HOLDING_SELL;
                         openCandle = candle;
                         revenge.setRevenge(false);
@@ -272,17 +272,17 @@ public class PKFXMiniDataGCSimulator {
         return status;
     }
 
-    private void buy(TradeReason tradeReason, Candle openCandle, Candle longCandle) {
+    private void buy(Candle openCandle, Candle longCandle) {
         if (isLogging)
             log.info("signal >> buy【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
-                    " " + tradeReason +
+                    " " + TradeReason.GC +
                     " longAbs:" + Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC()));
     }
 
-    private void sell(TradeReason tradeReason, Candle openCandle, Candle longCandle) {
+    private void sell(Candle openCandle, Candle longCandle) {
         if (isLogging)
             log.info("signal >> sell【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
-                    " " + tradeReason +
+                    " " + TradeReason.DC +
                     " longAbs:" + Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC()));
     }
 
