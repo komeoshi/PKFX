@@ -281,8 +281,13 @@ public class PKFXAnalyzer {
             currentCandle.setShortVma(shortVma);
             currentCandle.setLongVma(longVma);
 
+            double superShortEma = getEma(currentCandles, 1);
             double shortEma = getEma(currentCandles, 9);
             double longEma = getEma(currentCandles, 26);
+
+            currentCandle.setSuperShortEma(superShortEma);
+            currentCandle.setShortEma(shortEma);
+            currentCandle.setLongEma(longEma);
 
             double macd = shortEma - longEma;
             currentCandle.setMacd(macd);
@@ -318,6 +323,12 @@ public class PKFXAnalyzer {
                 currentCandle.setEmaPosition(Position.LONG);
             } else {
                 currentCandle.setEmaPosition(Position.SHORT);
+            }
+
+            if (superShortEma > longEma) {
+                currentCandle.setShortEmaPosition(Position.LONG);
+            } else {
+                currentCandle.setShortEmaPosition(Position.SHORT);
             }
 
             if (shortSig > sig) {
