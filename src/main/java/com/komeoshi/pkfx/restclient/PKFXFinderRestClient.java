@@ -70,7 +70,7 @@ public class PKFXFinderRestClient {
         // リクエストの送信
         ResponseEntity<String> response = restTemplate.exchange(
                 url, HttpMethod.POST, entity, String.class);
-        log.info(response.getBody());
+        log.info("  response:" + response.getBody());
     }
 
     public void sell(double currentPrice, RestTemplate restTemplate) {
@@ -90,7 +90,7 @@ public class PKFXFinderRestClient {
         // リクエストの送信
         ResponseEntity<String> response = restTemplate.exchange(
                 url, HttpMethod.POST, entity, String.class);
-        log.info(response.getBody());
+        log.info("  response:" + response.getBody());
     }
 
     public void complete(RestTemplate restTemplate) {
@@ -114,7 +114,7 @@ public class PKFXFinderRestClient {
                     new ParameterizedTypeReference<String>() {
                     });
 
-            log.info(response.getBody());
+            log.info("  response:" + response.getBody());
             sleep();
 
         }
