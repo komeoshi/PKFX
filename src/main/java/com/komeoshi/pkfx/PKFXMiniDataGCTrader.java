@@ -34,6 +34,8 @@ public class PKFXMiniDataGCTrader {
         return builder.build();
     }
 
+    private static final double SPREAD_COST = 0.0041;
+
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) {
         return args -> {
@@ -209,8 +211,8 @@ public class PKFXMiniDataGCTrader {
             lossCutMag *= 0.98;
         }
 
-        double lossCutRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 - lossCutMag);
-        double lossCutRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 + lossCutMag);
+        double lossCutRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 - lossCutMag);
+        double lossCutRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 + lossCutMag);
 
         if (status == Status.HOLDING_BUY) {
             if (lossCutRateBuy > candle.getAsk().getC()) {
@@ -235,8 +237,8 @@ public class PKFXMiniDataGCTrader {
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
         double mag = 0.000037;
 
-        double targetRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 + mag);
-        double targetRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 - mag);
+        double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
+        double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {

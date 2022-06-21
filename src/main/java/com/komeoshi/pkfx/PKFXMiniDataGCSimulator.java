@@ -57,6 +57,8 @@ public class PKFXMiniDataGCSimulator {
         diff = 0.0;
     }
 
+    private static double SPREAD_COST = 0.0041;
+
     public void run() {
         init();
         if (candles == null) {
@@ -215,8 +217,8 @@ public class PKFXMiniDataGCSimulator {
             lossCutMag *= 0.98;
         }
 
-        double lossCutRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 - lossCutMag);
-        double lossCutRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 + lossCutMag);
+        double lossCutRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 - lossCutMag);
+        double lossCutRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 + lossCutMag);
 
         if (status == Status.HOLDING_BUY) {
             if (lossCutRateBuy > candle.getAsk().getC()) {
@@ -239,8 +241,8 @@ public class PKFXMiniDataGCSimulator {
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
         double mag = 0.000037;
-        double targetRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 + mag);
-        double targetRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 - mag);
+        double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
+        double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
@@ -308,7 +310,7 @@ public class PKFXMiniDataGCSimulator {
         } else {
             thisDiff = (openCandle.getAsk().getC() - closeCandle.getAsk().getC());
         }
-        diff += (thisDiff - 0.004);
+        diff += (thisDiff - SPREAD_COST);
 
         switch (reason) {
             case LOSSCUT:
