@@ -75,7 +75,8 @@ public class PKFXMiniDataGCTrader {
                             > 0.0695;
                     boolean checkSpread = candle.getSpreadMa() < 0.038;
                     int h = LocalDateTime.now().getHour();
-                    boolean checkTime = true;
+                    boolean checkTime = h != 1 && h != 3 && h != 5 &&
+                            h != 10 && h != 16 && h != 17 && h != 19 && h != 20 && h != 21 && h != 22 && h != 23;
                     int m = LocalDateTime.now().getMinute();
                     boolean checkMin = m != 59;
                     boolean hasLongCandle = hasLongCandle(longCandle);
