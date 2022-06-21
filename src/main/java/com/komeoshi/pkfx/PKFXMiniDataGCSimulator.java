@@ -85,11 +85,11 @@ public class PKFXMiniDataGCSimulator {
 
                 Candle longCandle = getCandleAt(longCandles, candle.getTime());
                 boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                        > 0.0685;
+                        > 0.0695;
                 boolean checkSpread = candle.getSpreadMa() < 0.038;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTime = h != 1 && h != 3 && h != 5 &&
-                        h != 10 && h != 17 && h != 19 && h != 21 && h != 22;;
+                        h != 10 && h != 17 && h != 19 && h != 21 && h != 22;
                 int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
                 boolean checkMin = m != 59;
                 boolean hasLongCandle = hasLongCandle(longCandle);
@@ -215,8 +215,8 @@ public class PKFXMiniDataGCSimulator {
             lossCutMag *= 0.98;
         }
 
-        double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
-        double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
+        double lossCutRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 - lossCutMag);
+        double lossCutRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 + lossCutMag);
 
         if (status == Status.HOLDING_BUY) {
             if (lossCutRateBuy > candle.getAsk().getC()) {

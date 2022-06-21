@@ -70,7 +70,7 @@ public class PKFXMiniDataGCTrader {
                     // クロスした
 
                     boolean checkLongAbs = Math.abs(longCandle.getAsk().getC() - longCandle.getPastCandle().getAsk().getC())
-                            > 0.0685;
+                            > 0.0695;
                     boolean checkSpread = candle.getSpreadMa() < 0.038;
                     int h = LocalDateTime.now().getHour();
                     boolean checkTime = h != 1 && h != 3 && h != 5 &&
@@ -209,8 +209,8 @@ public class PKFXMiniDataGCTrader {
             lossCutMag *= 0.98;
         }
 
-        double lossCutRateBuy = openCandle.getAsk().getC() * (1 - lossCutMag);
-        double lossCutRateSell = openCandle.getAsk().getC() * (1 + lossCutMag);
+        double lossCutRateBuy = (openCandle.getAsk().getC() + 0.0041) * (1 - lossCutMag);
+        double lossCutRateSell = (openCandle.getAsk().getC() - 0.0041) * (1 + lossCutMag);
 
         if (status == Status.HOLDING_BUY) {
             if (lossCutRateBuy > candle.getAsk().getC()) {
