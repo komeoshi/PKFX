@@ -14,7 +14,7 @@ public class PKFXUnitCalculator {
     private static final int MAG = 25;
     private static final int MAX = 250_000;
 
-    private static final double THRESHOLD = 0.97;
+    private static final double THRESHOLD = 0.98;
 
     public int calculate(double currentPrice, RestTemplate restTemplate) {
         PKFXFinderRestClient client = new PKFXFinderRestClient();
