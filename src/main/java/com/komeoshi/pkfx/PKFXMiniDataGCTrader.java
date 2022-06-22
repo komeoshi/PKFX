@@ -55,7 +55,7 @@ public class PKFXMiniDataGCTrader {
 
                 Candle longCandle = getLongCandle(restTemplate, client);
 
-                if (candle.getEmaPosition() == Position.NONE) {
+                if (candle.getMacdPosition() == Position.NONE) {
                     continue;
                 }
                 if (longCandle == null) {
@@ -104,7 +104,7 @@ public class PKFXMiniDataGCTrader {
                             openCandle = candle;
                         }
 
-                    } else if (candle.getEmaPosition() == Position.SHORT) {
+                    } else if (candle.getMacdPosition() == Position.SHORT) {
                         // 買い→売り
                         boolean doTrade = (
                                 !hasLongCandle
@@ -130,7 +130,7 @@ public class PKFXMiniDataGCTrader {
 
                     }
                 }
-                lastPosition = candle.getEmaPosition();
+                lastPosition = candle.getMacdPosition();
 
                 if (status != Status.NONE) {
                     status = targetReach(restTemplate, client, status, openCandle, candle);
