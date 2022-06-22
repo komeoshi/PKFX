@@ -1,6 +1,7 @@
 package com.komeoshi.pkfx.dto;
 
 import com.komeoshi.pkfx.enumerator.AdxPosition;
+import com.komeoshi.pkfx.enumerator.BBPosition;
 import com.komeoshi.pkfx.enumerator.Position;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +47,7 @@ public class Candle implements Serializable {
     private double bollingerBand;
     private double bollingerBandLow;
     private double bollingerBandHigh;
+    private BBPosition bbPosition = BBPosition.NONE;
     private double macd;
     private double sig;
     private double shortSig;

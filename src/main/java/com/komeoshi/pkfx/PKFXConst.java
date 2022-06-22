@@ -46,7 +46,7 @@ public class PKFXConst {
      * 101-009-22492304-002
      * 001-009-7946898-001
      */
-    private static final String ACCOUNT_ID_PRACTICE = "101-009-22492304-002";
+    private static final String ACCOUNT_ID_PRACTICE = "101-009-22492304-003";
     private static final String ACCOUNT_ID_PRODUCTION = "001-009-7946898-001";
 
     public static String getAccountId() {

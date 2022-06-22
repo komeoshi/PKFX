@@ -5,6 +5,7 @@ import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Dm;
 import com.komeoshi.pkfx.dto.Mid;
 import com.komeoshi.pkfx.enumerator.AdxPosition;
+import com.komeoshi.pkfx.enumerator.BBPosition;
 import com.komeoshi.pkfx.enumerator.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -438,11 +439,19 @@ public class PKFXAnalyzer {
             currentCandle.setBollingerBandHigh(bollingerBandHigh);
             currentCandle.setBollingerBandLow(bollingerBandLow);
 
+            boolean isHigh = currentCandle.getBollingerBandHigh() < currentCandle.getAsk().getH();
+            boolean isLow = currentCandle.getBollingerBandLow() > currentCandle.getAsk().getL();
+
+            if(isHigh){
+                currentCandle.setBbPosition(BBPosition.OVER);
+            }else if(isLow){
+                currentCandle.setBbPosition(BBPosition.UNDER);
+            }
+
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();
                 log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() +
                         " " + currentCandle.getAdx().getAdx() +
-
                         " " + (endTime - startTime));
             }
         }
