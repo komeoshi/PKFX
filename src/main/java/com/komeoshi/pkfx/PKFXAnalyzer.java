@@ -3,6 +3,7 @@ package com.komeoshi.pkfx;
 import com.komeoshi.pkfx.dto.Adx;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Dm;
+import com.komeoshi.pkfx.enumerator.AdxPosition;
 import com.komeoshi.pkfx.enumerator.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -352,6 +353,12 @@ public class PKFXAnalyzer {
             double adx = getAdx(currentCandles, 14);
             dx.setAdx(adx);
             currentCandle.setAdx(dx);
+
+            if (adx > 80) {
+                currentCandle.setAdxPosition(AdxPosition.OVER);
+            } else {
+                currentCandle.setAdxPosition(AdxPosition.UNDER);
+            }
 
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();

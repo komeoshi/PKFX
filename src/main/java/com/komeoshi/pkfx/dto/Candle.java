@@ -1,5 +1,6 @@
 package com.komeoshi.pkfx.dto;
 
+import com.komeoshi.pkfx.enumerator.AdxPosition;
 import com.komeoshi.pkfx.enumerator.Position;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,6 @@ public class Candle implements Serializable {
     private int volume;
     private boolean complete;
 
-    // private Mid mid;
     private Mid bid;
     private Mid ask;
     private double spread;
@@ -42,6 +42,7 @@ public class Candle implements Serializable {
     private double atr;
     private Dm dm;
     private Adx adx;
+    private AdxPosition adxPosition = AdxPosition.NONE;
 
     private double macd;
     private double sig;
