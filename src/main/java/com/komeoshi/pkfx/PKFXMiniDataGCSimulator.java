@@ -79,7 +79,6 @@ public class PKFXMiniDataGCSimulator {
             if (lastPosition != candle.getMacdPosition() && lastPosition != Position.NONE) {
 
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
-
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
                 boolean checkAtr = candle.getAtr() > 0.0210;
@@ -90,7 +89,7 @@ public class PKFXMiniDataGCSimulator {
                     // 売り→買い
 
                     boolean doTrade = (
-                                     !hasLongCandle
+                            !hasLongCandle
                                     && !hasShortCandle
                                     && checkAtr
                                     && checkVma
@@ -114,7 +113,7 @@ public class PKFXMiniDataGCSimulator {
                     // 買い→売り
 
                     boolean doTrade = (
-                                     !hasLongCandle
+                            !hasLongCandle
                                     && !hasShortCandle
                                     && checkAtr
                                     && checkVma

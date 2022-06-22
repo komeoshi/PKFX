@@ -69,7 +69,6 @@ public class PKFXMiniDataGCTrader {
                     // クロスした
 
                     boolean checkSpread = candle.getSpreadMa() < 0.030;
-
                     boolean hasLongCandle = hasLongCandle(candle);
                     boolean hasShortCandle = hasShortCandle(candle);
                     boolean checkAtr = candle.getAtr() > 0.0210;
@@ -79,6 +78,11 @@ public class PKFXMiniDataGCTrader {
                     log.info("crossed." +
                             " spread:" + candle.getSpreadMa()
                     );
+                    log.info("hasLongCandle :" + !hasLongCandle);
+                    log.info("hasShortCandle:" + !hasShortCandle);
+                    log.info("checkAtr      :" + checkAtr + " " + candle.getAtr());
+                    log.info("checkVma      :" + checkVma + " " + candle.getShortVma());
+                    log.info("checkVma2     :" + checkVma2 + " " + candle.getShortVma() + " < " + candle.getVolume());
 
                     if (candle.getMacdPosition() == Position.LONG) {
                         // 売り→買い
