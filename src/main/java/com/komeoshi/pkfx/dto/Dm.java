@@ -8,6 +8,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class Dm implements Serializable {
-    private double plusDm;
-    private double minusDm;
+    private double plusDm = -99;
+    private double minusDm = -99;
 }

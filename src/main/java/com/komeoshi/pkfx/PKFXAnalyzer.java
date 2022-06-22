@@ -186,21 +186,27 @@ public class PKFXAnalyzer {
             if (c.getDm() == null) {
                 continue;
             }
-            totalPlusDm += c.getDm().getPlusDm();
-            totalMinusDm += c.getDm().getMinusDm();
-            totalTrueRange += c.getTr();
+            if (c.getDm().getPlusDm() == -99 && c.getDm().getMinusDm() == -99) {
+                totalPlusDm += 0;
+                totalMinusDm += 0;
+                totalTrueRange += 0;
+            } else {
+                totalPlusDm += c.getDm().getPlusDm();
+                totalMinusDm += c.getDm().getMinusDm();
+                totalTrueRange += c.getTr();
+            }
         }
 
         double plusDi = (totalPlusDm / totalTrueRange) * 100;
         double minusDi = (totalMinusDm / totalTrueRange) * 100;
-        double dx = ((plusDi - minusDi) / (plusDi + minusDi)) * 100;
+        double dx_ = ((plusDi - minusDi) / (plusDi + minusDi)) * 100;
 
-        Adx adx = new Adx();
-        adx.setPlusDi(plusDi);
-        adx.setMinusDi(minusDi);
-        adx.setDx(dx);
+        Adx dx = new Adx();
+        dx.setPlusDi(plusDi);
+        dx.setMinusDi(minusDi);
+        dx.setDx(dx_);
 
-        return adx;
+        return dx;
     }
 
     public double getAdx(final List<Candle> candles, final int term) {
@@ -351,6 +357,7 @@ public class PKFXAnalyzer {
             double adx = getAdx(currentCandles, 14);
             dx.setAdx(adx);
             currentCandle.setAdx(dx);
+            log.info(currentCandle.getTime() + " " + currentCandle.getAdx().getAdx());
 
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();
