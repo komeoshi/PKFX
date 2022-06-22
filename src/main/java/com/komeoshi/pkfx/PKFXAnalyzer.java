@@ -3,6 +3,7 @@ package com.komeoshi.pkfx;
 import com.komeoshi.pkfx.dto.Adx;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Dm;
+import com.komeoshi.pkfx.dto.Mid;
 import com.komeoshi.pkfx.enumerator.AdxPosition;
 import com.komeoshi.pkfx.enumerator.Position;
 import org.slf4j.Logger;
@@ -246,9 +247,75 @@ public class PKFXAnalyzer {
         return dm;
     }
 
-    public void setPosition(List<Candle> candles, boolean logging){
+    public static void main(String[] args) {
+        List<Candle> datas = new ArrayList<>();
+        {
+            Candle c1 = new Candle();
+            Mid m1 = new Mid();
+            m1.setC(5);
+            c1.setAsk(m1);
+            datas.add(c1);
+        }
+        {
+            Candle c1 = new Candle();
+            Mid m1 = new Mid();
+            m1.setC(10);
+            c1.setAsk(m1);
+            datas.add(c1);
+        }
+        {
+            Candle c1 = new Candle();
+            Mid m1 = new Mid();
+            m1.setC(2);
+            c1.setAsk(m1);
+            datas.add(c1);
+        }
+        {
+            Candle c1 = new Candle();
+            Mid m1 = new Mid();
+            m1.setC(8);
+            c1.setAsk(m1);
+            datas.add(c1);
+        }
+        {
+            Candle c1 = new Candle();
+            Mid m1 = new Mid();
+            m1.setC(5);
+            c1.setAsk(m1);
+            datas.add(c1);
+        }
+
+        PKFXAnalyzer a = new PKFXAnalyzer();
+        double std = a.getStandard(datas, datas.size());
+
+        log.info("std:" + std);
+    }
+
+    public double getStandard(List<Candle> candles, int term) {
+        int lastBar = candles.size() - 1;
+        int firstBar = lastBar - term + 1;
+
+        double ave = 0;
+        int count = 0;
+        for (int i = firstBar; i <= lastBar; i++) {
+            count++;
+            ave += candles.get(i).getAsk().getC();
+        }
+        ave = (ave / count);
+
+
+        double sum2 = 0;
+        for (int i = firstBar; i <= lastBar; i++) {
+            sum2 = sum2 +
+                    (candles.get(i).getAsk().getC() - ave) * (candles.get(i).getAsk().getC() - ave);
+        }
+        return Math.sqrt(sum2 / 5);
+    }
+
+    public void setPosition(List<Candle> candles, boolean logging) {
         setPosition(candles, logging, 80.0);
     }
+
     public void setPosition(List<Candle> candles, boolean logging, double param) {
         for (int ii = 0; ii < candles.size(); ii++) {
 
@@ -362,6 +429,14 @@ public class PKFXAnalyzer {
             } else {
                 currentCandle.setAdxPosition(AdxPosition.UNDER);
             }
+
+            double bollingerBand = getMa(currentCandles, 20);
+            double bollingerBandHigh = bollingerBand + getStandard(currentCandles, 20);
+            double bollingerBandLow = bollingerBand - getStandard(currentCandles, 20);
+
+            currentCandle.setBollingerBand(bollingerBand);
+            currentCandle.setBollingerBandHigh(bollingerBandHigh);
+            currentCandle.setBollingerBandLow(bollingerBandLow);
 
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();

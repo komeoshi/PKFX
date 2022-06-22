@@ -43,7 +43,9 @@ public class Candle implements Serializable {
     private Dm dm;
     private Adx adx;
     private AdxPosition adxPosition = AdxPosition.NONE;
-
+    private double bollingerBand;
+    private double bollingerBandLow;
+    private double bollingerBandHigh;
     private double macd;
     private double sig;
     private double shortSig;
