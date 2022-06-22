@@ -63,7 +63,7 @@ public class PKFXMiniDataGCSimulator {
         }
 
         PKFXAnalyzer anal = new PKFXAnalyzer();
-        anal.setPosition(candles, true, param);
+        anal.setPosition(candles, false);
 
         Status status = Status.NONE;
         BBPosition lastPosition = BBPosition.NONE;
@@ -87,6 +87,12 @@ public class PKFXMiniDataGCSimulator {
                 int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
                 boolean checkMin = true;
 
+                boolean hasLongCandle = hasLongCandle(candle);
+                boolean hasShortCandle = hasShortCandle(candle);
+
+                boolean checkAdx = candle.getAdx().getAdx() > 50;
+
+
                 if (candle.getBbPosition() == BBPosition.OVER) {
                     // 売り→買い
 
@@ -94,6 +100,7 @@ public class PKFXMiniDataGCSimulator {
                             checkTime
                                     && checkMin
                                     && checkSpread
+
                     );
 
                     if (status != Status.NONE) {
@@ -146,7 +153,7 @@ public class PKFXMiniDataGCSimulator {
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.000540;
+        double lossCutMag = 0.000100;
 
         if (Math.abs(candle.getMacd()) > 0.011) {
             // ロスカットしやすくなる
@@ -174,7 +181,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000107;
+        double mag = 0.000007;
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
