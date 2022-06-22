@@ -246,7 +246,10 @@ public class PKFXAnalyzer {
         return dm;
     }
 
-    public void setPosition(List<Candle> candles, boolean logging) {
+    public void setPosition(List<Candle> candles, boolean logging){
+        setPosition(candles, logging, 80.0);
+    }
+    public void setPosition(List<Candle> candles, boolean logging, double param) {
         for (int ii = 0; ii < candles.size(); ii++) {
 
             final int MAXSIZE = 200;
@@ -354,7 +357,7 @@ public class PKFXAnalyzer {
             dx.setAdx(adx);
             currentCandle.setAdx(dx);
 
-            if (adx > 80) {
+            if (dx.getPlusDi() > dx.getMinusDi()) {
                 currentCandle.setAdxPosition(AdxPosition.OVER);
             } else {
                 currentCandle.setAdxPosition(AdxPosition.UNDER);
