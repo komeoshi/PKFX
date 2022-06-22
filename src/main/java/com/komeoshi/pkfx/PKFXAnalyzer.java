@@ -432,8 +432,8 @@ public class PKFXAnalyzer {
             }
 
             double bollingerBand = getMa(currentCandles, 20);
-            double bollingerBandHigh = bollingerBand + getStandard(currentCandles, 20);
-            double bollingerBandLow = bollingerBand - getStandard(currentCandles, 20);
+            double bollingerBandHigh = bollingerBand + (getStandard(currentCandles, 20) * 2);
+            double bollingerBandLow = bollingerBand - (getStandard(currentCandles, 20) * 2);
 
             currentCandle.setBollingerBand(bollingerBand);
             currentCandle.setBollingerBandHigh(bollingerBandHigh);
@@ -442,7 +442,7 @@ public class PKFXAnalyzer {
             boolean isHigh = currentCandle.getBollingerBandHigh() < currentCandle.getAsk().getH();
             boolean isLow = currentCandle.getBollingerBandLow() > currentCandle.getAsk().getL();
 
-            if(isHigh){
+            if (isHigh) {
                 currentCandle.setBbPosition(BBPosition.OVER);
             }else if(isLow){
                 currentCandle.setBbPosition(BBPosition.UNDER);
