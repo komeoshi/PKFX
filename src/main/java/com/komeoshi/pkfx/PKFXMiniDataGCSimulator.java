@@ -17,7 +17,7 @@ import java.util.*;
 @Setter
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
-    private boolean isLogging = false;
+    private boolean isLogging = true;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -62,10 +62,6 @@ public class PKFXMiniDataGCSimulator {
             this.longCandles = getLongCandlesFromFile();
         }
 
-        PKFXAnalyzer anal = new PKFXAnalyzer();
-        anal.setPosition(candles, false);
-
-
         Status status = Status.NONE;
         Position lastPosition = Position.NONE;
         Candle openCandle = null;
@@ -83,27 +79,24 @@ public class PKFXMiniDataGCSimulator {
             if (lastPosition != candle.getMacdPosition()) {
 
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
-                int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-                boolean checkTime = true;
-                int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
-                boolean checkMin = true;
 
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-
-                boolean checkAdx = candle.getAdx().getAdx() > 50;
-                boolean checkBandWidth = candle.getBollingerBandHigh() - candle.getBollingerBandLow()
-                        < param;
-                boolean checkA = candle.getRsi() > 80 && candle.getBbPosition() == BBPosition.OVER;
-                boolean checkB = candle.getRsi() < 20 && candle.getBbPosition() == BBPosition.UNDER;
-
+                boolean checkAtr = candle.getAtr() > 0.0210;
+                boolean checkVma = candle.getShortVma() > 9;
+                boolean checkVma2 = candle.getShortVma() < candle.getVolume();
 
                 if (candle.getMacdPosition() == Position.LONG) {
                     // 売り→買い
 
                     boolean doTrade = (
-                            checkTime
-                                    && checkMin
+                                     !hasLongCandle
+                                    && !hasShortCandle
+                                    && checkAtr
+                                    && checkVma
+                                    && checkVma2
+                                    && checkSpread
+                                    && candle.getSigPosition() == Position.LONG
                     );
 
                     if (status != Status.NONE) {
@@ -122,8 +115,13 @@ public class PKFXMiniDataGCSimulator {
                     // 買い→売り
 
                     boolean doTrade = (
-                            checkTime
-                                    && checkMin
+                                     !hasLongCandle
+                                    && !hasShortCandle
+                                    && checkAtr
+                                    && checkVma
+                                    && checkVma2
+                                    && checkSpread
+                                    && candle.getSigPosition() == Position.SHORT
                     );
 
                     if (status != Status.NONE) {
@@ -155,7 +153,7 @@ public class PKFXMiniDataGCSimulator {
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.000100;
+        double lossCutMag = 0.001540;
 
         if (Math.abs(candle.getMacd()) > 0.011) {
             // ロスカットしやすくなる
@@ -183,7 +181,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000007;
+        double mag = 0.000227;
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
