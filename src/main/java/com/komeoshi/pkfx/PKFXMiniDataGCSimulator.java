@@ -76,7 +76,7 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            if (lastPosition != candle.getMacdPosition()) {
+            if (lastPosition != candle.getMacdPosition() && lastPosition != Position.NONE) {
 
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
 
