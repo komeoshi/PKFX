@@ -200,15 +200,15 @@ public class PKFXMiniDataGCSimulator {
 
     private void buy(Candle openCandle) {
         if (isLogging)
-            log.info("signal >> buy【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
-                    " " + TradeReason.GC
+            log.info("signal >> 【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
+                    " " + TradeReason.GC + " buy"
             );
     }
 
     private void sell(Candle openCandle) {
         if (isLogging)
-            log.info("signal >> sell【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
-                    " " + TradeReason.DC
+            log.info("signal >> 【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
+                    " " + TradeReason.DC + " sell"
             );
     }
 
