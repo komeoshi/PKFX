@@ -151,9 +151,10 @@ public class PKFXAnalyzer {
             }
         }
 
-        double rs = aveGain / Math.abs(aveLoss);
+        double change = aveGain + Math.abs(aveLoss);
 
-        return 100 - 100 / (1 + rs);
+        return (change == 0) ? 50 : (100 * aveGain / change);
+
     }
 
     public boolean checkActiveTime() {
@@ -370,6 +371,11 @@ public class PKFXAnalyzer {
 
             double shortSig = getSig(currentCandles, 1);
             currentCandle.setShortSig(shortSig);
+            if (macd > sig) {
+                currentCandle.setMacdPosition(Position.LONG);
+            } else {
+                currentCandle.setMacdPosition(Position.SHORT);
+            }
 
             double rsi = getRsi(currentCandles);
             currentCandle.setRsi(rsi);

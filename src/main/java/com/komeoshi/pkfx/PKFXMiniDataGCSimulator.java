@@ -65,8 +65,9 @@ public class PKFXMiniDataGCSimulator {
         PKFXAnalyzer anal = new PKFXAnalyzer();
         anal.setPosition(candles, false);
 
+
         Status status = Status.NONE;
-        BBPosition lastPosition = BBPosition.NONE;
+        Position lastPosition = Position.NONE;
         Candle openCandle = null;
         for (Candle candle : candles) {
 
@@ -79,7 +80,7 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            if (lastPosition != candle.getBbPosition()) {
+            if (lastPosition != candle.getMacdPosition()) {
 
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
@@ -91,16 +92,18 @@ public class PKFXMiniDataGCSimulator {
                 boolean hasShortCandle = hasShortCandle(candle);
 
                 boolean checkAdx = candle.getAdx().getAdx() > 50;
+                boolean checkBandWidth = candle.getBollingerBandHigh() - candle.getBollingerBandLow()
+                        < param;
+                boolean checkA = candle.getRsi() > 80 && candle.getBbPosition() == BBPosition.OVER;
+                boolean checkB = candle.getRsi() < 20 && candle.getBbPosition() == BBPosition.UNDER;
 
 
-                if (candle.getBbPosition() == BBPosition.OVER) {
+                if (candle.getMacdPosition() == Position.LONG) {
                     // 売り→買い
 
                     boolean doTrade = (
                             checkTime
                                     && checkMin
-                                    && checkSpread
-
                     );
 
                     if (status != Status.NONE) {
@@ -115,13 +118,12 @@ public class PKFXMiniDataGCSimulator {
                         openCandle = candle;
                     }
 
-                } else if (candle.getBbPosition() == BBPosition.UNDER) {
+                } else if (candle.getMacdPosition() == Position.SHORT) {
                     // 買い→売り
 
                     boolean doTrade = (
                             checkTime
                                     && checkMin
-                                    && checkSpread
                     );
 
                     if (status != Status.NONE) {
@@ -137,7 +139,7 @@ public class PKFXMiniDataGCSimulator {
                     }
                 }
             }
-            lastPosition = candle.getBbPosition();
+            lastPosition = candle.getMacdPosition();
 
             if (status != Status.NONE) {
                 status = targetReach(status, openCandle, candle);

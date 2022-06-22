@@ -48,8 +48,11 @@ public class Candle implements Serializable {
     private double bollingerBandLow;
     private double bollingerBandHigh;
     private BBPosition bbPosition = BBPosition.NONE;
+
     private double macd;
     private double sig;
+    private Position macdPosition = Position.NONE;
+
     private double shortSig;
     private double rsi;
     private Candle pastCandle;
