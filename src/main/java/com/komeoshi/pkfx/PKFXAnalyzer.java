@@ -96,16 +96,27 @@ public class PKFXAnalyzer {
         return ave;
     }
 
-    public double getAtr(final List<Candle> candles, final int term) {
-        int lastBar = candles.size() - 1;
-        int firstBar = lastBar - term + 1;
+    public double getAtr(List<Candle> candles, int term) {
+        double[] results = new double[candles.size()];
 
-        double ave = 0;
-        for (int i = firstBar; i <= lastBar; i++) {
-            ave += candles.get(i).getTr();
+        calculateAtrHelper(candles, term, candles.size() - 1, results);
+
+        return results[candles.size() - 1];
+    }
+
+    public static double calculateAtrHelper(List<Candle> candles, double term, int i, double[] results) {
+
+        if (i == 0) {
+            results[0] = candles.get(0).getTr();
+            return results[0];
+        } else {
+            double close = candles.get(i).getTr();
+            double factor = (2.0 / (term + 1));
+            double ema = close * factor + (1 - factor) * calculateAtrHelper(candles, term, i - 1, results);
+            results[i] = ema;
+            return ema;
         }
-        ave = (ave / term);
-        return ave;
+
     }
 
     public double getEma(List<Candle> candles, int term) {

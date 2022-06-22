@@ -62,6 +62,9 @@ public class PKFXMiniDataGCSimulator {
             this.longCandles = getLongCandlesFromFile();
         }
 
+        PKFXAnalyzer a = new PKFXAnalyzer();
+        a.setPosition(candles, false);
+
         Status status = Status.NONE;
         Position lastPosition = Position.NONE;
         Candle openCandle = null;
@@ -81,8 +84,8 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > 0.0214;
-                boolean checkVma = candle.getShortVma() > 9;
+                boolean checkAtr = candle.getAtr() > param;
+                boolean checkVma = candle.getShortVma() > 6;
                 boolean checkVma2 = candle.getShortVma() < candle.getVolume();
 
                 if (candle.getMacdPosition() == Position.LONG) {
