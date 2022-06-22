@@ -53,7 +53,7 @@ public class PKFXMiniDataGCSimulator {
         diff = 0.0;
     }
 
-    private static double SPREAD_COST = 0.0041;
+    private static double SPREAD_COST = 0.0042;
 
     public void run() {
         init();
@@ -102,7 +102,6 @@ public class PKFXMiniDataGCSimulator {
                     if (status != Status.NONE) {
                         completeOrder(openCandle, candle, Reason.TIMEOUT, status);
                         status = Status.NONE;
-
                     }
 
                     if (doTrade) {
@@ -127,7 +126,6 @@ public class PKFXMiniDataGCSimulator {
                     if (status != Status.NONE) {
                         completeOrder(openCandle, candle, Reason.TIMEOUT, status);
                         status = Status.NONE;
-
                     }
 
                     if (doTrade) {
