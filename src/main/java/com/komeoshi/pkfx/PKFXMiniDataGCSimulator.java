@@ -17,7 +17,7 @@ import java.util.*;
 @Setter
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
-    private boolean isLogging = true;
+    private boolean isLogging = false;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -81,7 +81,7 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > 0.0210;
+                boolean checkAtr = candle.getAtr() > 0.0214;
                 boolean checkVma = candle.getShortVma() > 9;
                 boolean checkVma2 = candle.getShortVma() < candle.getVolume();
 
