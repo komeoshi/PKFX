@@ -150,7 +150,7 @@ public class PKFXMiniDataGCSimulator {
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.001540;
+        double lossCutMag = 0.000740;
 
         if (Math.abs(candle.getMacd()) > 0.011) {
             // ロスカットしやすくなる

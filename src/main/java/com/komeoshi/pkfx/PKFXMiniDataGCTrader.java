@@ -146,7 +146,7 @@ public class PKFXMiniDataGCTrader {
 
     private Status losscut(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.001540;
+        double lossCutMag = 0.000740;
 
         if (Math.abs(candle.getMacd()) > 0.011) {
             // ロスカットしやすくなる
