@@ -41,6 +41,8 @@ public class Candle implements Serializable {
     private double longEma;
     private double tr;
     private double atr;
+    private double longAtr;
+    private Position atrPosition = Position.NONE;
     private Dm dm;
     private Adx adx;
     private AdxPosition adxPosition = AdxPosition.NONE;

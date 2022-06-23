@@ -394,8 +394,16 @@ public class PKFXAnalyzer {
             double tr = getTrueRange(currentCandles);
             currentCandle.setTr(tr);
 
-            double atr = getAtr(currentCandles, 14);
+            double atr = getAtr(currentCandles, 9);
             currentCandle.setAtr(atr);
+            double longAtr = getAtr(currentCandles, 26);
+            currentCandle.setLongAtr(longAtr);
+
+            if (atr > longAtr) {
+                currentCandle.setAtrPosition(Position.LONG);
+            } else {
+                currentCandle.setAtrPosition(Position.SHORT);
+            }
 
             ArrayList<Candle> candlesForSave = new ArrayList<>();
             for (int jj = ii - 25; jj < ii; jj++) {
