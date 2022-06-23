@@ -62,15 +62,12 @@ public class PKFXMiniDataGCSimulator {
             this.longCandles = getLongCandlesFromFile();
         }
 
-        PKFXAnalyzer a = new PKFXAnalyzer();
-        a.setPosition(candles, false);
-
         Status status = Status.NONE;
         Position lastPosition = Position.NONE;
         Candle openCandle = null;
         for (Candle candle : candles) {
 
-            if (candle.getAdxPosition() == AdxPosition.NONE) {
+            if (candle.getMacdPosition() == Position.NONE) {
                 continue;
             }
 
