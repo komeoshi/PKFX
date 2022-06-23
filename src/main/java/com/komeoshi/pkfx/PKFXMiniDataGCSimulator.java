@@ -84,7 +84,7 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > param;
+                boolean checkAtr = candle.getAtr() > 0.0220;
                 boolean checkVma = candle.getShortVma() > 6;
                 boolean checkVma2 = candle.getShortVma() < candle.getVolume();
 

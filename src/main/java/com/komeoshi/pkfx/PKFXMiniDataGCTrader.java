@@ -71,8 +71,8 @@ public class PKFXMiniDataGCTrader {
                     boolean checkSpread = candle.getSpreadMa() < 0.030;
                     boolean hasLongCandle = hasLongCandle(candle);
                     boolean hasShortCandle = hasShortCandle(candle);
-                    boolean checkAtr = candle.getAtr() > 0.0214;
-                    boolean checkVma = candle.getShortVma() > 9;
+                    boolean checkAtr = candle.getAtr() > 0.0220;
+                    boolean checkVma = candle.getShortVma() > 6;
                     boolean checkVma2 = candle.getShortVma() < candle.getVolume();
 
                     log.info("---crossed.---");
