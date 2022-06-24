@@ -17,7 +17,7 @@ import java.util.*;
 @Setter
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
-    private boolean isLogging = true;
+    private boolean isLogging = false;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -83,7 +83,7 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > 0.0200;
+                boolean checkAtr = candle.getAtr() > 0.0204;
                 boolean checkVma = candle.getShortVma() > 5;
                 boolean checkVma2 = candle.getShortVma() < candle.getVolume();
 
@@ -271,7 +271,7 @@ public class PKFXMiniDataGCSimulator {
                     " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
 
-        if (thisDiff < -0.05) {
+        if (thisDiff < -0.05 && false) {
             log.info(
                     "【" + openCandle.getNumber() + "】 " +
                             openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
