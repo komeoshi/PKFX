@@ -87,10 +87,11 @@ public class PKFXMiniDataGCTrader {
                             h != 13 && h != 14 && h != 17 && h != 18;
 
                     log.info("---crossed.---");
-                    log.info("spread        :" + checkSpread + " " + candle.getSpreadMa());
+                    log.info("spread        :" + checkSpread + " " + candle.getSpreadMa() + "< " + 0.029);
                     log.info("hasLongCandle :" + !hasLongCandle);
                     log.info("hasShortCandle:" + !hasShortCandle);
-                    log.info("checkAtr      :" + checkAtr + " " + candle.getAtr());
+                    log.info("checkAtr      :" + checkAtr + " " + candle.getAtr() + "> " + 0.0243);
+                    log.info("checkTimeH    :" + checkTimeH + " " + h);
 
                     if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                             (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||

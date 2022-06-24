@@ -55,7 +55,7 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private static double SPREAD_COST = 0.004;
-    private boolean isLogging = false;
+    private boolean isLogging = true;
 
     public void run() {
         init();
