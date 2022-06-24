@@ -1,7 +1,10 @@
 package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
-import com.komeoshi.pkfx.enumerator.*;
+import com.komeoshi.pkfx.enumerator.Position;
+import com.komeoshi.pkfx.enumerator.Reason;
+import com.komeoshi.pkfx.enumerator.Status;
+import com.komeoshi.pkfx.enumerator.TradeReason;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,13 +14,16 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
-public class PKFXMiniDataGCSimulator {
-    private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
-    private boolean isLogging = true;
+public class PKFXMiniDataGCSimulatorBak {
+    private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulatorBak.class);
+    private boolean isLogging = false;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -29,7 +35,7 @@ public class PKFXMiniDataGCSimulator {
     private double diff = 0.0;
 
     public static void main(String[] args) {
-        PKFXMiniDataGCSimulator sim = new PKFXMiniDataGCSimulator();
+        PKFXMiniDataGCSimulatorBak sim = new PKFXMiniDataGCSimulatorBak();
         sim.run();
     }
 
@@ -71,20 +77,18 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            LocalDateTime from = LocalDateTime.of(2022, 1, 1, 0, 0, 0, 0);
+            LocalDateTime from = LocalDateTime.of(2021, 6, 1, 0, 0, 0, 0);
             if (candle.getTime().isBefore(from)) {
                 continue;
             }
 
             if (lastPosition != candle.getMacdPosition() && lastPosition != Position.NONE) {
 
-                Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
-
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > 0.0200;
-                boolean checkVma = candle.getShortVma() > 5;
+                boolean checkAtr = candle.getAtr() > 0.0220;
+                boolean checkVma = candle.getShortVma() > 6;
                 boolean checkVma2 = candle.getShortVma() < candle.getVolume();
 
                 if (candle.getMacdPosition() == Position.LONG) {
@@ -271,7 +275,7 @@ public class PKFXMiniDataGCSimulator {
                     " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
 
-        if (thisDiff < -0.05) {
+        if (reason == Reason.LOSSCUT && false) {
             log.info(
                     "【" + openCandle.getNumber() + "】 " +
                             openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +

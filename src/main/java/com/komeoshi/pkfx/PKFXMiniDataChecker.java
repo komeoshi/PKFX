@@ -31,7 +31,7 @@ public class PKFXMiniDataChecker {
 
         Map<String, Integer> map = new HashMap<>();
         for (Candle candle : candles.getCandles()) {
-            String time = candle.getTime().format(DateTimeFormatter.ofPattern("yyyyMMddHH"));
+            String time = candle.getTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
             Integer count = map.get(time);
             if (count == null) {
