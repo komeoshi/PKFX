@@ -87,7 +87,7 @@ public class PKFXMiniDataGCSimulator {
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
                 boolean checkAtr = candle.getAtr() > 0.0203;
-                boolean checkVma = candle.getShortVma() * 1.10 < candle.getVolume();
+                boolean checkVma = candle.getShortVma() < candle.getVolume() * 1.10;
 
                 if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                         (emaPositionChanged && candle.getEmaPosition() == Position.LONG)) {
