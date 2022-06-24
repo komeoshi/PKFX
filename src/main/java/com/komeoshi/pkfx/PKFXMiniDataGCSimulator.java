@@ -91,7 +91,8 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkSpread = candle.getSpreadMa() < 0.029;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > 0.0243;
+                boolean checkAtr = candle.getAtr() > 0.0243 ||
+                        candle.getTr() > 0.0450;
 
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
@@ -394,14 +395,14 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private boolean hasShortCandle(Candle candle) {
-        int size = 15;
+        int size = 9;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
 
-            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) < 0.0020) {
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) < 0.0021) {
                 count++;
             }
         }
@@ -409,14 +410,14 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private boolean hasLongCandle(Candle candle) {
-        int size = 15;
+        int size = 9;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
 
-            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.10) {
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.09) {
                 count++;
             }
         }

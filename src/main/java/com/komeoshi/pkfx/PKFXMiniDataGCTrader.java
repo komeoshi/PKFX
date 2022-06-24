@@ -80,7 +80,8 @@ public class PKFXMiniDataGCTrader {
                     boolean checkSpread = candle.getSpreadMa() < 0.029;
                     boolean hasLongCandle = hasLongCandle(candle);
                     boolean hasShortCandle = hasShortCandle(candle);
-                    boolean checkAtr = candle.getAtr() > 0.0243;
+                    boolean checkAtr = candle.getAtr() > 0.0243 ||
+                            candle.getTr() > 0.0450;
 
                     int h = LocalDateTime.now().getHour();
                     boolean checkTimeH = h != 0 && h != 2 && h != 7 && h != 8 && h != 10 && h != 12 &&
@@ -266,30 +267,30 @@ public class PKFXMiniDataGCTrader {
         return i.getCandles().get(i.getCandles().size() - 1);
     }
 
-    private boolean hasLongCandle(Candle candle) {
-        int size = 15;
+    private boolean hasShortCandle(Candle candle) {
+        int size = 9;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
 
-            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.10) {
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) < 0.0021) {
                 count++;
             }
         }
         return count > 1;
     }
 
-    private boolean hasShortCandle(Candle candle) {
-        int size = 15;
+    private boolean hasLongCandle(Candle candle) {
+        int size = 9;
 
         List<Candle> candles = candle.getCandles();
         double count = 0;
         for (int ii = candles.size() - size; ii < candles.size(); ii++) {
             Candle c = candles.get(ii);
 
-            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) < 0.0020) {
+            if (Math.abs(c.getAsk().getL() - c.getAsk().getH()) > 0.09) {
                 count++;
             }
         }
