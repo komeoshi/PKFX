@@ -77,7 +77,7 @@ public class PKFXMiniDataGCTrader {
                     boolean hasLongCandle = hasLongCandle(candle);
                     boolean hasShortCandle = hasShortCandle(candle);
                     boolean checkAtr = candle.getAtr() > 0.0204;
-                    boolean checkVma = candle.getShortVma() < candle.getVolume();
+                    boolean checkVma = candle.getShortVma() * 1.10 < candle.getVolume();
 
                     log.info("---crossed.---");
                     log.info("spread        :" + checkSpread + " " + candle.getSpreadMa());
@@ -177,7 +177,7 @@ public class PKFXMiniDataGCTrader {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000227;
+        double mag = 0.000225;
 
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
