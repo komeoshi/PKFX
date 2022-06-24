@@ -1,7 +1,6 @@
 package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
-import com.komeoshi.pkfx.dto.Trade;
 import com.komeoshi.pkfx.enumerator.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
@@ -12,14 +11,15 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
-    private boolean isLogging = false;
-
     private int countLosscut = 0;
     private int countReached = 0;
     private int countTimeoutWin = 0;
@@ -54,7 +54,8 @@ public class PKFXMiniDataGCSimulator {
         diff = 0.0;
     }
 
-    private static double SPREAD_COST = 0.0042;
+    private static double SPREAD_COST = 0.004;
+    private boolean isLogging = false;
 
     public void run() {
         init();
@@ -66,7 +67,10 @@ public class PKFXMiniDataGCSimulator {
         Status status = Status.NONE;
         Position lastMacdPosition = Position.NONE;
         Position lastEmaPosition = Position.NONE;
+        AdxPosition lastAdxPosition = AdxPosition.NONE;
         Candle openCandle = null;
+        int continueCount = 0;
+        final int CONTINUE_MAX = 0;
         for (Candle candle : candles) {
 
             if (candle.getMacdPosition() == Position.NONE) {
@@ -79,39 +83,60 @@ public class PKFXMiniDataGCSimulator {
             }
             boolean emaPositionChanged = lastEmaPosition != candle.getEmaPosition();
             boolean macdPositionChanged = lastMacdPosition != candle.getMacdPosition();
+            boolean adxPositionChanged = lastAdxPosition != candle.getAdxPosition();
 
-            if ((emaPositionChanged || macdPositionChanged) &&
+            if ((emaPositionChanged || macdPositionChanged || adxPositionChanged) &&
                     lastMacdPosition != Position.NONE) {
 
-                boolean checkSpread = candle.getSpreadMa() < 0.030;
+                boolean checkSpread = candle.getSpreadMa() < 0.029;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > 0.0203;
-                boolean checkVma = candle.getShortVma() < candle.getVolume() * 1.10;
+                boolean checkAtr = candle.getAtr() > 0.0243;
+
+                int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
+                int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
+                boolean checkTimeH = h != 0 && h != 2 && h != 7 && h != 8 && h != 10 && h != 12 &&
+                        h != 13 && h != 14 && h != 17 && h != 18;
+                boolean checkTimeM = true;
 
                 if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
-                        (emaPositionChanged && candle.getEmaPosition() == Position.LONG)) {
+                        (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||
+                        (adxPositionChanged && candle.getAdxPosition() == AdxPosition.OVER)) {
                     // 売り→買い
 
                     boolean doTrade = (
                             !hasLongCandle
                                     && !hasShortCandle
                                     && checkAtr
-                                    && checkVma
                                     && checkSpread
+                                    && checkTimeH
+                                    && checkTimeM
                     );
-
                     if (status != Status.NONE) {
-                        completeOrder(openCandle, candle, Reason.TIMEOUT, status);
-                        status = Status.NONE;
+                        if (candle.getAsk().getC() < openCandle.getAsk().getC() &&
+                                !doTrade) {
+                            // ﾏｹﾃﾙ
+                            continueCount++;
+                            if (isLogging)
+                                log.info("continue. 【" + openCandle.getNumber() + "】" + continueCount);
+
+                        } else if (candle.getAsk().getC() > openCandle.getAsk().getC() ||
+                                continueCount >= CONTINUE_MAX ||
+                                doTrade) {
+                            completeOrder(openCandle, candle, Reason.TIMEOUT, status);
+                            status = Status.NONE;
+                            continueCount = 0;
+                        }
                     }
 
                     if (doTrade) {
                         TradeReason reason;
                         if (emaPositionChanged) {
                             reason = TradeReason.EMA_GC;
-                        } else {
+                        } else if (macdPositionChanged) {
                             reason = TradeReason.MACD_GC;
+                        } else {
+                            reason = TradeReason.ADX_OVER;
                         }
 
                         buy(candle, reason);
@@ -120,28 +145,45 @@ public class PKFXMiniDataGCSimulator {
                     }
 
                 } else if ((macdPositionChanged && candle.getMacdPosition() == Position.SHORT) ||
-                        (emaPositionChanged && candle.getEmaPosition() == Position.SHORT)) {
+                        (emaPositionChanged && candle.getEmaPosition() == Position.SHORT) ||
+                        (adxPositionChanged && candle.getAdxPosition() == AdxPosition.UNDER)) {
                     // 買い→売り
 
                     boolean doTrade = (
                             !hasLongCandle
                                     && !hasShortCandle
                                     && checkAtr
-                                    && checkVma
                                     && checkSpread
+                                    && checkTimeH
+                                    && checkTimeM
                     );
 
                     if (status != Status.NONE) {
-                        completeOrder(openCandle, candle, Reason.TIMEOUT, status);
-                        status = Status.NONE;
+                        if (candle.getAsk().getC() > openCandle.getAsk().getC() &&
+                                !doTrade) {
+                            // ﾏｹﾃﾙ
+                            continueCount++;
+                            if (isLogging)
+                                log.info("continue. 【" + openCandle.getNumber() + "】" + continueCount);
+
+                        } else if (candle.getAsk().getC() < openCandle.getAsk().getC() ||
+                                continueCount >= CONTINUE_MAX ||
+                                doTrade
+                        ) {
+                            completeOrder(openCandle, candle, Reason.TIMEOUT, status);
+                            status = Status.NONE;
+                            continueCount = 0;
+                        }
                     }
 
                     if (doTrade) {
                         TradeReason reason;
                         if (emaPositionChanged) {
                             reason = TradeReason.EMA_DC;
-                        } else {
+                        } else if (macdPositionChanged) {
                             reason = TradeReason.MACD_DC;
+                        } else {
+                            reason = TradeReason.ADX_UNDER;
                         }
 
                         sell(candle, reason);
@@ -152,22 +194,26 @@ public class PKFXMiniDataGCSimulator {
             }
             lastMacdPosition = candle.getMacdPosition();
             lastEmaPosition = candle.getEmaPosition();
+            lastAdxPosition = candle.getAdxPosition();
 
             if (status != Status.NONE) {
                 status = targetReach(status, openCandle, candle);
                 status = losscut(status, openCandle, candle);
+                if (status == Status.NONE) {
+                    continueCount = 0;
+                }
             }
         }
 
         log.info(countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
-                diff + "(" + (diff * 100 / totalCount) + "), " +
+                diff + "(" + (diff * 1000 / totalCount) + "), " +
                 "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
         );
     }
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.000740;
+        double lossCutMag = 0.00071;
 
         if (Math.abs(candle.getMacd()) > 0.011) {
             // ロスカットしやすくなる
@@ -195,18 +241,26 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000225;
+        double mag = 0.000310;
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
 
+                if (Math.abs(candle.getMacd()) > 0.088) {
+                    return status;
+                }
+
                 completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getAsk().getC()) {
+
+                if (Math.abs(candle.getMacd()) > 0.088) {
+                    return status;
+                }
 
                 completeOrder(openCandle, candle, Reason.REACHED, status);
                 status = Status.NONE;

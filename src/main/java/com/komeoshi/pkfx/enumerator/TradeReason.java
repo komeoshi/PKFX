@@ -9,5 +9,7 @@ public enum TradeReason {
     EMA_DC,
     MACD_GC,
     MACD_DC,
+    ADX_OVER,
+    ADX_UNDER,
 
 }
