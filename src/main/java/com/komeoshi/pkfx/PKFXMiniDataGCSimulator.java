@@ -118,7 +118,7 @@ public class PKFXMiniDataGCSimulator {
                             // ﾏｹﾃﾙ
                             continueCount++;
                             if (isLogging)
-                                log.info("continue. 【" + openCandle.getNumber() + "】" + continueCount);
+                                log.info("continue. 【" + openCandle.getNumber() + "】" + continueCount + " " + candle.getAsk().getC());
 
                         } else if (candle.getAsk().getC() > openCandle.getAsk().getC() ||
                                 continueCount >= CONTINUE_MAX ||
@@ -164,7 +164,7 @@ public class PKFXMiniDataGCSimulator {
                             // ﾏｹﾃﾙ
                             continueCount++;
                             if (isLogging)
-                                log.info("continue. 【" + openCandle.getNumber() + "】" + continueCount);
+                                log.info("continue. 【" + openCandle.getNumber() + "】" + continueCount + " " + candle.getAsk().getC());
 
                         } else if (candle.getAsk().getC() < openCandle.getAsk().getC() ||
                                 continueCount >= CONTINUE_MAX ||
@@ -272,14 +272,14 @@ public class PKFXMiniDataGCSimulator {
     private void buy(Candle openCandle, TradeReason reason) {
         if (isLogging)
             log.info("signal >> 【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
-                    " " + reason + " buy"
+                    " " + reason + " buy " + openCandle.getAsk().getC()
             );
     }
 
     private void sell(Candle openCandle, TradeReason reason) {
         if (isLogging)
             log.info("signal >> 【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
-                    " " + reason + " sell"
+                    " " + reason + " sell " + openCandle.getAsk().getC()
             );
     }
 
