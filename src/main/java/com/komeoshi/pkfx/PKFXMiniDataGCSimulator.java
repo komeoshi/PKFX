@@ -17,7 +17,7 @@ import java.util.*;
 @Setter
 public class PKFXMiniDataGCSimulator {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCSimulator.class);
-    private boolean isLogging = false;
+    private boolean isLogging = true;
 
     private int countLosscut = 0;
     private int countReached = 0;
@@ -71,21 +71,17 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            LocalDateTime from = LocalDateTime.of(2022, 1, 1, 0, 0, 0, 0);
+            LocalDateTime from = LocalDateTime.of(2021, 1, 1, 0, 0, 0, 0);
             if (candle.getTime().isBefore(from)) {
                 continue;
             }
 
             if (lastPosition != candle.getMacdPosition() && lastPosition != Position.NONE) {
-
-                Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
-
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
                 boolean checkAtr = candle.getAtr() > 0.0204;
-                boolean checkVma = candle.getShortVma() > 5;
-                boolean checkVma2 = candle.getShortVma() < candle.getVolume();
+                boolean checkVma = candle.getShortVma() < candle.getVolume();
 
                 if (candle.getMacdPosition() == Position.LONG) {
                     // 売り→買い
@@ -95,9 +91,7 @@ public class PKFXMiniDataGCSimulator {
                                     && !hasShortCandle
                                     && checkAtr
                                     && checkVma
-                                    && checkVma2
                                     && checkSpread
-                                    && candle.getSigPosition() == Position.LONG
                     );
 
                     if (status != Status.NONE) {
@@ -119,9 +113,7 @@ public class PKFXMiniDataGCSimulator {
                                     && !hasShortCandle
                                     && checkAtr
                                     && checkVma
-                                    && checkVma2
                                     && checkSpread
-                                    && candle.getSigPosition() == Position.SHORT
                     );
 
                     if (status != Status.NONE) {
