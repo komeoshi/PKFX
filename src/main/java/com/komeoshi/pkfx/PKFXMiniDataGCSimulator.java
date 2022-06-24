@@ -55,7 +55,7 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private static double SPREAD_COST = 0.004;
-    private boolean isLogging = true;
+    private boolean isLogging = false;
 
     public void run() {
         init();
@@ -88,11 +88,15 @@ public class PKFXMiniDataGCSimulator {
             if ((emaPositionChanged || macdPositionChanged || adxPositionChanged) &&
                     lastMacdPosition != Position.NONE) {
 
+                Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
+                Candle tmpCandle2 = candle.getCandles().get(candle.getCandles().size() - 2);
+
                 boolean checkSpread = candle.getSpreadMa() < 0.029;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
                 boolean checkAtr = candle.getAtr() > 0.0243 ||
-                        candle.getTr() > 0.0450;
+                        candle.getTr() > 0.0450 ||
+                        tmpCandle2.getTr() > 0.059;
 
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
@@ -341,7 +345,7 @@ public class PKFXMiniDataGCSimulator {
                     " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
 
-        if (thisDiff < -0.05 && false) {
+        if (thisDiff < -0.15 && false) {
             log.info(
                     "【" + openCandle.getNumber() + "】 " +
                             openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +

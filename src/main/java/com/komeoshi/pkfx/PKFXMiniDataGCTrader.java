@@ -77,11 +77,14 @@ public class PKFXMiniDataGCTrader {
                         lastMacdPosition != Position.NONE) {
                     // クロスした
 
+                    Candle tmpCandle2 = candle.getCandles().get(candle.getCandles().size() - 2);
+
                     boolean checkSpread = candle.getSpreadMa() < 0.029;
                     boolean hasLongCandle = hasLongCandle(candle);
                     boolean hasShortCandle = hasShortCandle(candle);
                     boolean checkAtr = candle.getAtr() > 0.0243 ||
-                            candle.getTr() > 0.0450;
+                            candle.getTr() > 0.0450 ||
+                            tmpCandle2.getTr() > 0.059;
 
                     int h = LocalDateTime.now().getHour();
                     boolean checkTimeH = h != 0 && h != 2 && h != 7 && h != 8 && h != 10 && h != 12 &&
