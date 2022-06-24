@@ -1,6 +1,7 @@
 package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
+import com.komeoshi.pkfx.dto.Trade;
 import com.komeoshi.pkfx.enumerator.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
@@ -63,7 +64,8 @@ public class PKFXMiniDataGCSimulator {
         }
 
         Status status = Status.NONE;
-        Position lastPosition = Position.NONE;
+        Position lastMacdPosition = Position.NONE;
+        Position lastEmaPosition = Position.NONE;
         Candle openCandle = null;
         for (Candle candle : candles) {
 
@@ -75,15 +77,20 @@ public class PKFXMiniDataGCSimulator {
             if (candle.getTime().isBefore(from)) {
                 continue;
             }
+            boolean emaPositionChanged = lastEmaPosition != candle.getEmaPosition();
+            boolean macdPositionChanged = lastMacdPosition != candle.getMacdPosition();
 
-            if (lastPosition != candle.getMacdPosition() && lastPosition != Position.NONE) {
+            if ((emaPositionChanged || macdPositionChanged) &&
+                    lastMacdPosition != Position.NONE) {
+
                 boolean checkSpread = candle.getSpreadMa() < 0.030;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > 0.0204;
+                boolean checkAtr = candle.getAtr() > 0.0203;
                 boolean checkVma = candle.getShortVma() < candle.getVolume();
 
-                if (candle.getMacdPosition() == Position.LONG) {
+                if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
+                        (emaPositionChanged && candle.getEmaPosition() == Position.LONG)) {
                     // 売り→買い
 
                     boolean doTrade = (
@@ -100,12 +107,20 @@ public class PKFXMiniDataGCSimulator {
                     }
 
                     if (doTrade) {
-                        buy(candle);
+                        TradeReason reason;
+                        if (emaPositionChanged) {
+                            reason = TradeReason.EMA_GC;
+                        } else {
+                            reason = TradeReason.MACD_GC;
+                        }
+
+                        buy(candle, reason);
                         status = Status.HOLDING_BUY;
                         openCandle = candle;
                     }
 
-                } else if (candle.getMacdPosition() == Position.SHORT) {
+                } else if ((macdPositionChanged && candle.getMacdPosition() == Position.SHORT) ||
+                        (emaPositionChanged && candle.getEmaPosition() == Position.SHORT)) {
                     // 買い→売り
 
                     boolean doTrade = (
@@ -122,13 +137,21 @@ public class PKFXMiniDataGCSimulator {
                     }
 
                     if (doTrade) {
-                        sell(candle);
+                        TradeReason reason;
+                        if (emaPositionChanged) {
+                            reason = TradeReason.EMA_DC;
+                        } else {
+                            reason = TradeReason.MACD_DC;
+                        }
+
+                        sell(candle, reason);
                         status = Status.HOLDING_SELL;
                         openCandle = candle;
                     }
                 }
             }
-            lastPosition = candle.getMacdPosition();
+            lastMacdPosition = candle.getMacdPosition();
+            lastEmaPosition = candle.getEmaPosition();
 
             if (status != Status.NONE) {
                 status = targetReach(status, openCandle, candle);
@@ -192,17 +215,17 @@ public class PKFXMiniDataGCSimulator {
         return status;
     }
 
-    private void buy(Candle openCandle) {
+    private void buy(Candle openCandle, TradeReason reason) {
         if (isLogging)
             log.info("signal >> 【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
-                    " " + TradeReason.GC + " buy"
+                    " " + reason + " buy"
             );
     }
 
-    private void sell(Candle openCandle) {
+    private void sell(Candle openCandle, TradeReason reason) {
         if (isLogging)
             log.info("signal >> 【" + openCandle.getNumber() + "】" + openCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
-                    " " + TradeReason.DC + " sell"
+                    " " + reason + " sell"
             );
     }
 

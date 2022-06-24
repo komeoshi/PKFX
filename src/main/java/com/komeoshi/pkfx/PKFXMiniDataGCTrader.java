@@ -43,7 +43,8 @@ public class PKFXMiniDataGCTrader {
             PKFXFinderRestClient client = new PKFXFinderRestClient();
 
             Status status = Status.NONE;
-            Position lastPosition = Position.NONE;
+            Position lastMacdPosition = Position.NONE;
+            Position lastEmaPosition = Position.NONE;
             Candle openCandle = null;
             while (true) {
                 Instrument instrument = getInstrument(restTemplate, client);
@@ -65,7 +66,11 @@ public class PKFXMiniDataGCTrader {
                     continue;
                 }
 
-                if (lastPosition != candle.getMacdPosition() && lastPosition != Position.NONE) {
+                boolean emaPositionChanged = lastEmaPosition != candle.getEmaPosition();
+                boolean macdPositionChanged = lastMacdPosition != candle.getMacdPosition();
+
+                if ((emaPositionChanged || macdPositionChanged) &&
+                        lastMacdPosition != Position.NONE) {
                     // クロスした
 
                     boolean checkSpread = candle.getSpreadMa() < 0.030;
@@ -81,7 +86,8 @@ public class PKFXMiniDataGCTrader {
                     log.info("checkAtr      :" + checkAtr + " " + candle.getAtr());
                     log.info("checkVma      :" + checkVma + " " + candle.getShortVma() + " " + candle.getVolume());
 
-                    if (candle.getMacdPosition() == Position.LONG) {
+                    if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
+                            (emaPositionChanged && candle.getEmaPosition() == Position.LONG)) {
                         // 売り→買い
                         boolean doTrade = (
                                 !hasLongCandle
@@ -103,7 +109,8 @@ public class PKFXMiniDataGCTrader {
                             openCandle = candle;
                         }
 
-                    } else if (candle.getMacdPosition() == Position.SHORT) {
+                    } else if ((macdPositionChanged && candle.getMacdPosition() == Position.SHORT) ||
+                            (emaPositionChanged && candle.getEmaPosition() == Position.SHORT)) {
                         // 買い→売り
                         boolean doTrade = (
                                 !hasLongCandle
@@ -127,7 +134,8 @@ public class PKFXMiniDataGCTrader {
 
                     }
                 }
-                lastPosition = candle.getMacdPosition();
+                lastMacdPosition = candle.getMacdPosition();
+                lastEmaPosition = candle.getEmaPosition();
 
                 if (status != Status.NONE) {
                     status = targetReach(restTemplate, client, status, openCandle, candle);
