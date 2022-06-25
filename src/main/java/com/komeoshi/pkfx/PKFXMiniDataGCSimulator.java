@@ -51,7 +51,7 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private static double SPREAD_COST = 0.004;
-    private boolean isLogging = true;
+    private boolean isLogging = false;
 
     public void run() {
         init();
@@ -95,7 +95,7 @@ public class PKFXMiniDataGCSimulator {
 
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
-                        && h != 14 && h != 17 && h != 18 && h != 20 && h != 22 && h != 23;
+                        && h != 14 && h != 17 && h != 20 && h != 22 && h != 23;
                 boolean checkMacd = Math.abs(tmpCandle.getMacd()) > 0.00005 ||
                         Math.abs(tmpCandle2.getMacd()) > 0.005;
                 boolean checkSig = Math.abs(tmpCandle.getSig()) > 0.00007;
@@ -267,7 +267,8 @@ public class PKFXMiniDataGCSimulator {
             if (targetRateBuy < candle.getAsk().getC()) {
 
                 if (okawariFlag) {
-                    log.info("okawari. 【" + openCandle.getNumber() + "】" + candle.getAsk().getC());
+                    if (isLogging)
+                        log.info("okawari. 【" + openCandle.getNumber() + "】" + candle.getAsk().getC());
                     return status;
                 }
 
@@ -278,7 +279,8 @@ public class PKFXMiniDataGCSimulator {
             if (targetRateSell > candle.getAsk().getC()) {
 
                 if (okawariFlag) {
-                    log.info("okawari. 【" + openCandle.getNumber() + "】" + candle.getAsk().getC());
+                    if (isLogging)
+                        log.info("okawari. 【" + openCandle.getNumber() + "】" + candle.getAsk().getC());
                     return status;
                 }
 

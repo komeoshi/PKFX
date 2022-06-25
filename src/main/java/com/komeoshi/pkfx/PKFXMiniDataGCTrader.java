@@ -83,7 +83,7 @@ public class PKFXMiniDataGCTrader {
 
                     int h = LocalDateTime.now().getHour();
                     boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
-                            && h != 14 && h != 17 && h != 18 && h != 20 && h != 22 && h != 23;
+                            && h != 14 && h != 17 && h != 20 && h != 22 && h != 23;
                     boolean checkMacd = Math.abs(tmpCandle.getMacd()) > 0.00005 ||
                             Math.abs(tmpCandle2.getMacd()) > 0.005;
                     boolean checkSig = Math.abs(tmpCandle.getSig()) > 0.00007;
