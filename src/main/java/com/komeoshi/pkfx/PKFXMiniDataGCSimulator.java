@@ -91,7 +91,7 @@ public class PKFXMiniDataGCSimulator {
                 Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
                 Candle tmpCandle2 = candle.getCandles().get(candle.getCandles().size() - 2);
 
-                boolean checkSpread = candle.getSpreadMa() < 0.029;
+                boolean checkSpread = candle.getSpreadMa() < 0.027;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
                 boolean checkAtr = candle.getAtr() > 0.0243 ||
