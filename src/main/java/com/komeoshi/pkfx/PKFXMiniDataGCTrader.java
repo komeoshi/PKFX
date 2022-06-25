@@ -215,7 +215,7 @@ public class PKFXMiniDataGCTrader {
 
     private Status losscut(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.00071;
+        double lossCutMag = 0.00091;
 
         if (Math.abs(candle.getMacd()) > 0.011) {
             // ロスカットしやすくなる
@@ -244,14 +244,14 @@ public class PKFXMiniDataGCTrader {
     }
 
     private Status targetReach(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000310;
+        double mag = 0.000341;
 
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
-                if (Math.abs(candle.getMacd()) > 0.088) {
+                if (Math.abs(candle.getMacd()) > 0.0875) {
                     return status;
                 }
 
@@ -261,7 +261,7 @@ public class PKFXMiniDataGCTrader {
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getAsk().getC()) {
-                if (Math.abs(candle.getMacd()) > 0.088) {
+                if (Math.abs(candle.getMacd()) > 0.0875) {
                     return status;
                 }
 

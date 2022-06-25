@@ -55,7 +55,7 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private static double SPREAD_COST = 0.004;
-    private boolean isLogging = false;
+    private boolean isLogging = true;
 
     public void run() {
         init();
@@ -245,7 +245,7 @@ public class PKFXMiniDataGCSimulator {
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
         // 小さくするとロスカットしやすくなる
-        double lossCutMag = 0.00071;
+        double lossCutMag = 0.00091;
 
         if (Math.abs(candle.getMacd()) > 0.011) {
             // ロスカットしやすくなる
@@ -273,14 +273,14 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000310;
+        double mag = 0.000341;
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
 
-                if (Math.abs(candle.getMacd()) > 0.088) {
+                if (Math.abs(candle.getMacd()) > 0.0875) {
                     return status;
                 }
 
@@ -290,7 +290,7 @@ public class PKFXMiniDataGCSimulator {
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getAsk().getC()) {
 
-                if (Math.abs(candle.getMacd()) > 0.088) {
+                if (Math.abs(candle.getMacd()) > 0.0875) {
                     return status;
                 }
 
