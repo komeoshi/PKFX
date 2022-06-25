@@ -51,7 +51,7 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private static double SPREAD_COST = 0.004;
-    private boolean isLogging = false;
+    private boolean isLogging = true;
 
     public void run() {
         init();
@@ -267,6 +267,7 @@ public class PKFXMiniDataGCSimulator {
             if (targetRateBuy < candle.getAsk().getC()) {
 
                 if (okawariFlag) {
+                    log.info("okawari. 【" + openCandle.getNumber() + "】" + candle.getAsk().getC());
                     return status;
                 }
 
@@ -277,6 +278,7 @@ public class PKFXMiniDataGCSimulator {
             if (targetRateSell > candle.getAsk().getC()) {
 
                 if (okawariFlag) {
+                    log.info("okawari. 【" + openCandle.getNumber() + "】" + candle.getAsk().getC());
                     return status;
                 }
 

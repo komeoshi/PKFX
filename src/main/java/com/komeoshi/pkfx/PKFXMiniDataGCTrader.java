@@ -242,6 +242,7 @@ public class PKFXMiniDataGCTrader {
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
                 if (okawariFlag) {
+                    log.info("continue. 【" + openCandle.getNumber() + "】" );
                     return status;
                 }
 
@@ -252,6 +253,7 @@ public class PKFXMiniDataGCTrader {
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getAsk().getC()) {
                 if (okawariFlag) {
+                    log.info("continue. 【" + openCandle.getNumber() + "】" );
                     return status;
                 }
 
