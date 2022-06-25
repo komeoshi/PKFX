@@ -77,6 +77,7 @@ public class PKFXMiniDataGCTrader {
                         lastMacdPosition != Position.NONE) {
                     // クロスした
 
+                    Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
                     Candle tmpCandle2 = candle.getCandles().get(candle.getCandles().size() - 2);
 
                     boolean checkSpread = candle.getSpreadMa() < 0.029;
@@ -87,8 +88,19 @@ public class PKFXMiniDataGCTrader {
                             tmpCandle2.getTr() > 0.059;
 
                     int h = LocalDateTime.now().getHour();
-                    boolean checkTimeH = h != 0 && h != 2 && h != 7 && h != 8 && h != 10 && h != 12 &&
-                            h != 13 && h != 14 && h != 17 && h != 18;
+                    boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
+                            && h != 14 && h != 17 && h != 18 && h != 20 && h != 22 && h != 23;
+                    boolean checkMacd = Math.abs(tmpCandle.getMacd()) > 0.00005 ||
+                            Math.abs(tmpCandle2.getMacd()) > 0.005;
+                    boolean checkSig = Math.abs(tmpCandle.getSig()) > 0.00007;
+                    boolean checkBb = candle.getBollingerBandHigh() - candle.getBollingerBandLow() > 0.052;
+                    boolean checkBb2 = tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow() < 0.300;
+                    boolean checkAdx = candle.getAdx().getAdx() > 14;
+                    boolean checkDx = Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) > 0.350 ||
+                            Math.abs(tmpCandle.getAdx().getPlusDi() - tmpCandle.getAdx().getMinusDi()) > 0.350;
+                    boolean checkRsi = Math.abs(tmpCandle2.getRsi()) > 23;
+                    boolean checkRsi2 = Math.abs(candle.getRsi()) < 91 &&
+                            Math.abs(tmpCandle.getRsi()) < 78;
 
                     log.info("---crossed.---");
                     log.info("spread        :" + checkSpread + " " + candle.getSpreadMa() + "< " + 0.029);
@@ -107,6 +119,14 @@ public class PKFXMiniDataGCTrader {
                                         && checkAtr
                                         && checkSpread
                                         && checkTimeH
+                                        && checkMacd
+                                        && checkSig
+                                        && checkBb
+                                        && checkBb2
+                                        && checkAdx
+                                        && checkDx
+                                        && checkRsi
+                                        && checkRsi2
                         );
 
                         if (status != Status.NONE) {
@@ -142,6 +162,14 @@ public class PKFXMiniDataGCTrader {
                                         && checkAtr
                                         && checkSpread
                                         && checkTimeH
+                                        && checkMacd
+                                        && checkSig
+                                        && checkBb
+                                        && checkBb2
+                                        && checkAdx
+                                        && checkDx
+                                        && checkRsi
+                                        && checkRsi2
                         );
 
                         if (status != Status.NONE) {

@@ -100,9 +100,20 @@ public class PKFXMiniDataGCSimulator {
 
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
-                boolean checkTimeH = h != 0 && h != 2 && h != 7 && h != 8 && h != 10 && h != 12 &&
-                        h != 13 && h != 14 && h != 17 && h != 18;
+                boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
+                        && h != 14 && h != 17 && h != 18 && h != 20 && h != 22 && h != 23;
                 boolean checkTimeM = true;
+                boolean checkMacd = Math.abs(tmpCandle.getMacd()) > 0.00005 ||
+                        Math.abs(tmpCandle2.getMacd()) > 0.005;
+                boolean checkSig = Math.abs(tmpCandle.getSig()) > 0.00007;
+                boolean checkBb = candle.getBollingerBandHigh() - candle.getBollingerBandLow() > 0.052;
+                boolean checkBb2 = tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow() < 0.300;
+                boolean checkAdx = candle.getAdx().getAdx() > 14;
+                boolean checkDx = Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) > 0.350 ||
+                        Math.abs(tmpCandle.getAdx().getPlusDi() - tmpCandle.getAdx().getMinusDi()) > 0.350;
+                boolean checkRsi = Math.abs(tmpCandle2.getRsi()) > 23;
+                boolean checkRsi2 = Math.abs(candle.getRsi()) < 91 &&
+                        Math.abs(tmpCandle.getRsi()) < 78;
 
                 if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                         (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||
@@ -116,6 +127,14 @@ public class PKFXMiniDataGCSimulator {
                                     && checkSpread
                                     && checkTimeH
                                     && checkTimeM
+                                    && checkMacd
+                                    && checkSig
+                                    && checkBb
+                                    && checkBb2
+                                    && checkAdx
+                                    && checkDx
+                                    && checkRsi
+                                    && checkRsi2
                     );
                     if (status != Status.NONE) {
                         if (candle.getAsk().getC() < openCandle.getAsk().getC() &&
@@ -161,6 +180,14 @@ public class PKFXMiniDataGCSimulator {
                                     && checkSpread
                                     && checkTimeH
                                     && checkTimeM
+                                    && checkMacd
+                                    && checkSig
+                                    && checkBb
+                                    && checkBb2
+                                    && checkAdx
+                                    && checkDx
+                                    && checkRsi
+                                    && checkRsi2
                     );
 
                     if (status != Status.NONE) {
@@ -345,7 +372,7 @@ public class PKFXMiniDataGCSimulator {
                     " LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
 
-        if (thisDiff < -0.15 && false) {
+        if (thisDiff < -0.10 && false) {
             log.info(
                     "【" + openCandle.getNumber() + "】 " +
                             openCandle.getTime() + "-" + closeCandle.getTime() + " thisDiff:" + thisDiff +
