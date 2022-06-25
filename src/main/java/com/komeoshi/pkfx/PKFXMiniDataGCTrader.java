@@ -57,12 +57,7 @@ public class PKFXMiniDataGCTrader {
                 anal.setPosition(instrument.getCandles(), false);
                 Candle candle = instrument.getCandles().get(instrument.getCandles().size() - 1);
 
-                Candle longCandle = getLongCandle(restTemplate, client);
-
                 if (candle.getMacdPosition() == Position.NONE) {
-                    continue;
-                }
-                if (longCandle == null) {
                     continue;
                 }
                 if (!anal.checkActiveTime()) {
@@ -282,20 +277,6 @@ public class PKFXMiniDataGCTrader {
             return null;
         }
         return i;
-    }
-
-    private Candle getLongCandle(RestTemplate restTemplate, PKFXFinderRestClient client) {
-        Instrument i;
-        try {
-            i = client.getInstrument(restTemplate, "M1");
-        } catch (RestClientException e) {
-            log.error(" " + e.getLocalizedMessage());
-            return null;
-        }
-        PKFXAnalyzer anal = new PKFXAnalyzer();
-        anal.setPosition(i.getCandles(), false);
-
-        return i.getCandles().get(i.getCandles().size() - 1);
     }
 
     private boolean hasShortCandle(Candle candle) {

@@ -41,7 +41,6 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private List<Candle> candles = null;
-    private Map<String, Candle> longCandles = null;
 
     private void init() {
         countLosscut = 0;
@@ -61,7 +60,6 @@ public class PKFXMiniDataGCSimulator {
         init();
         if (candles == null) {
             this.candles = getCandlesFromFile();
-            this.longCandles = getLongCandlesFromFile();
         }
 
         Status status = Status.NONE;
@@ -99,10 +97,8 @@ public class PKFXMiniDataGCSimulator {
                         tmpCandle2.getTr() > 0.059;
 
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-                int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
                 boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
                         && h != 14 && h != 17 && h != 18 && h != 20 && h != 22 && h != 23;
-                boolean checkTimeM = true;
                 boolean checkMacd = Math.abs(tmpCandle.getMacd()) > 0.00005 ||
                         Math.abs(tmpCandle2.getMacd()) > 0.005;
                 boolean checkSig = Math.abs(tmpCandle.getSig()) > 0.00007;
@@ -126,7 +122,6 @@ public class PKFXMiniDataGCSimulator {
                                     && checkAtr
                                     && checkSpread
                                     && checkTimeH
-                                    && checkTimeM
                                     && checkMacd
                                     && checkSig
                                     && checkBb
@@ -179,7 +174,6 @@ public class PKFXMiniDataGCSimulator {
                                     && checkAtr
                                     && checkSpread
                                     && checkTimeH
-                                    && checkTimeM
                                     && checkMacd
                                     && checkSig
                                     && checkBb
@@ -403,26 +397,6 @@ public class PKFXMiniDataGCSimulator {
         List<Candle> candles = reader.read().getCandles();
 
         return new ArrayList<>(candles);
-    }
-
-    private Map<String, Candle> getLongCandlesFromFile() {
-        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("data.dat");
-        List<Candle> candles = reader.read().getCandles();
-
-        Map<String, Candle> map = new HashMap<>();
-        for (Candle candle : candles) {
-            map.put(
-                    candle.getTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")),
-                    candle
-            );
-        }
-
-        return map;
-    }
-
-    private Candle getCandleAt(Map<String, Candle> candles, LocalDateTime time) {
-        time = time.minusMinutes(1);
-        return candles.get(time.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
     }
 
     private boolean hasShortCandle(Candle candle) {

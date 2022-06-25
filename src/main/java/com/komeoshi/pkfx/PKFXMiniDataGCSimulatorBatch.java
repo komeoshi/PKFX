@@ -262,12 +262,10 @@ public class PKFXMiniDataGCSimulatorBatch {
             PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
             sim1.setParam(param);
             sim1.setCandles(candles);
-            sim1.setLongCandles(longCandles);
             sim1.run();
 
             if (candles == null) {
                 candles = sim1.getCandles();
-                longCandles = sim1.getLongCandles();
             }
         }
     }
