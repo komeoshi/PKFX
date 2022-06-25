@@ -17,7 +17,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 @SpringBootApplication
@@ -104,25 +103,26 @@ public class PKFXMiniDataGCTrader {
                     log.info("checkAtr      :" + checkAtr + " " + candle.getAtr() + "> " + 0.0243);
                     log.info("checkTimeH    :" + checkTimeH + " " + h);
 
+                    boolean doTrade = (
+                            !hasLongCandle
+                                    && !hasShortCandle
+                                    && checkAtr
+                                    && checkSpread
+                                    && checkTimeH
+                                    && checkMacd
+                                    && checkSig
+                                    && checkBb
+                                    && checkBb2
+                                    && checkAdx
+                                    && checkDx
+                                    && checkRsi
+                                    && checkRsi2
+                    );
+
                     if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                             (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||
                             (adxPositionChanged && candle.getAdxPosition() == AdxPosition.OVER)) {
                         // 売り→買い
-                        boolean doTrade = (
-                                !hasLongCandle
-                                        && !hasShortCandle
-                                        && checkAtr
-                                        && checkSpread
-                                        && checkTimeH
-                                        && checkMacd
-                                        && checkSig
-                                        && checkBb
-                                        && checkBb2
-                                        && checkAdx
-                                        && checkDx
-                                        && checkRsi
-                                        && checkRsi2
-                        );
 
                         if (status != Status.NONE) {
                             if (candle.getAsk().getC() < openCandle.getAsk().getC() &&
@@ -151,21 +151,6 @@ public class PKFXMiniDataGCTrader {
                             (emaPositionChanged && candle.getEmaPosition() == Position.SHORT) ||
                             (adxPositionChanged && candle.getAdxPosition() == AdxPosition.UNDER)) {
                         // 買い→売り
-                        boolean doTrade = (
-                                !hasLongCandle
-                                        && !hasShortCandle
-                                        && checkAtr
-                                        && checkSpread
-                                        && checkTimeH
-                                        && checkMacd
-                                        && checkSig
-                                        && checkBb
-                                        && checkBb2
-                                        && checkAdx
-                                        && checkDx
-                                        && checkRsi
-                                        && checkRsi2
-                        );
 
                         if (status != Status.NONE) {
                             if (candle.getAsk().getC() > openCandle.getAsk().getC() &&
@@ -244,9 +229,19 @@ public class PKFXMiniDataGCTrader {
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
+        boolean okawariFlag = Math.abs(candle.getMacd()) > 0.0875 ||
+                Math.abs(candle.getMacd()) < 0.007 ||
+                candle.getAdx().getAdx() > 55 ||
+                candle.getAdx().getAdx() < 25 ||
+                Math.abs(candle.getRsi()) > 90 ||
+                Math.abs(candle.getRsi()) < 20 ||
+                candle.getBollingerBandHigh() - candle.getBollingerBandLow() > 0.380 ||
+                candle.getBollingerBandHigh() - candle.getBollingerBandLow() < 0.097 ||
+                Math.abs(candle.getSig()) < 0.004;
+
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
-                if (Math.abs(candle.getMacd()) > 0.0875) {
+                if (okawariFlag) {
                     return status;
                 }
 
@@ -256,7 +251,7 @@ public class PKFXMiniDataGCTrader {
             }
         } else if (status == Status.HOLDING_SELL) {
             if (targetRateSell > candle.getAsk().getC()) {
-                if (Math.abs(candle.getMacd()) > 0.0875) {
+                if (okawariFlag) {
                     return status;
                 }
 
