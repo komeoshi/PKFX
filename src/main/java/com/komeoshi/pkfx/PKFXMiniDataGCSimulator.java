@@ -249,7 +249,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.000341;
+        double mag = 0.000310;
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
@@ -261,7 +261,8 @@ public class PKFXMiniDataGCSimulator {
                 Math.abs(candle.getRsi()) < 20 ||
                 candle.getBollingerBandHigh() - candle.getBollingerBandLow() > 0.380 ||
                 candle.getBollingerBandHigh() - candle.getBollingerBandLow() < 0.097 ||
-                Math.abs(candle.getSig()) < 0.004;
+                Math.abs(candle.getSig()) < 0.004 ||
+                candle.getAtr() < 0.016;
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
