@@ -1,13 +1,15 @@
 package com.komeoshi.pkfx;
 
-import com.google.common.collect.Lists;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -215,8 +217,8 @@ public class PKFXMiniDataGCFinder {
 
     class FinderExecutor implements Runnable {
 
-        private Parameter parameter;
-        private List<Candle> candles;
+        private final Parameter parameter;
+        private final List<Candle> candles;
 
         public FinderExecutor(Parameter parameter,
                               List<Candle> candles) {

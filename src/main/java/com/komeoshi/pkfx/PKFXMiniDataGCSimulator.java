@@ -94,7 +94,13 @@ public class PKFXMiniDataGCSimulator {
         Candle openCandle = null;
         int continueCount = 0;
         final int CONTINUE_MAX = 0;
-        for (Candle candle : candles) {
+        for (int ii = 0; ii < candles.size(); ii++) {
+            Candle candle = candles.get(ii);
+
+            if (candles.size() / 2 < ii && totalCount == 0) {
+                // これ以上やっても無駄
+                break;
+            }
 
             if (candle.getMacdPosition() == Position.NONE) {
                 continue;
