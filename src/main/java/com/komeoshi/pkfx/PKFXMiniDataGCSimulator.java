@@ -97,8 +97,7 @@ public class PKFXMiniDataGCSimulator {
         for (int ii = 0; ii < candles.size(); ii++) {
             Candle candle = candles.get(ii);
 
-            if (candles.size() / 20 < ii &&
-                    (totalCount == 0 || diff < 0 || countWin < countLose)) {
+            if (candles.size() / 20 < ii && totalCount == 0) {
                 // これ以上やっても無駄
                 break;
             }
@@ -109,6 +108,11 @@ public class PKFXMiniDataGCSimulator {
 
             LocalDateTime from = LocalDateTime.of(2021, 1, 1, 0, 0, 0, 0);
             if (candle.getTime().isBefore(from)) {
+                continue;
+            }
+
+            LocalDateTime to = LocalDateTime.of(2022, 6, 1, 0, 0, 0, 0);
+            if (candle.getTime().isAfter(to)) {
                 continue;
             }
             boolean emaPositionChanged = lastEmaPosition != candle.getEmaPosition();
