@@ -228,6 +228,7 @@ public class PKFXMiniDataGCFinder {
             long startTime = System.currentTimeMillis();
 
             PKFXMiniDataGCSimulator sim1 = createSimulator(candles, parameter);
+            sim1.setResultLogging(false);
             sim1.run();
 
             double diff = sim1.getDiff();

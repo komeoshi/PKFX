@@ -40,6 +40,7 @@ public class PKFXMiniDataGCSimulator {
 
     private static double SPREAD_COST = 0.004;
     private boolean isLogging = false;
+    private boolean isResultLogging = true;
 
 
     public static void main(String[] args) {
@@ -243,10 +244,11 @@ public class PKFXMiniDataGCSimulator {
             }
         }
 
-        log.info(countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
-                diff + "(" + (diff * 1000 / totalCount) + "), " +
-                "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
-        );
+        if (isResultLogging)
+            log.info(countWin + "/" + countLose + "/" + totalCount + "(" + ((double) countWin / (double) totalCount) + ") " +
+                    diff + "(" + (diff * 1000 / totalCount) + "), " +
+                    "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
+            );
     }
 
     private Status losscut(Status status, Candle openCandle, Candle candle) {
