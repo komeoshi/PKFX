@@ -101,19 +101,19 @@ public class PKFXMiniDataGCTrader {
                             Math.abs(tmpCandle.getRsi()) < 78;
 
                     log.info("---crossed.---");
-                    log.info("spread        :" + checkSpread + " " + candle.getSpreadMa() + "< " + 0.029);
+                    log.info("spread        :" + checkSpread + " " + candle.getSpreadMa() + " < " + 0.027);
                     log.info("hasLongCandle :" + !hasLongCandle);
                     log.info("hasShortCandle:" + !hasShortCandle);
-                    log.info("checkAtr      :" + checkAtr + " " + candle.getAtr() + "> " + 0.0243);
+                    log.info("checkAtr      :" + checkAtr + " " + candle.getAtr() + " > " + 0.0243);
                     log.info("checkTimeH    :" + checkTimeH + " " + h);
-                    log.info("checkMacd     :" + checkMacd);
-                    log.info("checkSig      :" + checkSig);
-                    log.info("checkBb       :" + checkBb);
-                    log.info("checkBb2      :" + checkBb2);
-                    log.info("checkAdx      :" + checkAdx);
-                    log.info("checkDx       :" + checkDx);
-                    log.info("checkRsi      :" + checkRsi);
-                    log.info("checkRsi2     :" + checkRsi2);
+                    log.info("checkMacd     :" + checkMacd + " " + tmpCandle.getMacd() + " > " + 0.00005);
+                    log.info("checkSig      :" + checkSig + " " + tmpCandle.getSig() + " >" + 0.00007);
+                    log.info("checkBb       :" + checkBb + " " + (candle.getBollingerBandHigh() - candle.getBollingerBandLow()) + " > " + 0.052);
+                    log.info("checkBb2      :" + checkBb2 + " " + (tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow()) + " < " + 0.300);
+                    log.info("checkAdx      :" + checkAdx + " " + candle.getAdx().getAdx() + " > " + 14);
+                    log.info("checkDx       :" + checkDx + " " + Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) + " > " + 0.350);
+                    log.info("checkRsi      :" + checkRsi + " " + Math.abs(tmpCandle2.getRsi()) + " > " + 23);
+                    log.info("checkRsi2     :" + checkRsi2 + " " + Math.abs(candle.getRsi()) + " < " + 91);
 
                     boolean doTrade = (
                             !hasLongCandle
