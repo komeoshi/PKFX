@@ -51,7 +51,7 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private static double SPREAD_COST = 0.004;
-    private boolean isLogging = true;
+    private boolean isLogging = false;
 
     public void run() {
         init();
@@ -85,13 +85,17 @@ public class PKFXMiniDataGCSimulator {
 
                 Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
                 Candle tmpCandle2 = candle.getCandles().get(candle.getCandles().size() - 2);
+                Candle tmpCandle3 = candle.getCandles().get(candle.getCandles().size() - 3);
+                Candle tmpCandle4 = candle.getCandles().get(candle.getCandles().size() - 4);
 
                 boolean checkSpread = candle.getSpreadMa() < 0.027;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
                 boolean checkAtr = candle.getAtr() > 0.0243 ||
                         candle.getTr() > 0.0450 ||
-                        tmpCandle2.getTr() > 0.059;
+                        tmpCandle2.getTr() > 0.059 ||
+                        tmpCandle3.getAtr() > 0.0279 ||
+                        tmpCandle4.getAtr() > 0.0311;
 
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
