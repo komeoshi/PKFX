@@ -6,25 +6,25 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Parameter {
-    private ParameterA paramA$01 = new ParameterA(0.0243);
-    private ParameterA paramA$02 = new ParameterA(0.0450);
-    private ParameterA paramA$03 = new ParameterA(0.0590);
-    private ParameterA paramA$04 = new ParameterA(0.0279);
-    private ParameterA paramA$05 = new ParameterA(0.0311);
+    private ParameterA$AtrOrTr paramA$01 = new ParameterA$AtrOrTr(0.0243);
+    private ParameterA$AtrOrTr paramA$02 = new ParameterA$AtrOrTr(0.0450);
+    private ParameterA$AtrOrTr paramA$03 = new ParameterA$AtrOrTr(0.0590);
+    private ParameterA$AtrOrTr paramA$04 = new ParameterA$AtrOrTr(0.0279);
+    private ParameterA$AtrOrTr paramA$05 = new ParameterA$AtrOrTr(0.0311);
 
-    private ParameterB paramB$01 = new ParameterB(14);
-    private ParameterB paramB$02 = new ParameterB(23);
-    private ParameterB paramB$03 = new ParameterB(91);
-    private ParameterB paramB$04 = new ParameterB(78);
+    private ParameterB$Adx paramB$01 = new ParameterB$Adx(14);
+    private ParameterB$Rsi paramB$02 = new ParameterB$Rsi(23);
+    private ParameterB$Rsi paramB$03 = new ParameterB$Rsi(91);
+    private ParameterB$Rsi paramB$04 = new ParameterB$Rsi(78);
 
-    private ParameterC paramC$01 = new ParameterC(0.052);
-    private ParameterC paramC$02 = new ParameterC(0.300);
-    private ParameterC paramC$03 = new ParameterC(0.350);
-    private ParameterC paramC$04 = new ParameterC(0.350);
+    private ParameterC$Bband paramC$01 = new ParameterC$Bband(0.052);
+    private ParameterC$Bband paramC$02 = new ParameterC$Bband(0.300);
+    private ParameterC$DxBand paramC$03 = new ParameterC$DxBand(0.350);
+    private ParameterC$DxBand paramC$04 = new ParameterC$DxBand(0.350);
 
-    private ParameterD paramD$01 = new ParameterD(0.00005);
-    private ParameterD paramD$02 = new ParameterD(0.005);
-    private ParameterD paramD$03 = new ParameterD(0.00007);
+    private ParameterD$Macd1 paramD$01 = new ParameterD$Macd1(0.00005);
+    private ParameterD$Macd2 paramD$02 = new ParameterD$Macd2(0.005);
+    private ParameterD$Sig paramD$03 = new ParameterD$Sig(0.00007);
 
     public String toString() {
         StringBuilder s = new StringBuilder();

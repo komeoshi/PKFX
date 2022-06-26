@@ -91,25 +91,25 @@ public class PKFXMiniDataGCFinder {
     private void createParametersAndExecute(ExecutorService pool, List<Candle> candles) {
 
         log.info("creating parameters.");
-        List<Double> paramA$01$parameters = ParameterA.createParameters();
-        List<Double> paramA$02$parameters = ParameterA.createParameters();
-        List<Double> paramA$03$parameters = ParameterA.createParameters();
-        List<Double> paramA$04$parameters = ParameterA.createParameters();
-        List<Double> paramA$05$parameters = ParameterA.createParameters();
+        List<Double> paramA$01$parameters = ParameterA$AtrOrTr.createParameters();
+        List<Double> paramA$02$parameters = ParameterA$AtrOrTr.createParameters();
+        List<Double> paramA$03$parameters = ParameterA$AtrOrTr.createParameters();
+        List<Double> paramA$04$parameters = ParameterA$AtrOrTr.createParameters();
+        List<Double> paramA$05$parameters = ParameterA$AtrOrTr.createParameters();
 
-        List<Double> paramB$01$parameters = ParameterB.createParameters();
-        List<Double> paramB$02$parameters = ParameterB.createParameters();
-        List<Double> paramB$03$parameters = ParameterB.createParameters();
-        List<Double> paramB$04$parameters = ParameterB.createParameters();
+        List<Double> paramB$01$parameters = ParameterB$Adx.createParameters();
+        List<Double> paramB$02$parameters = ParameterB$Rsi.createParameters();
+        List<Double> paramB$03$parameters = ParameterB$Rsi.createParameters();
+        List<Double> paramB$04$parameters = ParameterB$Rsi.createParameters();
 
-        List<Double> paramC$01$parameters = ParameterC.createParameters();
-        List<Double> paramC$02$parameters = ParameterC.createParameters();
-        List<Double> paramC$03$parameters = ParameterC.createParameters();
-        List<Double> paramC$04$parameters = ParameterC.createParameters();
+        List<Double> paramC$01$parameters = ParameterC$Bband.createParameters();
+        List<Double> paramC$02$parameters = ParameterC$Bband.createParameters();
+        List<Double> paramC$03$parameters = ParameterC$DxBand.createParameters();
+        List<Double> paramC$04$parameters = ParameterC$DxBand.createParameters();
 
-        List<Double> paramD$01$parameters = ParameterD.createParameters();
-        List<Double> paramD$02$parameters = ParameterD.createParameters();
-        List<Double> paramD$03$parameters = ParameterD.createParameters();
+        List<Double> paramD$01$parameters = ParameterD$Macd1.createParameters();
+        List<Double> paramD$02$parameters = ParameterD$Macd2.createParameters();
+        List<Double> paramD$03$parameters = ParameterD$Sig.createParameters();
         log.info("creating parameters, done.");
 
         Collections.shuffle(paramA$01$parameters);
@@ -178,25 +178,25 @@ public class PKFXMiniDataGCFinder {
 
     private Parameter createParameter(List<Double> tmpParamA, List<Double> tmpParamB, List<Double> tmpParamC, List<Double> tmpParamD) {
         Parameter parameter = new Parameter();
-        parameter.setParamA$01(new ParameterA(tmpParamA.get(0)));
-        parameter.setParamA$02(new ParameterA(tmpParamA.get(1)));
-        parameter.setParamA$03(new ParameterA(tmpParamA.get(2)));
-        parameter.setParamA$04(new ParameterA(tmpParamA.get(3)));
-        parameter.setParamA$05(new ParameterA(tmpParamA.get(4)));
+        parameter.setParamA$01(new ParameterA$AtrOrTr(tmpParamA.get(0)));
+        parameter.setParamA$02(new ParameterA$AtrOrTr(tmpParamA.get(1)));
+        parameter.setParamA$03(new ParameterA$AtrOrTr(tmpParamA.get(2)));
+        parameter.setParamA$04(new ParameterA$AtrOrTr(tmpParamA.get(3)));
+        parameter.setParamA$05(new ParameterA$AtrOrTr(tmpParamA.get(4)));
 
-        parameter.setParamB$01(new ParameterB(tmpParamB.get(0)));
-        parameter.setParamB$02(new ParameterB(tmpParamB.get(1)));
-        parameter.setParamB$03(new ParameterB(tmpParamB.get(2)));
-        parameter.setParamB$04(new ParameterB(tmpParamB.get(3)));
+        parameter.setParamB$01(new ParameterB$Adx(tmpParamB.get(0)));
+        parameter.setParamB$02(new ParameterB$Rsi(tmpParamB.get(1)));
+        parameter.setParamB$03(new ParameterB$Rsi(tmpParamB.get(2)));
+        parameter.setParamB$04(new ParameterB$Rsi(tmpParamB.get(3)));
 
-        parameter.setParamC$01(new ParameterC(tmpParamC.get(0)));
-        parameter.setParamC$02(new ParameterC(tmpParamC.get(1)));
-        parameter.setParamC$03(new ParameterC(tmpParamC.get(2)));
-        parameter.setParamC$04(new ParameterC(tmpParamC.get(3)));
+        parameter.setParamC$01(new ParameterC$Bband(tmpParamC.get(0)));
+        parameter.setParamC$02(new ParameterC$Bband(tmpParamC.get(1)));
+        parameter.setParamC$03(new ParameterC$DxBand(tmpParamC.get(2)));
+        parameter.setParamC$04(new ParameterC$DxBand(tmpParamC.get(3)));
 
-        parameter.setParamD$01(new ParameterD(tmpParamD.get(0)));
-        parameter.setParamD$02(new ParameterD(tmpParamD.get(1)));
-        parameter.setParamD$03(new ParameterD(tmpParamD.get(2)));
+        parameter.setParamD$01(new ParameterD$Macd1(tmpParamD.get(0)));
+        parameter.setParamD$02(new ParameterD$Macd2(tmpParamD.get(1)));
+        parameter.setParamD$03(new ParameterD$Sig(tmpParamD.get(2)));
         return parameter;
     }
 

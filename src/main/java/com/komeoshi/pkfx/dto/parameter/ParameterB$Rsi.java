@@ -8,16 +8,17 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ParameterA {
+public class ParameterB$Rsi {
     double parameter;
 
-    public ParameterA(double parameter){
+    public ParameterB$Rsi(double parameter) {
         this.parameter = parameter;
     }
+
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.001; d < 0.1; d += 0.005) {
-            parameters.add(d);
+        for (int i = 20; i <= 90; i += 1) {
+            parameters.add((double) i);
         }
 
         return parameters;
