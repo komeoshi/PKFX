@@ -6,11 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Parameter {
-    private ParameterA$AtrOrTr paramA$01 = new ParameterA$AtrOrTr(0.0243);
-    private ParameterA$AtrOrTr paramA$02 = new ParameterA$AtrOrTr(0.0450);
-    private ParameterA$AtrOrTr paramA$03 = new ParameterA$AtrOrTr(0.0590);
-    private ParameterA$AtrOrTr paramA$04 = new ParameterA$AtrOrTr(0.0279);
-    private ParameterA$AtrOrTr paramA$05 = new ParameterA$AtrOrTr(0.0311);
+    private ParameterA$CurrentAtr paramA$01 = new ParameterA$CurrentAtr(0.0243);
+    private ParameterA$CurrentTr paramA$02 = new ParameterA$CurrentTr(0.0450);
+    private ParameterA$Past2Tr paramA$03 = new ParameterA$Past2Tr(0.0590);
+    private ParameterA$Past3Atr paramA$04 = new ParameterA$Past3Atr(0.0279);
+    private ParameterA$Past4Atr paramA$05 = new ParameterA$Past4Atr(0.0311);
 
     private ParameterB$Adx paramB$01 = new ParameterB$Adx(14);
     private ParameterB$Rsi paramB$02 = new ParameterB$Rsi(23);

@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -91,11 +90,11 @@ public class PKFXMiniDataGCFinder {
     private void createParametersAndExecute(ExecutorService pool, List<Candle> candles) {
 
         log.info("creating parameters.");
-        List<Double> paramA$01$parameters = ParameterA$AtrOrTr.createParameters();
-        List<Double> paramA$02$parameters = ParameterA$AtrOrTr.createParameters();
-        List<Double> paramA$03$parameters = ParameterA$AtrOrTr.createParameters();
-        List<Double> paramA$04$parameters = ParameterA$AtrOrTr.createParameters();
-        List<Double> paramA$05$parameters = ParameterA$AtrOrTr.createParameters();
+        List<Double> paramA$01$parameters = ParameterA$CurrentAtr.createParameters();
+        List<Double> paramA$02$parameters = ParameterA$CurrentTr.createParameters();
+        List<Double> paramA$03$parameters = ParameterA$Past2Tr.createParameters();
+        List<Double> paramA$04$parameters = ParameterA$Past3Atr.createParameters();
+        List<Double> paramA$05$parameters = ParameterA$Past4Atr.createParameters();
 
         List<Double> paramB$01$parameters = ParameterB$Adx.createParameters();
         List<Double> paramB$02$parameters = ParameterB$Rsi.createParameters();
@@ -179,11 +178,11 @@ public class PKFXMiniDataGCFinder {
 
     private Parameter createParameter(List<Double> tmpParamA, List<Double> tmpParamB, List<Double> tmpParamC, List<Double> tmpParamD) {
         Parameter parameter = new Parameter();
-        parameter.setParamA$01(new ParameterA$AtrOrTr(tmpParamA.get(0)));
-        parameter.setParamA$02(new ParameterA$AtrOrTr(tmpParamA.get(1)));
-        parameter.setParamA$03(new ParameterA$AtrOrTr(tmpParamA.get(2)));
-        parameter.setParamA$04(new ParameterA$AtrOrTr(tmpParamA.get(3)));
-        parameter.setParamA$05(new ParameterA$AtrOrTr(tmpParamA.get(4)));
+        parameter.setParamA$01(new ParameterA$CurrentAtr(tmpParamA.get(0)));
+        parameter.setParamA$02(new ParameterA$CurrentTr(tmpParamA.get(1)));
+        parameter.setParamA$03(new ParameterA$Past2Tr(tmpParamA.get(2)));
+        parameter.setParamA$04(new ParameterA$Past3Atr(tmpParamA.get(3)));
+        parameter.setParamA$05(new ParameterA$Past4Atr(tmpParamA.get(4)));
 
         parameter.setParamB$01(new ParameterB$Adx(tmpParamB.get(0)));
         parameter.setParamB$02(new ParameterB$Rsi(tmpParamB.get(1)));
@@ -270,19 +269,24 @@ public class PKFXMiniDataGCFinder {
 
             long elapsedTime = System.currentTimeMillis() - startTime;
             long averageTime = elapsedTime / completeCount;
+            long remainTime = (size - completeCount) * averageTime;
+            long remainTimeH = remainTime / 1000 / 60 / 60;
+            long remainTimeD = remainTimeH / 24;
+            long remainTimeY = remainTimeD / 365;
 
             if (completeCount % 100 == 0) {
                 StringBuilder s = new StringBuilder();
                 s.append("\n");
-                s.append("maxParam             : " + Objects.requireNonNull(maxDiffParameter) + "\n");
+                s.append("maxParam             : " + maxDiffParameter + "\n");
                 s.append("maxDiff              : " + maxDiff + "\n");
                 s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
                 s.append("completeCount        : " + completeCount + " / " + size + " " + (completeCount / size) + "%" + "\n");
                 s.append("this time.           : " + time + " ms." + "\n");
                 s.append("average time.        : " + averageTime + " ms." + "\n");
                 s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
-                s.append("remain time(ms).     : ?" + " ms." + "\n");
-                s.append("remain time(H).      : ?" + " H." + "\n");
+                s.append("remain time(ms).     : " + remainTime + " ms." + "\n");
+                s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
+                s.append("remain time(Y).      : " + remainTimeY + " Y." + "\n");
 
                 log.info(s.toString());
                 showMemoryUsage();
