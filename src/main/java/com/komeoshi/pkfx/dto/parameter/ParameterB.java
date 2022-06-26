@@ -15,10 +15,10 @@ public class ParameterB {
         this.parameter = parameter;
     }
 
-    public static List<Integer> createParameters() {
-        List<Integer> parameters = new ArrayList<>();
+    public static List<Double> createParameters() {
+        List<Double> parameters = new ArrayList<>();
         for (int i = 0; i <= 100; i += 5) {
-            parameters.add(i);
+            parameters.add((double) i);
         }
 
         return parameters;

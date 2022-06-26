@@ -1,15 +1,13 @@
 package com.komeoshi.pkfx;
 
+import com.google.common.collect.Lists;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -23,25 +21,21 @@ public class PKFXMiniDataGCFinder {
     }
 
     public void execute() {
-        List<Parameter> parameters = createParameters();
-        this.count = parameters.size();
+
+        log.info("creating executors.");
+        int poolSize = Runtime.getRuntime().availableProcessors();
+        log.info("available processors = " + poolSize);
+        ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 
         log.info("reading candle data.");
         PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
         List<Candle> candles = reader.read().getCandles();
         log.info("read done.");
 
+        log.info("creating parameters, execute. ");
         startTime = System.currentTimeMillis();
+        createParametersAndExecute(pool, candles);
 
-        log.info("submitting executors.");
-        int poolSize = Runtime.getRuntime().availableProcessors();
-        log.info("available processors=" + poolSize);
-        ExecutorService pool = Executors.newFixedThreadPool(poolSize);
-
-        for (Parameter p : parameters) {
-            FinderExecutor exec = new FinderExecutor(p, candles);
-            pool.submit(exec);
-        }
         log.info("submit done.");
 
         try {
@@ -58,7 +52,6 @@ public class PKFXMiniDataGCFinder {
 
     }
 
-    private int count = 0;
     private int completeCount = 0;
     private double maxDiff = -999.0;
     private double maxDiffTotal = 0;
@@ -90,19 +83,19 @@ public class PKFXMiniDataGCFinder {
         return sim1;
     }
 
-    private List<Parameter> createParameters() {
-        List<Parameter> parameters = new ArrayList<>();
+    private void createParametersAndExecute(ExecutorService pool, List<Candle> candles) {
 
+        log.info("creating parameters.");
         List<Double> paramA$01$parameters = ParameterA.createParameters();
         List<Double> paramA$02$parameters = ParameterA.createParameters();
         List<Double> paramA$03$parameters = ParameterA.createParameters();
         List<Double> paramA$04$parameters = ParameterA.createParameters();
         List<Double> paramA$05$parameters = ParameterA.createParameters();
 
-        List<Integer> paramB$01$parameters = ParameterB.createParameters();
-        List<Integer> paramB$02$parameters = ParameterB.createParameters();
-        List<Integer> paramB$03$parameters = ParameterB.createParameters();
-        List<Integer> paramB$04$parameters = ParameterB.createParameters();
+        List<Double> paramB$01$parameters = ParameterB.createParameters();
+        List<Double> paramB$02$parameters = ParameterB.createParameters();
+        List<Double> paramB$03$parameters = ParameterB.createParameters();
+        List<Double> paramB$04$parameters = ParameterB.createParameters();
 
         List<Double> paramC$01$parameters = ParameterC.createParameters();
         List<Double> paramC$02$parameters = ParameterC.createParameters();
@@ -112,107 +105,82 @@ public class PKFXMiniDataGCFinder {
         List<Double> paramD$01$parameters = ParameterD.createParameters();
         List<Double> paramD$02$parameters = ParameterD.createParameters();
         List<Double> paramD$03$parameters = ParameterD.createParameters();
+        log.info("creating parameters, done.");
 
+        Collections.shuffle(paramA$01$parameters);
+        Collections.shuffle(paramA$02$parameters);
+        Collections.shuffle(paramA$03$parameters);
+        Collections.shuffle(paramA$04$parameters);
+        Collections.shuffle(paramA$05$parameters);
 
-        int size = paramA$01$parameters.size() *
-                paramA$02$parameters.size() *
-                paramA$03$parameters.size() *
-                paramA$04$parameters.size() *
-                paramA$05$parameters.size()
-                +
-                paramB$01$parameters.size() *
-                        paramB$02$parameters.size() *
-                        paramB$03$parameters.size() *
-                        paramB$04$parameters.size()
-                +
-                paramC$01$parameters.size() *
-                        paramC$02$parameters.size() *
-                        paramC$03$parameters.size() *
-                        paramC$04$parameters.size()
-                +
-                paramD$01$parameters.size() *
-                        paramD$02$parameters.size() *
-                        paramD$03$parameters.size();
+        Collections.shuffle(paramB$01$parameters);
+        Collections.shuffle(paramB$02$parameters);
+        Collections.shuffle(paramB$03$parameters);
+        Collections.shuffle(paramB$04$parameters);
 
-        log.info("scheduled size: " + size);
+        Collections.shuffle(paramC$01$parameters);
+        Collections.shuffle(paramC$02$parameters);
+        Collections.shuffle(paramC$03$parameters);
+        Collections.shuffle(paramC$04$parameters);
 
-        for (Double paramA$01$parameter : paramA$01$parameters) {
-            for (Double paramA$02$parameter : paramA$02$parameters) {
-                for (Double paramA$03$parameter : paramA$03$parameters) {
-                    for (Double paramA$04$parameter : paramA$04$parameters) {
-                        for (Double paramA$05$parameter : paramA$05$parameters) {
+        Collections.shuffle(paramD$01$parameters);
+        Collections.shuffle(paramD$02$parameters);
+        Collections.shuffle(paramD$03$parameters);
 
-                            Parameter parameter = new Parameter();
-                            parameter.setParamA$01(new ParameterA(paramA$01$parameter));
-                            parameter.setParamA$02(new ParameterA(paramA$02$parameter));
-                            parameter.setParamA$03(new ParameterA(paramA$03$parameter));
-                            parameter.setParamA$04(new ParameterA(paramA$04$parameter));
-                            parameter.setParamA$05(new ParameterA(paramA$05$parameter));
+        log.info("shuffle parameters, done.");
 
-                            parameters.add(parameter);
-                        }
-                    }
-                }
-            }
-        }
+        List<List<Double>> paramAs = Lists.cartesianProduct(paramA$01$parameters,
+                paramA$02$parameters,
+                paramA$03$parameters,
+                paramA$04$parameters,
+                paramA$05$parameters);
+        log.info("cartesianProduct paramAs, done.");
+        List<List<Double>> paramBs = Lists.cartesianProduct(paramB$01$parameters,
+                paramB$02$parameters,
+                paramB$03$parameters,
+                paramB$04$parameters);
+        log.info("cartesianProduct paramBs, done.");
+        List<List<Double>> paramCs = Lists.cartesianProduct(paramC$01$parameters,
+                paramC$02$parameters,
+                paramC$03$parameters,
+                paramC$04$parameters);
+        log.info("cartesianProduct paramCs, done.");
+        List<List<Double>> paramDs = Lists.cartesianProduct(paramD$01$parameters,
+                paramD$02$parameters,
+                paramD$03$parameters);
+        log.info("cartesianProduct paramDs, done.");
 
-        log.info("create parameterA done. parameters: " + parameters.size() + "/" + size);
-
-        for (Integer paramB$01$parameter : paramB$01$parameters) {
-            for (Integer paramB$02$parameter : paramB$02$parameters) {
-                for (Integer paramB$03$parameter : paramB$03$parameters) {
-                    for (Integer paramB$04$parameter : paramB$04$parameters) {
+        for (List<Double> tmpParamA : paramAs) {
+            for (List<Double> tmpParamB : paramBs) {
+                for (List<Double> tmpParamC : paramCs) {
+                    for (List<Double> tmpParamD : paramDs) {
                         Parameter parameter = new Parameter();
-                        parameter.setParamB$01(new ParameterB(paramB$01$parameter));
-                        parameter.setParamB$02(new ParameterB(paramB$02$parameter));
-                        parameter.setParamB$03(new ParameterB(paramB$03$parameter));
-                        parameter.setParamB$04(new ParameterB(paramB$04$parameter));
+                        parameter.setParamA$01(new ParameterA(tmpParamA.get(0)));
+                        parameter.setParamA$02(new ParameterA(tmpParamA.get(1)));
+                        parameter.setParamA$03(new ParameterA(tmpParamA.get(2)));
+                        parameter.setParamA$04(new ParameterA(tmpParamA.get(3)));
+                        parameter.setParamA$05(new ParameterA(tmpParamA.get(4)));
 
-                        parameters.add(parameter);
+                        parameter.setParamB$01(new ParameterB(tmpParamB.get(0)));
+                        parameter.setParamB$02(new ParameterB(tmpParamB.get(1)));
+                        parameter.setParamB$03(new ParameterB(tmpParamB.get(2)));
+                        parameter.setParamB$04(new ParameterB(tmpParamB.get(3)));
+
+                        parameter.setParamC$01(new ParameterC(tmpParamC.get(0)));
+                        parameter.setParamC$02(new ParameterC(tmpParamC.get(1)));
+                        parameter.setParamC$03(new ParameterC(tmpParamC.get(2)));
+                        parameter.setParamC$04(new ParameterC(tmpParamC.get(3)));
+
+                        parameter.setParamD$01(new ParameterD(tmpParamD.get(0)));
+                        parameter.setParamD$02(new ParameterD(tmpParamD.get(1)));
+                        parameter.setParamD$03(new ParameterD(tmpParamD.get(2)));
+
+                        FinderExecutor exec = new FinderExecutor(parameter, candles);
+                        pool.submit(exec);
                     }
                 }
             }
         }
-
-        log.info("create parameterB done. parameters: " + parameters.size() + "/" + size);
-
-        for (Double paramC$01$parameter : paramC$01$parameters) {
-            for (Double paramC$02$parameter : paramC$02$parameters) {
-                for (Double paramC$03$parameter : paramC$03$parameters) {
-                    for (Double paramC$04$parameter : paramC$04$parameters) {
-                        Parameter parameter = new Parameter();
-                        parameter.setParamC$01(new ParameterC(paramC$01$parameter));
-                        parameter.setParamC$02(new ParameterC(paramC$02$parameter));
-                        parameter.setParamC$03(new ParameterC(paramC$03$parameter));
-                        parameter.setParamC$04(new ParameterC(paramC$04$parameter));
-
-                        parameters.add(parameter);
-                    }
-                }
-            }
-        }
-
-        log.info("create parameterC done. parameters: " + parameters.size() + "/" + size);
-
-        for (Double paramD$01$parameter : paramD$01$parameters) {
-            for (Double paramD$02$parameter : paramD$02$parameters) {
-                for (Double paramD$03$parameter : paramD$03$parameters) {
-                    Parameter parameter = new Parameter();
-                    parameter.setParamD$01(new ParameterD(paramD$01$parameter));
-                    parameter.setParamD$02(new ParameterD(paramD$02$parameter));
-                    parameter.setParamD$03(new ParameterD(paramD$03$parameter));
-
-                    parameters.add(parameter);
-                }
-            }
-        }
-
-        log.info("create parameterD done. parameters: " + parameters.size() + "/" + size);
-
-        Collections.shuffle(parameters);
-        log.info("shuffle done.");
-
-        return parameters;
     }
 
     class FinderExecutor implements Runnable {
@@ -257,21 +225,19 @@ public class PKFXMiniDataGCFinder {
             long elapsedTime = System.currentTimeMillis() - startTime;
             long averageTime = elapsedTime / completeCount;
 
-            long remainTime = (count - completeCount) * averageTime;
-            long remainHour = remainTime / 1000 / 60 / 60;
             StringBuilder s = new StringBuilder();
             s.append("\n");
             s.append("maxParam             : " + Objects.requireNonNull(maxDiffParameter) + "\n");
             s.append("maxDiff              : " + maxDiff + "\n");
             s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
-            s.append("completeCount        : " + completeCount + " / " + count + "\n");
+            s.append("completeCount        : " + completeCount + "\n");
             s.append("this time.           : " + time + " ms." + "\n");
             s.append("average time.        : " + averageTime + " ms." + "\n");
             s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
-            s.append("remain time(ms).     : " + remainTime + " ms." + "\n");
-            s.append("remain time(H).      : " + remainHour + " H." + "\n");
+            s.append("remain time(ms).     : ?" + " ms." + "\n");
+            s.append("remain time(H).      : ?" + " H." + "\n");
 
-            if (completeCount % 100 == 0 || completeCount == count)
+            if (completeCount % 100 == 0)
                 log.info(s.toString());
 
         }
