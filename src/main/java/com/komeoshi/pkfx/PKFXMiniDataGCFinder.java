@@ -158,42 +158,47 @@ public class PKFXMiniDataGCFinder {
         this.size = (long) paramAs.size() * paramBs.size() * paramCs.size() * paramDs.size();
 
         long count = 0;
-        for (List<Double> tmpParamA : paramAs) {
-            for (List<Double> tmpParamB : paramBs) {
+
+        for (List<Double> tmpParamB : paramBs) {
                 for (List<Double> tmpParamC : paramCs) {
                     for (List<Double> tmpParamD : paramDs) {
-                        count++;
+                        for (List<Double> tmpParamA : paramAs) {
+                            count++;
+                            Parameter parameter = createParameter(tmpParamA, tmpParamB, tmpParamC, tmpParamD);
+                            FinderExecutor exec = new FinderExecutor(parameter, candles);
 
-                        Parameter parameter = new Parameter();
-                        parameter.setParamA$01(new ParameterA(tmpParamA.get(0)));
-                        parameter.setParamA$02(new ParameterA(tmpParamA.get(1)));
-                        parameter.setParamA$03(new ParameterA(tmpParamA.get(2)));
-                        parameter.setParamA$04(new ParameterA(tmpParamA.get(3)));
-                        parameter.setParamA$05(new ParameterA(tmpParamA.get(4)));
-
-                        parameter.setParamB$01(new ParameterB(tmpParamB.get(0)));
-                        parameter.setParamB$02(new ParameterB(tmpParamB.get(1)));
-                        parameter.setParamB$03(new ParameterB(tmpParamB.get(2)));
-                        parameter.setParamB$04(new ParameterB(tmpParamB.get(3)));
-
-                        parameter.setParamC$01(new ParameterC(tmpParamC.get(0)));
-                        parameter.setParamC$02(new ParameterC(tmpParamC.get(1)));
-                        parameter.setParamC$03(new ParameterC(tmpParamC.get(2)));
-                        parameter.setParamC$04(new ParameterC(tmpParamC.get(3)));
-
-                        parameter.setParamD$01(new ParameterD(tmpParamD.get(0)));
-                        parameter.setParamD$02(new ParameterD(tmpParamD.get(1)));
-                        parameter.setParamD$03(new ParameterD(tmpParamD.get(2)));
-
-                        FinderExecutor exec = new FinderExecutor(parameter, candles);
-                        pool.submit(exec);
-                        if (count % 10000 == 0) {
-                            sleep(5);
+                            pool.submit(exec);
+                            if (count % 10000 == 0) {
+                                sleep(5);
+                            }
                         }
                     }
                 }
-            }
         }
+    }
+
+    private Parameter createParameter(List<Double> tmpParamA, List<Double> tmpParamB, List<Double> tmpParamC, List<Double> tmpParamD) {
+        Parameter parameter = new Parameter();
+        parameter.setParamA$01(new ParameterA(tmpParamA.get(0)));
+        parameter.setParamA$02(new ParameterA(tmpParamA.get(1)));
+        parameter.setParamA$03(new ParameterA(tmpParamA.get(2)));
+        parameter.setParamA$04(new ParameterA(tmpParamA.get(3)));
+        parameter.setParamA$05(new ParameterA(tmpParamA.get(4)));
+
+        parameter.setParamB$01(new ParameterB(tmpParamB.get(0)));
+        parameter.setParamB$02(new ParameterB(tmpParamB.get(1)));
+        parameter.setParamB$03(new ParameterB(tmpParamB.get(2)));
+        parameter.setParamB$04(new ParameterB(tmpParamB.get(3)));
+
+        parameter.setParamC$01(new ParameterC(tmpParamC.get(0)));
+        parameter.setParamC$02(new ParameterC(tmpParamC.get(1)));
+        parameter.setParamC$03(new ParameterC(tmpParamC.get(2)));
+        parameter.setParamC$04(new ParameterC(tmpParamC.get(3)));
+
+        parameter.setParamD$01(new ParameterD(tmpParamD.get(0)));
+        parameter.setParamD$02(new ParameterD(tmpParamD.get(1)));
+        parameter.setParamD$03(new ParameterD(tmpParamD.get(2)));
+        return parameter;
     }
 
     public static void showMemoryUsage() {
@@ -235,6 +240,7 @@ public class PKFXMiniDataGCFinder {
             this.candles = candles;
         }
 
+        @Override
         public void run() {
             long startTime = System.currentTimeMillis();
 
