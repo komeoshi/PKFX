@@ -16,7 +16,7 @@ public class ParameterA$AtrOrTr {
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.0100; d < 0.05; d += 0.0001) {
+        for (double d = 0.0100; d < 0.06; d += 0.001) {
             parameters.add(d);
         }
 

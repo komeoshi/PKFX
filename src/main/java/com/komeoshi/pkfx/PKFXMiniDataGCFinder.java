@@ -209,7 +209,7 @@ public class PKFXMiniDataGCFinder {
         long max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
 
         if (log.isInfoEnabled()) {
-            log.info("memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
+            log.info( "\n" + "memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
                     numberFormat(max));
         }
     }
