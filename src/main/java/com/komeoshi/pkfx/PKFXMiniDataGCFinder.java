@@ -25,6 +25,12 @@ public class PKFXMiniDataGCFinder {
         List<Double> paramA$04$parameters = ParameterA.createParameters();
         List<Double> paramA$05$parameters = ParameterA.createParameters();
 
+        int size = paramA$01$parameters.size() *
+                paramA$02$parameters.size() *
+                paramA$03$parameters.size() *
+                paramA$04$parameters.size() *
+                paramA$05$parameters.size();
+
         for (Double paramA$01$parameter : paramA$01$parameters) {
             for (Double paramA$02$parameter : paramA$02$parameters) {
                 for (Double paramA$03$parameter : paramA$03$parameters) {
@@ -45,6 +51,9 @@ public class PKFXMiniDataGCFinder {
                             parameter.setParamA$05(paramA$05);
 
                             parameters.add(parameter);
+
+                            if (parameters.size() % 10000 == 0)
+                                log.info(parameters.size() + "" + size);
                         }
                     }
                 }
