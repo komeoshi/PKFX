@@ -262,7 +262,7 @@ public class PKFXMiniDataGCFinder {
                                        Parameter parameter,
                                        long time) {
             completeCount++;
-            if (diff > maxDiff) {
+            if (diff >= maxDiff) {
                 maxDiff = diff;
                 maxDiffTotal = total;
                 maxDiffParameter = parameter;
