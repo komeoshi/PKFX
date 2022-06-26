@@ -269,7 +269,7 @@ public class PKFXMiniDataGCFinder {
             s.append("remain time(ms).     : " + remainTime + " ms." + "\n");
             s.append("remain time(H).      : " + remainHour + " H." + "\n");
 
-            if (completeCount % 100 == 0)
+            if (completeCount % 100 == 0 || completeCount == count)
                 log.info(s.toString());
 
         }
