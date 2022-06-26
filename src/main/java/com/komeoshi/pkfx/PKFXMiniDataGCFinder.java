@@ -3,81 +3,89 @@ package com.komeoshi.pkfx;
 import com.google.common.collect.Lists;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.*;
+import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class PKFXMiniDataGCFinder {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCFinder.class);
 
     public static void main(String[] args) {
         PKFXMiniDataGCFinder batch = new PKFXMiniDataGCFinder();
-        batch.run();
+        batch.execute();
     }
 
-    public void run() {
+    public void execute() {
         List<Parameter> parameters = createParameters();
-        List<Candle> candles = null;
-        double maxDiff = -9990.0;
-        int total = 0;
-        Parameter maxParameter = null;
-        for (int ii = 0; ii < parameters.size(); ii++) {
+        this.count = parameters.size();
 
-            long startTime = System.currentTimeMillis();
+        log.info("reading candle data.");
+        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
+        List<Candle> candles = reader.read().getCandles();
+        log.info("read done.");
 
-            Parameter p = parameters.get(ii);
+        startTime = System.currentTimeMillis();
 
-            PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
-            sim1.setCandles(candles);
-            sim1.setParamA$01(p.getParamA$01());
-            sim1.setParamA$02(p.getParamA$02());
-            sim1.setParamA$03(p.getParamA$03());
-            sim1.setParamA$04(p.getParamA$04());
-            sim1.setParamA$05(p.getParamA$05());
+        log.info("submitting executors.");
+        int poolSize = Runtime.getRuntime().availableProcessors();
+        log.info("available processors=" + poolSize);
+        ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 
-            sim1.setParamB$01(p.getParamB$01());
-            sim1.setParamB$02(p.getParamB$02());
-            sim1.setParamB$03(p.getParamB$03());
-            sim1.setParamB$04(p.getParamB$04());
-
-            sim1.setParamC$01(p.getParamC$01());
-            sim1.setParamC$02(p.getParamC$02());
-            sim1.setParamC$03(p.getParamC$03());
-            sim1.setParamC$04(p.getParamC$04());
-
-            sim1.setParamD$01(p.getParamD$01());
-            sim1.setParamD$02(p.getParamD$02());
-            sim1.setParamD$03(p.getParamD$03());
-
-            sim1.run();
-
-            if (maxDiff < sim1.getDiff()) {
-                maxDiff = sim1.getDiff();
-                total = sim1.getTotalCount();
-                maxParameter = p;
-            }
-
-            long endTime = System.currentTimeMillis();
-
-            long time = (endTime - startTime);
-            long remain = (parameters.size() - (ii + 1)) * time;
-            long remainHour = remain / 1000 / 60 / 60;
-
-            log.info((ii + 1) + "/" + parameters.size());
-            log.info("currentParam   :" + p);
-            log.info("maxParam       :" + Objects.requireNonNull(maxParameter));
-            log.info("maxDiff        :" + maxDiff);
-            log.info("maxDiff(count) :" + total);
-            log.info("end - start    :" + time + "ms.");
-            log.info("remain         :" + remain + "ms.");
-            log.info("remain         :" + remainHour + "h");
-
-
-            if (candles == null) {
-                candles = sim1.getCandles();
-            }
+        for (Parameter p : parameters) {
+            FinderExecutor exec = new FinderExecutor(p, candles);
+            pool.submit(exec);
         }
+        log.info("submit done.");
+
+        try {
+            pool.shutdown();
+            pool.awaitTermination(12, TimeUnit.DAYS);
+        } catch (InterruptedException ex) {
+            log.error("", ex);
+            Thread.currentThread().interrupt();
+
+            System.exit(1);
+        }
+
+        log.info("await done. ");
+
+    }
+
+    private int count = 0;
+    private int completeCount = 0;
+    private double maxDiff = -999.0;
+    private double maxDiffTotal = 0;
+    private Parameter maxDiffParameter;
+    private long startTime = 0;
+
+    private PKFXMiniDataGCSimulator createSimulator(List<Candle> candles, Parameter p) {
+        PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
+        sim1.setCandles(candles);
+        sim1.setParamA$01(p.getParamA$01());
+        sim1.setParamA$02(p.getParamA$02());
+        sim1.setParamA$03(p.getParamA$03());
+        sim1.setParamA$04(p.getParamA$04());
+        sim1.setParamA$05(p.getParamA$05());
+
+        sim1.setParamB$01(p.getParamB$01());
+        sim1.setParamB$02(p.getParamB$02());
+        sim1.setParamB$03(p.getParamB$03());
+        sim1.setParamB$04(p.getParamB$04());
+
+        sim1.setParamC$01(p.getParamC$01());
+        sim1.setParamC$02(p.getParamC$02());
+        sim1.setParamC$03(p.getParamC$03());
+        sim1.setParamC$04(p.getParamC$04());
+
+        sim1.setParamD$01(p.getParamD$01());
+        sim1.setParamD$02(p.getParamD$02());
+        sim1.setParamD$03(p.getParamD$03());
+        return sim1;
     }
 
     private List<Parameter> createParameters() {
@@ -200,6 +208,66 @@ public class PKFXMiniDataGCFinder {
         log.info("create parameterD done. parameters: " + parameters.size() + "/" + size);
 
         Collections.shuffle(parameters);
+        log.info("shuffle done.");
+
         return parameters;
     }
+
+    class FinderExecutor implements Runnable {
+
+        private Parameter parameter;
+        private List<Candle> candles;
+
+        public FinderExecutor(Parameter parameter,
+                              List<Candle> candles) {
+            this.parameter = parameter;
+            this.candles = candles;
+        }
+
+        public void run() {
+            long startTime = System.currentTimeMillis();
+
+            PKFXMiniDataGCSimulator sim1 = createSimulator(candles, parameter);
+            sim1.run();
+
+            double diff = sim1.getDiff();
+            int total = sim1.getTotalCount();
+
+            long endTime = System.currentTimeMillis();
+            long time = (endTime - startTime);
+
+            diff(diff, total, parameter, time);
+
+        }
+
+        private synchronized void diff(double diff,
+                                       int total,
+                                       Parameter parameter,
+                                       long time) {
+            completeCount++;
+            if (diff > maxDiff) {
+                maxDiff = diff;
+                maxDiffTotal = total;
+                maxDiffParameter = parameter;
+            }
+
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            long averageTime = elapsedTime / completeCount;
+
+            long remainTime = (count - completeCount) * averageTime;
+            long remainHour = remainTime / 1000 / 60 / 60;
+
+            log.info("maxParam             : " + Objects.requireNonNull(maxDiffParameter));
+            log.info("maxDiff              : " + maxDiff);
+            log.info("maxDiff(count)       : " + maxDiffTotal);
+            log.info("completeCount        : " + completeCount + " / " + count);
+            log.info("this time.           : " + time + " ms.");
+            log.info("average time.        : " + averageTime + " ms.");
+            log.info("elapsed total time.  : " + elapsedTime + " ms.");
+            log.info("remain time.         : " + remainTime + " ms.");
+            log.info("remain time.         : " + remainHour + " H.");
+        }
+    }
 }
+
+
