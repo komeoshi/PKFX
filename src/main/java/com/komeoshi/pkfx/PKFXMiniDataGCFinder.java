@@ -7,6 +7,7 @@ import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -150,10 +151,13 @@ public class PKFXMiniDataGCFinder {
                 paramD$03$parameters);
         log.info("cartesianProduct paramDs, done.");
 
+        int count = 0;
         for (List<Double> tmpParamA : paramAs) {
             for (List<Double> tmpParamB : paramBs) {
                 for (List<Double> tmpParamC : paramCs) {
                     for (List<Double> tmpParamD : paramDs) {
+                        count++;
+
                         Parameter parameter = new Parameter();
                         parameter.setParamA$01(new ParameterA(tmpParamA.get(0)));
                         parameter.setParamA$02(new ParameterA(tmpParamA.get(1)));
@@ -177,9 +181,40 @@ public class PKFXMiniDataGCFinder {
 
                         FinderExecutor exec = new FinderExecutor(parameter, candles);
                         pool.submit(exec);
+                        if (count % 10000 == 0) {
+                            sleep(5);
+                        }
                     }
                 }
             }
+        }
+    }
+
+    public static void showMemoryUsage() {
+
+        long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
+        long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
+
+        long used = total - free;
+        long max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
+
+        if (log.isInfoEnabled()) {
+            log.info("memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
+                    numberFormat(max));
+        }
+    }
+
+    public static String numberFormat(long l) {
+        NumberFormat nfNum = NumberFormat.getNumberInstance();
+
+        return nfNum.format(l);
+    }
+
+    private void sleep(int sec) {
+        try {
+            Thread.sleep(sec * 1000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -237,8 +272,10 @@ public class PKFXMiniDataGCFinder {
             s.append("remain time(ms).     : ?" + " ms." + "\n");
             s.append("remain time(H).      : ?" + " H." + "\n");
 
-            if (completeCount % 100 == 0)
+            if (completeCount % 100 == 0) {
                 log.info(s.toString());
+                showMemoryUsage();
+            }
 
         }
     }
