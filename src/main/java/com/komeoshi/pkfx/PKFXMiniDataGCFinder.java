@@ -256,16 +256,17 @@ public class PKFXMiniDataGCFinder {
 
             long remainTime = (count - completeCount) * averageTime;
             long remainHour = remainTime / 1000 / 60 / 60;
-
-            log.info("maxParam             : " + Objects.requireNonNull(maxDiffParameter));
-            log.info("maxDiff              : " + maxDiff);
-            log.info("maxDiff(count)       : " + maxDiffTotal);
-            log.info("completeCount        : " + completeCount + " / " + count);
-            log.info("this time.           : " + time + " ms.");
-            log.info("average time.        : " + averageTime + " ms.");
-            log.info("elapsed total time.  : " + elapsedTime + " ms.");
-            log.info("remain time.         : " + remainTime + " ms.");
-            log.info("remain time.         : " + remainHour + " H.");
+            StringBuilder s = new StringBuilder();
+            s.append("\n");
+            s.append("maxParam             : " + Objects.requireNonNull(maxDiffParameter) + "\n");
+            s.append("maxDiff              : " + maxDiff+ "\n");
+            s.append("maxDiff(count)       : " + maxDiffTotal+ "\n");
+            s.append("completeCount        : " + completeCount + " / " + count+ "\n");
+            s.append("this time.           : " + time + " ms."+ "\n");
+            s.append("average time.        : " + averageTime + " ms."+ "\n");
+            s.append("elapsed total time.  : " + elapsedTime + " ms."+ "\n");
+            s.append("remain time(ms).     : " + remainTime + " ms."+ "\n");
+            s.append("remain time(H).      : " + remainHour + " H."+ "\n");
         }
     }
 }
