@@ -160,20 +160,20 @@ public class PKFXMiniDataGCFinder {
         long count = 0;
 
         for (List<Double> tmpParamB : paramBs) {
-                for (List<Double> tmpParamC : paramCs) {
-                    for (List<Double> tmpParamD : paramDs) {
-                        for (List<Double> tmpParamA : paramAs) {
-                            count++;
-                            Parameter parameter = createParameter(tmpParamA, tmpParamB, tmpParamC, tmpParamD);
-                            FinderExecutor exec = new FinderExecutor(parameter, candles);
+            for (List<Double> tmpParamC : paramCs) {
+                for (List<Double> tmpParamD : paramDs) {
+                    for (List<Double> tmpParamA : paramAs) {
+                        count++;
+                        Parameter parameter = createParameter(tmpParamA, tmpParamB, tmpParamC, tmpParamD);
+                        FinderExecutor exec = new FinderExecutor(parameter, candles);
 
-                            pool.submit(exec);
-                            if (count % 10000 == 0) {
-                                sleep(5);
-                            }
+                        pool.submit(exec);
+                        if (count % 10000 == 0) {
+                            sleep(5);
                         }
                     }
                 }
+            }
         }
     }
 
