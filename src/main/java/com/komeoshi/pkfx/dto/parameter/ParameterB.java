@@ -17,7 +17,7 @@ public class ParameterB {
 
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (int i = 0; i <= 100; i += 5) {
+        for (int i = 1; i <= 100; i += 5) {
             parameters.add((double) i);
         }
 

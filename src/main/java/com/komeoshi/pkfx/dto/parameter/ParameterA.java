@@ -16,7 +16,7 @@ public class ParameterA {
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.0; d < 0.1; d += 0.005) {
+        for (double d = 0.001; d < 0.1; d += 0.005) {
             parameters.add(d);
         }
 
