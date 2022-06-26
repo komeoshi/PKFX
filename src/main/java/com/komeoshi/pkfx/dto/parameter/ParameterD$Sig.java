@@ -16,7 +16,7 @@ public class ParameterD$Sig {
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.00001; d < 0.00100; d += 0.00001) {
+        for (double d = 0.00001; d < 0.00010; d += 0.00001) {
             parameters.add(d);
         }
 
