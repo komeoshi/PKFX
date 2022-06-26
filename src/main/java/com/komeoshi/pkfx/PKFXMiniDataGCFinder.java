@@ -216,7 +216,6 @@ public class PKFXMiniDataGCFinder {
 
     public static String numberFormat(long l) {
         NumberFormat nfNum = NumberFormat.getNumberInstance();
-
         return nfNum.format(l);
     }
 
@@ -271,19 +270,19 @@ public class PKFXMiniDataGCFinder {
             long elapsedTime = System.currentTimeMillis() - startTime;
             long averageTime = elapsedTime / completeCount;
 
-            StringBuilder s = new StringBuilder();
-            s.append("\n");
-            s.append("maxParam             : " + Objects.requireNonNull(maxDiffParameter) + "\n");
-            s.append("maxDiff              : " + maxDiff + "\n");
-            s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
-            s.append("completeCount        : " + completeCount + " / " + size + " " + (completeCount / size) + "%" + "\n");
-            s.append("this time.           : " + time + " ms." + "\n");
-            s.append("average time.        : " + averageTime + " ms." + "\n");
-            s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
-            s.append("remain time(ms).     : ?" + " ms." + "\n");
-            s.append("remain time(H).      : ?" + " H." + "\n");
+            if (completeCount % 100 == 0) {
+                StringBuilder s = new StringBuilder();
+                s.append("\n");
+                s.append("maxParam             : " + Objects.requireNonNull(maxDiffParameter) + "\n");
+                s.append("maxDiff              : " + maxDiff + "\n");
+                s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
+                s.append("completeCount        : " + completeCount + " / " + size + " " + (completeCount / size) + "%" + "\n");
+                s.append("this time.           : " + time + " ms." + "\n");
+                s.append("average time.        : " + averageTime + " ms." + "\n");
+                s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
+                s.append("remain time(ms).     : ?" + " ms." + "\n");
+                s.append("remain time(H).      : ?" + " H." + "\n");
 
-            if (completeCount % 1000 == 0) {
                 log.info(s.toString());
                 showMemoryUsage();
             }
