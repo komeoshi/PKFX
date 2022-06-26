@@ -259,14 +259,17 @@ public class PKFXMiniDataGCFinder {
             StringBuilder s = new StringBuilder();
             s.append("\n");
             s.append("maxParam             : " + Objects.requireNonNull(maxDiffParameter) + "\n");
-            s.append("maxDiff              : " + maxDiff+ "\n");
-            s.append("maxDiff(count)       : " + maxDiffTotal+ "\n");
-            s.append("completeCount        : " + completeCount + " / " + count+ "\n");
-            s.append("this time.           : " + time + " ms."+ "\n");
-            s.append("average time.        : " + averageTime + " ms."+ "\n");
-            s.append("elapsed total time.  : " + elapsedTime + " ms."+ "\n");
-            s.append("remain time(ms).     : " + remainTime + " ms."+ "\n");
-            s.append("remain time(H).      : " + remainHour + " H."+ "\n");
+            s.append("maxDiff              : " + maxDiff + "\n");
+            s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
+            s.append("completeCount        : " + completeCount + " / " + count + "\n");
+            s.append("this time.           : " + time + " ms." + "\n");
+            s.append("average time.        : " + averageTime + " ms." + "\n");
+            s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
+            s.append("remain time(ms).     : " + remainTime + " ms." + "\n");
+            s.append("remain time(H).      : " + remainHour + " H." + "\n");
+
+            log.info(s.toString());
+
         }
     }
 }
