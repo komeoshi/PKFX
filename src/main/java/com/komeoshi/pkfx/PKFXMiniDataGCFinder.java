@@ -61,7 +61,7 @@ public class PKFXMiniDataGCFinder {
             long endTime = System.currentTimeMillis();
 
             long time = (endTime - startTime);
-            long remain = (parameters.size() - (ii + 1)) / time;
+            long remain = (parameters.size() - (ii + 1)) * time;
             long remainHour = remain / 1000 / 60 / 60;
 
             log.info((ii + 1) + "/" + parameters.size());
@@ -70,8 +70,8 @@ public class PKFXMiniDataGCFinder {
             log.info("maxDiff        :" + maxDiff);
             log.info("maxDiff(count) :" + total);
             log.info("end - start    :" + time + "ms.");
-            log.info("remain         :" + remain + "ms");
-            log.info("remain         ;" + remainHour + "h");
+            log.info("remain         :" + remain + "ms.");
+            log.info("remain         :" + remainHour + "h");
 
 
             if (candles == null) {

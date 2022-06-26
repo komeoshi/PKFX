@@ -30,27 +30,25 @@ public class Parameter {
         StringBuilder s = new StringBuilder();
 
         s.append("\n");
-        s.append("paramA$01  :" + paramA$01.parameter + "\n");
-        s.append("paramA$02  :" + paramA$02.parameter + "\n");
-        s.append("paramA$03  :" + paramA$03.parameter + "\n");
-        s.append("paramA$04  :" + paramA$04.parameter + "\n");
-        s.append("paramA$05  :" + paramA$05.parameter + "\n");
+        s.append("paramA$01  :" + paramA$01.parameter * 1000 + "(/1000)\n");
+        s.append("paramA$02  :" + paramA$02.parameter * 1000 + "(/1000)\n");
+        s.append("paramA$03  :" + paramA$03.parameter * 1000 + "(/1000)\n");
+        s.append("paramA$04  :" + paramA$04.parameter * 1000 + "(/1000)\n");
+        s.append("paramA$05  :" + paramA$05.parameter * 1000 + "(/1000)\n");
 
-        s.append("paramB$01  :" + paramB$01.parameter + "\n");
-        s.append("paramB$02  :" + paramB$02.parameter + "\n");
-        s.append("paramB$03  :" + paramB$03.parameter + "\n");
-        s.append("paramB$04  :" + paramB$04.parameter + "\n");
+        s.append("paramB$01  :" + paramB$01.parameter * 1000 + "(/1000)\n");
+        s.append("paramB$02  :" + paramB$02.parameter * 1000 + "(/1000)\n");
+        s.append("paramB$03  :" + paramB$03.parameter * 1000 + "(/1000)\n");
+        s.append("paramB$04  :" + paramB$04.parameter * 1000 + "(/1000)\n");
 
-        s.append("paramC$01  :" + paramC$01.parameter + "\n");
-        s.append("paramC$02  :" + paramC$02.parameter + "\n");
-        s.append("paramC$03  :" + paramC$03.parameter + "\n");
-        s.append("paramC$04  :" + paramC$04.parameter + "\n");
+        s.append("paramC$01  :" + paramC$01.parameter * 1000 + "(/1000)\n");
+        s.append("paramC$02  :" + paramC$02.parameter * 1000 + "(/1000)\n");
+        s.append("paramC$03  :" + paramC$03.parameter * 1000 + "(/1000)\n");
+        s.append("paramC$04  :" + paramC$04.parameter * 1000 + "(/1000)\n");
 
-        s.append("paramD$01  :" + paramD$01.parameter + "\n");
-        s.append("paramD$02  :" + paramD$02.parameter + "\n");
-        s.append("paramD$03  :" + paramD$03.parameter + "\n");
-
-
+        s.append("paramD$01  :" + paramD$01.parameter * 1000 + "(/1000)\n");
+        s.append("paramD$02  :" + paramD$02.parameter * 1000 + "(/1000)\n");
+        s.append("paramD$03  :" + paramD$03.parameter * 1000 + "(/1000)\n");
 
 
         return s.toString();
