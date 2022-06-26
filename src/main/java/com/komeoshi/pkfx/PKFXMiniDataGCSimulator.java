@@ -2,6 +2,9 @@ package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.ParameterA;
+import com.komeoshi.pkfx.dto.parameter.ParameterB;
+import com.komeoshi.pkfx.dto.parameter.ParameterC;
+import com.komeoshi.pkfx.dto.parameter.ParameterD;
 import com.komeoshi.pkfx.enumerator.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
@@ -62,6 +65,21 @@ public class PKFXMiniDataGCSimulator {
     private ParameterA paramA$04 = new ParameterA(0.0279);
     private ParameterA paramA$05 = new ParameterA(0.0311);
 
+    private ParameterB paramB$01 = new ParameterB(14);
+    private ParameterB paramB$02 = new ParameterB(23);
+    private ParameterB paramB$03 = new ParameterB(91);
+    private ParameterB paramB$04 = new ParameterB(78);
+
+    private ParameterC paramC$01 = new ParameterC(0.052);
+    private ParameterC paramC$02 = new ParameterC(0.300);
+    private ParameterC paramC$03 = new ParameterC(0.350);
+    private ParameterC paramC$04 = new ParameterC(0.350);
+
+    private ParameterD paramD$01 = new ParameterD(0.00005);
+    private ParameterD paramD$02 = new ParameterD(0.005);
+    private ParameterD paramD$03 = new ParameterD(0.00007);
+
+
     public void run() {
         init();
         if (candles == null) {
@@ -107,19 +125,18 @@ public class PKFXMiniDataGCSimulator {
                         tmpCandle4.getAtr() > paramA$05.getParameter();
 
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
-                boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
-                        && h != 14 && h != 17 && h != 20 && h != 22 && h != 23;
-                boolean checkMacd = Math.abs(tmpCandle.getMacd()) > 0.00005 ||
-                        Math.abs(tmpCandle2.getMacd()) > 0.005;
-                boolean checkSig = Math.abs(tmpCandle.getSig()) > 0.00007;
-                boolean checkBb = candle.getBollingerBandHigh() - candle.getBollingerBandLow() > 0.052;
-                boolean checkBb2 = tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow() < 0.300;
-                boolean checkAdx = candle.getAdx().getAdx() > 14;
-                boolean checkDx = Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) > 0.350 ||
-                        Math.abs(tmpCandle.getAdx().getPlusDi() - tmpCandle.getAdx().getMinusDi()) > 0.350;
-                boolean checkRsi = Math.abs(tmpCandle2.getRsi()) > 23;
-                boolean checkRsi2 = Math.abs(candle.getRsi()) < 91 &&
-                        Math.abs(tmpCandle.getRsi()) < 78;
+                boolean checkTimeH = true;
+                boolean checkMacd = Math.abs(tmpCandle.getMacd()) > paramD$01.getParameter() ||
+                        Math.abs(tmpCandle2.getMacd()) > paramD$02.getParameter();
+                boolean checkSig = Math.abs(tmpCandle.getSig()) > paramD$03.getParameter();
+                boolean checkBb = candle.getBollingerBandHigh() - candle.getBollingerBandLow() > paramC$01.getParameter();
+                boolean checkBb2 = tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow() < paramC$02.getParameter();
+                boolean checkAdx = candle.getAdx().getAdx() > paramB$01.getParameter();
+                boolean checkDx = Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) > paramC$03.getParameter() ||
+                        Math.abs(tmpCandle.getAdx().getPlusDi() - tmpCandle.getAdx().getMinusDi()) > paramC$04.getParameter();
+                boolean checkRsi = Math.abs(tmpCandle2.getRsi()) > paramB$02.getParameter();
+                boolean checkRsi2 = Math.abs(candle.getRsi()) < paramB$03.getParameter() &&
+                        Math.abs(tmpCandle.getRsi()) < paramB$04.getParameter();
 
                 boolean doTrade = (
                         !hasLongCandle

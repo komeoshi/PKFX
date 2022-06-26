@@ -8,15 +8,15 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ParameterA {
+public class ParameterC {
     double parameter;
 
-    public ParameterA(double parameter){
+    public ParameterC(double parameter){
         this.parameter = parameter;
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.0; d < 0.1; d += 0.0025) {
+        for (double d = 0.0; d < 0.5; d += 0.01) {
             parameters.add(d);
         }
 
