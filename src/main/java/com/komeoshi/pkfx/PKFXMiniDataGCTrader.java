@@ -102,6 +102,14 @@ public class PKFXMiniDataGCTrader {
                     log.info("hasShortCandle:" + !hasShortCandle);
                     log.info("checkAtr      :" + checkAtr + " " + candle.getAtr() + "> " + 0.0243);
                     log.info("checkTimeH    :" + checkTimeH + " " + h);
+                    log.info("checkMacd     :" + checkMacd);
+                    log.info("checkSig      :" + checkSig);
+                    log.info("checkBb       :" + checkBb);
+                    log.info("checkBb2      :" + checkBb2);
+                    log.info("checkAdx      :" + checkAdx);
+                    log.info("checkDx       :" + checkDx);
+                    log.info("checkRsi      :" + checkRsi);
+                    log.info("checkRsi2     :" + checkRsi2);
 
                     boolean doTrade = (
                             !hasLongCandle
