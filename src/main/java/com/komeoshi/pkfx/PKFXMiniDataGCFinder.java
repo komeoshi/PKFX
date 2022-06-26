@@ -86,6 +86,8 @@ public class PKFXMiniDataGCFinder {
         return sim1;
     }
 
+    private long size = 0L;
+
     private void createParametersAndExecute(ExecutorService pool, List<Candle> candles) {
 
         log.info("creating parameters.");
@@ -152,6 +154,8 @@ public class PKFXMiniDataGCFinder {
                 paramD$02$parameters,
                 paramD$03$parameters);
         log.info("cartesianProduct paramDs, done.");
+
+        this.size = (long) paramAs.size() * paramBs.size() * paramCs.size() * paramDs.size();
 
         int count = 0;
         for (List<Double> tmpParamA : paramAs) {
@@ -267,7 +271,7 @@ public class PKFXMiniDataGCFinder {
             s.append("maxParam             : " + Objects.requireNonNull(maxDiffParameter) + "\n");
             s.append("maxDiff              : " + maxDiff + "\n");
             s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
-            s.append("completeCount        : " + completeCount + "\n");
+            s.append("completeCount        : " + completeCount + " / " + size + "\n");
             s.append("this time.           : " + time + " ms." + "\n");
             s.append("average time.        : " + averageTime + " ms." + "\n");
             s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
