@@ -158,7 +158,6 @@ public class PKFXMiniDataGCFinder {
         this.size = (long) paramAs.size() * paramBs.size() * paramCs.size() * paramDs.size();
 
         long count = 0;
-
         for (List<Double> tmpParamB : paramBs) {
             for (List<Double> tmpParamC : paramCs) {
                 for (List<Double> tmpParamD : paramDs) {
