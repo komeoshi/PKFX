@@ -55,7 +55,7 @@ public class PKFXMiniDataGCFinder {
 
     }
 
-    private int completeCount = 0;
+    private long completeCount = 0;
     private double maxDiff = -999.0;
     private double maxDiffTotal = 0;
     private Parameter maxDiffParameter;
@@ -157,7 +157,7 @@ public class PKFXMiniDataGCFinder {
 
         this.size = (long) paramAs.size() * paramBs.size() * paramCs.size() * paramDs.size();
 
-        int count = 0;
+        long count = 0;
         for (List<Double> tmpParamA : paramAs) {
             for (List<Double> tmpParamB : paramBs) {
                 for (List<Double> tmpParamC : paramCs) {
