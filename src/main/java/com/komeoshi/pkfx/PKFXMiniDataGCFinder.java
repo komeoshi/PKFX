@@ -58,7 +58,7 @@ public class PKFXMiniDataGCFinder {
     private long completeCount = 0;
     private double maxDiff = -999.0;
     private double maxDiffTotal = 0;
-    private Parameter maxDiffParameter;
+    private Parameter maxDiffParameter = new Parameter();
     private long startTime = 0;
 
     private PKFXMiniDataGCSimulator createSimulator(List<Candle> candles, Parameter p) {
@@ -167,7 +167,8 @@ public class PKFXMiniDataGCFinder {
                         FinderExecutor exec = new FinderExecutor(parameter, candles);
 
                         pool.submit(exec);
-                        if (count % 10000 == 0) {
+                        if (count % 1000 == 0) {
+                            log.info("submit count:" + count + " complete count:" + completeCount) ;
                             sleep(5);
                         }
                     }
