@@ -272,11 +272,9 @@ public class PKFXMiniDataGCSimulatorBatch {
         };
 
         List<Candle> candles = null;
-        Map<String, Candle> longCandles = null;
 
         double maxDiff = -9990.0;
         for (double param : params) {
-            log.info("param:" + (param * 1000));
 
             PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
             sim1.setParam(param);
@@ -290,7 +288,8 @@ public class PKFXMiniDataGCSimulatorBatch {
             if (candles == null) {
                 candles = sim1.getCandles();
             }
-            log.info("maxDiff:" + maxDiff + "\r\n");
+            log.info("param   :" + (param * 1000));
+            log.info("maxDiff :" + maxDiff + "\r\n");
         }
     }
 }

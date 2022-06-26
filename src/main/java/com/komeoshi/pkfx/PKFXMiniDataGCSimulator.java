@@ -1,6 +1,7 @@
 package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
+import com.komeoshi.pkfx.dto.parameter.ParameterA;
 import com.komeoshi.pkfx.enumerator.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
@@ -26,11 +27,6 @@ public class PKFXMiniDataGCSimulator {
     private int totalCount = 0;
     private double diff = 0.0;
 
-    public static void main(String[] args) {
-        PKFXMiniDataGCSimulator sim = new PKFXMiniDataGCSimulator();
-        sim.run();
-    }
-
     private double param;
 
     public void setParam(double param) {
@@ -38,6 +34,16 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private List<Candle> candles = null;
+
+    private static double SPREAD_COST = 0.004;
+    private boolean isLogging = false;
+
+
+    public static void main(String[] args) {
+        PKFXMiniDataGCSimulator sim = new PKFXMiniDataGCSimulator();
+        sim.run();
+    }
+
 
     private void init() {
         countLosscut = 0;
@@ -50,8 +56,11 @@ public class PKFXMiniDataGCSimulator {
         diff = 0.0;
     }
 
-    private static double SPREAD_COST = 0.004;
-    private boolean isLogging = false;
+    private ParameterA paramA$01 = new ParameterA(0.0243);
+    private ParameterA paramA$02 = new ParameterA(0.0450);
+    private ParameterA paramA$03 = new ParameterA(0.0590);
+    private ParameterA paramA$04 = new ParameterA(0.0279);
+    private ParameterA paramA$05 = new ParameterA(0.0311);
 
     public void run() {
         init();
@@ -91,11 +100,11 @@ public class PKFXMiniDataGCSimulator {
                 boolean checkSpread = candle.getSpreadMa() < 0.027;
                 boolean hasLongCandle = hasLongCandle(candle);
                 boolean hasShortCandle = hasShortCandle(candle);
-                boolean checkAtr = candle.getAtr() > 0.0243 ||
-                        candle.getTr() > 0.0450 ||
-                        tmpCandle2.getTr() > 0.059 ||
-                        tmpCandle3.getAtr() > 0.0279 ||
-                        tmpCandle4.getAtr() > 0.0311;
+                boolean checkAtr = candle.getAtr() > paramA$01.getParameter() ||
+                        candle.getTr() > paramA$02.getParameter() ||
+                        tmpCandle2.getTr() > paramA$03.getParameter() ||
+                        tmpCandle3.getAtr() > paramA$04.getParameter() ||
+                        tmpCandle4.getAtr() > paramA$05.getParameter();
 
                 int h = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getHour();
                 boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
