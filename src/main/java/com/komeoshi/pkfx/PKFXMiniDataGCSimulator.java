@@ -97,7 +97,7 @@ public class PKFXMiniDataGCSimulator {
         for (int ii = 0; ii < candles.size(); ii++) {
             Candle candle = candles.get(ii);
 
-            if (candles.size() / 10 < ii &&
+            if (candles.size() / 20 < ii &&
                     (totalCount == 0 || diff < 0 || countWin < countLose)) {
                 // これ以上やっても無駄
                 break;
