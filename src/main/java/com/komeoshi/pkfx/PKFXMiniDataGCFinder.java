@@ -52,8 +52,8 @@ public class PKFXMiniDataGCFinder {
 
                             parameters.add(parameter);
 
-                            if (parameters.size() % 10000 == 0)
-                                log.info(parameters.size() + "" + size);
+                            if (parameters.size() % 1_000_000 == 0)
+                                log.info(parameters.size() + "/" + size);
                         }
                     }
                 }
