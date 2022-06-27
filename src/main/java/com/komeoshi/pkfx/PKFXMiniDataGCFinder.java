@@ -60,33 +60,15 @@ public class PKFXMiniDataGCFinder {
     private double maxDiffTotal = 0;
     private Parameter maxDiffParameter = new Parameter();
     private long startTime = 0;
+    private long size = 0L;
 
     private PKFXMiniDataGCSimulator createSimulator(List<Candle> candles, Parameter p) {
         PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
         sim1.setCandles(candles);
-        sim1.setParamA$01(p.getParamA$01());
-        sim1.setParamA$02(p.getParamA$02());
-        sim1.setParamA$03(p.getParamA$03());
-        sim1.setParamA$04(p.getParamA$04());
-        sim1.setParamA$05(p.getParamA$05());
 
-        sim1.setParamB$01(p.getParamB$01());
-        sim1.setParamB$02(p.getParamB$02());
-        sim1.setParamB$03(p.getParamB$03());
-        sim1.setParamB$04(p.getParamB$04());
-
-        sim1.setParamC$01(p.getParamC$01());
-        sim1.setParamC$02(p.getParamC$02());
-        sim1.setParamC$03(p.getParamC$03());
-        sim1.setParamC$04(p.getParamC$04());
-
-        sim1.setParamD$01(p.getParamD$01());
-        sim1.setParamD$02(p.getParamD$02());
-        sim1.setParamD$03(p.getParamD$03());
+        sim1.setParameter(p);
         return sim1;
     }
-
-    private long size = 0L;
 
     private void createParametersAndExecute(ExecutorService pool, List<Candle> candles) {
 
