@@ -38,7 +38,7 @@ public class PKFXMiniDataGCSimulator {
     private static double SPREAD_COST = 0.004;
     private boolean isLogging = false;
     private boolean isResultLogging = true;
-    private boolean isShortCut = false;
+    private boolean isShortCut = true;
 
 
     public static void main(String[] args) {
