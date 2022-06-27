@@ -428,7 +428,7 @@ public class PKFXMiniDataGCSimulator {
                 count++;
             }
         }
-        return count > 1;
+        return count > 5;
     }
 
     private boolean hasLongCandle(Candle candle) {
