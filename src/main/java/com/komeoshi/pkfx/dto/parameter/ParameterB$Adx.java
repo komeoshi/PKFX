@@ -17,7 +17,7 @@ public class ParameterB$Adx {
 
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (int i = 10; i <= 40; i += 2) {
+        for (int i = 10; i <= 40; i += 1) {
             parameters.add((double) i);
         }
 
