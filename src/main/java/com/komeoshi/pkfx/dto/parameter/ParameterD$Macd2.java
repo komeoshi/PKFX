@@ -16,7 +16,7 @@ public class ParameterD$Macd2 {
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.001; d < 0.010; d += 0.001) {
+        for (double d = 0.001; d < 0.100; d += 0.001) {
             parameters.add(d);
         }
 
