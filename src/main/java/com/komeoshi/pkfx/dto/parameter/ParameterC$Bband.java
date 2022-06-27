@@ -9,14 +9,14 @@ import java.util.List;
 @Getter
 @Setter
 public class ParameterC$Bband {
-    double parameter;
+    double parameter = 0.052; // 0.300
 
     public ParameterC$Bband(double parameter){
         this.parameter = parameter;
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.010; d < 0.50; d += 0.015) {
+        for (double d = 0.050; d < 0.300; d += 0.050) {
             parameters.add(d);
         }
 

@@ -13,7 +13,7 @@ public class Parameter {
     private ParameterA$Past4Atr paramA$05 = new ParameterA$Past4Atr(0.0311);
 
     private ParameterB$Adx paramB$01 = new ParameterB$Adx(14);
-    private ParameterB$Rsi paramB$02 = new ParameterB$Rsi(23);
+    private ParameterB$Past2Rsi paramB$02 = new ParameterB$Past2Rsi(23);
     private ParameterB$Rsi paramB$03 = new ParameterB$Rsi(91);
     private ParameterB$Rsi paramB$04 = new ParameterB$Rsi(78);
 

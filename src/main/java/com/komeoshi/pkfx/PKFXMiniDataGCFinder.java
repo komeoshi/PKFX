@@ -97,7 +97,7 @@ public class PKFXMiniDataGCFinder {
         List<Double> paramA$05$parameters = ParameterA$Past4Atr.createParameters();
 
         List<Double> paramB$01$parameters = ParameterB$Adx.createParameters();
-        List<Double> paramB$02$parameters = ParameterB$Rsi.createParameters();
+        List<Double> paramB$02$parameters = ParameterB$Past2Rsi.createParameters();
         List<Double> paramB$03$parameters = ParameterB$Rsi.createParameters();
         List<Double> paramB$04$parameters = ParameterB$Rsi.createParameters();
 
@@ -185,7 +185,7 @@ public class PKFXMiniDataGCFinder {
         parameter.setParamA$05(new ParameterA$Past4Atr(tmpParamA.get(4)));
 
         parameter.setParamB$01(new ParameterB$Adx(tmpParamB.get(0)));
-        parameter.setParamB$02(new ParameterB$Rsi(tmpParamB.get(1)));
+        parameter.setParamB$02(new ParameterB$Past2Rsi(tmpParamB.get(1)));
         parameter.setParamB$03(new ParameterB$Rsi(tmpParamB.get(2)));
         parameter.setParamB$04(new ParameterB$Rsi(tmpParamB.get(3)));
 

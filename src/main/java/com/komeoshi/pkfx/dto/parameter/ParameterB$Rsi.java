@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ParameterB$Rsi {
-    double parameter;
+    double parameter = 91; //  78
 
     public ParameterB$Rsi(double parameter) {
         this.parameter = parameter;
@@ -17,7 +17,7 @@ public class ParameterB$Rsi {
 
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (int i = 20; i <= 95; i += 3) {
+        for (int i = 75; i <= 95; i += 4) {
             parameters.add((double) i);
         }
 

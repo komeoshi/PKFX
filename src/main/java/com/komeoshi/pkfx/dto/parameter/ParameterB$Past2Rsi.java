@@ -8,16 +8,17 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ParameterC$DxBand {
-    double parameter = 0.350;
+public class ParameterB$Past2Rsi {
+    double parameter = 23;
 
-    public ParameterC$DxBand(double parameter){
+    public ParameterB$Past2Rsi(double parameter) {
         this.parameter = parameter;
     }
+
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.30; d < 0.40; d += 0.050) {
-            parameters.add(d);
+        for (int i = 20; i <= 30; i += 2) {
+            parameters.add((double) i);
         }
 
         return parameters;
