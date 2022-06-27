@@ -16,7 +16,7 @@ public class ParameterC$Bband {
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.050; d < 0.300; d += 0.050) {
+        for (double d = 0.040; d < 0.300; d += 0.010) {
             parameters.add(d);
         }
 

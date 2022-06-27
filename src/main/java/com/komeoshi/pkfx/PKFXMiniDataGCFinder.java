@@ -139,23 +139,24 @@ public class PKFXMiniDataGCFinder {
                 paramA$03$parameters,
                 paramA$04$parameters,
                 paramA$05$parameters);
-        log.info("cartesianProduct paramAs, done.");
+        log.info("cartesianProduct paramAs, done. " + paramAs.size());
         List<List<Double>> paramBs = Lists.cartesianProduct(paramB$01$parameters,
                 paramB$02$parameters,
                 paramB$03$parameters,
                 paramB$04$parameters);
-        log.info("cartesianProduct paramBs, done.");
+        log.info("cartesianProduct paramBs, done. " + paramBs.size());
         List<List<Double>> paramCs = Lists.cartesianProduct(paramC$01$parameters,
                 paramC$02$parameters,
                 paramC$03$parameters,
                 paramC$04$parameters);
-        log.info("cartesianProduct paramCs, done.");
+        log.info("cartesianProduct paramCs, done. " + paramCs.size());
         List<List<Double>> paramDs = Lists.cartesianProduct(paramD$01$parameters,
                 paramD$02$parameters,
                 paramD$03$parameters);
-        log.info("cartesianProduct paramDs, done.");
+        log.info("cartesianProduct paramDs, done. " + paramDs.size());
 
-        this.size = (long) paramAs.size() * paramBs.size() * paramCs.size() * paramDs.size();
+        this.size = (long) paramAs.size() + paramBs.size() + paramCs.size() + paramDs.size();
+        log.info("scheduled size = " + size);
 
         List<Parameter> parameters = new ArrayList<>();
         for (List<Double> tmpParamB : paramBs) {
@@ -201,11 +202,13 @@ public class PKFXMiniDataGCFinder {
 
             parameters.add(parameter);
         }
+        Collections.shuffle(parameters);
 
         this.size = parameters.size();
+        log.info("parameters size = " + size);
 
         long count = 0;
-        for(Parameter parameter: parameters) {
+        for (Parameter parameter : parameters) {
             count++;
             FinderExecutor exec = new FinderExecutor(parameter, candles);
 
@@ -226,7 +229,7 @@ public class PKFXMiniDataGCFinder {
         long max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
 
         if (log.isInfoEnabled()) {
-            log.info( "\n" + "memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
+            log.info("\n" + "memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
                     numberFormat(max));
         }
     }
@@ -287,6 +290,7 @@ public class PKFXMiniDataGCFinder {
             long elapsedTime = System.currentTimeMillis() - startTime;
             long averageTime = elapsedTime / completeCount;
             long remainTime = (size - completeCount) * averageTime;
+            long remainTimeM = remainTime / 1000 / 60 ;
             long remainTimeH = remainTime / 1000 / 60 / 60;
             long remainTimeD = remainTimeH / 24;
             long remainTimeY = remainTimeD / 365;
@@ -302,6 +306,7 @@ public class PKFXMiniDataGCFinder {
                 s.append("average time.        : " + averageTime + " ms." + "\n");
                 s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
                 s.append("remain time(ms).     : " + remainTime + " ms." + "\n");
+                s.append("remain time(M).      : " + remainTimeM + " M." + "\n");
                 s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
                 s.append("remain time(Y).      : " + remainTimeY + " Y." + "\n");
 

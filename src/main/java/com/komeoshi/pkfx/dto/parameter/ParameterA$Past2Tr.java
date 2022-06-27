@@ -16,7 +16,7 @@ public class ParameterA$Past2Tr {
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.0500; d < 0.0600; d += 0.005) {
+        for (double d = 0.0400; d < 0.0600; d += 0.005) {
             parameters.add(d);
         }
 

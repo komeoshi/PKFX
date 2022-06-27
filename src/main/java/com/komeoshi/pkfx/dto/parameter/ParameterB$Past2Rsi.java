@@ -17,7 +17,7 @@ public class ParameterB$Past2Rsi {
 
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (int i = 20; i <= 30; i += 2) {
+        for (int i = 20; i <= 40; i += 2) {
             parameters.add((double) i);
         }
 

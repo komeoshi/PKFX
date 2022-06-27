@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ParameterD$Macd2 {
-    double parameter;
+    double parameter = 0.005;
 
     public ParameterD$Macd2(double parameter){
         this.parameter = parameter;

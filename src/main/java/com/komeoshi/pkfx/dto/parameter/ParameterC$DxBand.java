@@ -16,7 +16,7 @@ public class ParameterC$DxBand {
     }
     public static List<Double> createParameters() {
         List<Double> parameters = new ArrayList<>();
-        for (double d = 0.30; d < 0.40; d += 0.050) {
+        for (double d = 0.10; d < 0.40; d += 0.010) {
             parameters.add(d);
         }
 
