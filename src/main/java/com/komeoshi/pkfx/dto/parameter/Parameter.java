@@ -40,9 +40,9 @@ public class Parameter {
         parameter1.setParamA$04(new ParameterA$Past3Atr(15.0 / 1000));
         parameter1.setParamA$05(new ParameterA$Past4Atr(15.0 / 1000));
 
-        parameter1.setParamB$01(new ParameterB$Adx(14000.0 / 1000));
-        parameter1.setParamB$02(new ParameterB$Past2Rsi(23000.0 / 1000));
-        parameter1.setParamB$03(new ParameterB$Rsi(91000.0 / 1000));
+        parameter1.setParamB$01(new ParameterB$Adx(15000.0 / 1000));
+        parameter1.setParamB$02(new ParameterB$Past2Rsi(21000.0 / 1000));
+        parameter1.setParamB$03(new ParameterB$Rsi(86000.0 / 1000));
         parameter1.setParamB$04(new ParameterB$Rsi(78000.0 / 1000));
 
         parameter1.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
