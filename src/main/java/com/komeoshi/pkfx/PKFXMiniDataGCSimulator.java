@@ -38,6 +38,7 @@ public class PKFXMiniDataGCSimulator {
     private static double SPREAD_COST = 0.004;
     private boolean isLogging = false;
     private boolean isResultLogging = true;
+    private boolean isShortCut = true;
 
 
     public static void main(String[] args) {
@@ -74,7 +75,7 @@ public class PKFXMiniDataGCSimulator {
         for (int ii = 0; ii < candles.size(); ii++) {
             Candle candle = candles.get(ii);
 
-            if (candles.size() / 100 < ii && totalCount == 0) {
+            if (isShortCut && candles.size() / 100 < ii && totalCount == 0) {
                 // これ以上やっても無駄
                 break;
             }
