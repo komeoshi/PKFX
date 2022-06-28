@@ -283,7 +283,7 @@ public class PKFXMiniDataGCFinder {
                 s.append("maxParam             : " + maxDiffParameter + "\n");
                 s.append("maxDiff              : " + maxDiff + "\n");
                 s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
-                s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) + "%" + "\n");
+                s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) * 100 + "%" + "\n");
                 s.append("this time.           : " + time + " ms." + "\n");
                 s.append("average time.        : " + averageTime + " ms." + "\n");
                 s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
