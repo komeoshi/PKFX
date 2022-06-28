@@ -66,7 +66,8 @@ public class PKFXMiniDataGCFinder {
         PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
         sim1.setCandles(candles);
 
-        sim1.setParameter(p);
+        sim1.setParameter1(p);
+        sim1.setParameter2(new Parameter());
         return sim1;
     }
 
@@ -142,7 +143,7 @@ public class PKFXMiniDataGCFinder {
 
         List<Parameter> parameters = new ArrayList<>();
         for (List<Double> tmpParamB : paramBs) {
-            Parameter parameter = new Parameter();
+            Parameter parameter = Parameter.getParameter1();
 
             parameter.setParamB$01(new ParameterB$Adx(tmpParamB.get(0)));
             parameter.setParamB$02(new ParameterB$Past2Rsi(tmpParamB.get(1)));
@@ -153,7 +154,7 @@ public class PKFXMiniDataGCFinder {
         }
 
         for (List<Double> tmpParamC : paramCs) {
-            Parameter parameter = new Parameter();
+            Parameter parameter = Parameter.getParameter1();
 
             parameter.setParamC$01(new ParameterC$Bband(tmpParamC.get(0)));
             parameter.setParamC$02(new ParameterC$Bband(tmpParamC.get(1)));
@@ -164,7 +165,7 @@ public class PKFXMiniDataGCFinder {
         }
 
         for (List<Double> tmpParamD : paramDs) {
-            Parameter parameter = new Parameter();
+            Parameter parameter = Parameter.getParameter1();
 
             parameter.setParamD$01(new ParameterD$Macd1(tmpParamD.get(0)));
             parameter.setParamD$02(new ParameterD$Macd2(tmpParamD.get(1)));
@@ -174,7 +175,7 @@ public class PKFXMiniDataGCFinder {
         }
 
         for (List<Double> tmpParamA : paramAs) {
-            Parameter parameter = new Parameter();
+            Parameter parameter = Parameter.getParameter1();
 
             parameter.setParamA$01(new ParameterA$CurrentAtr(tmpParamA.get(0)));
             parameter.setParamA$02(new ParameterA$CurrentTr(tmpParamA.get(1)));
@@ -246,6 +247,8 @@ public class PKFXMiniDataGCFinder {
 
             PKFXMiniDataGCSimulator sim1 = createSimulator(candles, parameter);
             sim1.setResultLogging(false);
+            sim1.setLogging(false);
+            sim1.setShortCut(true);
             sim1.run();
 
             double diff = sim1.getDiff();

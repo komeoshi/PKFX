@@ -2,6 +2,7 @@ package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.Instrument;
+import com.komeoshi.pkfx.dto.parameter.Parameter;
 import com.komeoshi.pkfx.enumerator.AdxPosition;
 import com.komeoshi.pkfx.enumerator.Position;
 import com.komeoshi.pkfx.enumerator.Status;
@@ -35,6 +36,8 @@ public class PKFXMiniDataGCTrader {
 
     private static final double SPREAD_COST = 0.004;
 
+    Parameter parameter1 = Parameter.getParameter1();
+    Parameter parameter2 = Parameter.getParameter2();
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) {
         return args -> {
@@ -71,65 +74,14 @@ public class PKFXMiniDataGCTrader {
                         lastMacdPosition != Position.NONE) {
                     // クロスした
 
-                    Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
-                    Candle tmpCandle2 = candle.getCandles().get(candle.getCandles().size() - 2);
-                    Candle tmpCandle3 = candle.getCandles().get(candle.getCandles().size() - 3);
-                    Candle tmpCandle4 = candle.getCandles().get(candle.getCandles().size() - 4);
-
-                    boolean checkSpread = candle.getSpreadMa() < 0.027;
-                    boolean hasLongCandle = hasLongCandle(candle);
-                    boolean hasShortCandle = hasShortCandle(candle);
-                    boolean checkAtr = candle.getAtr() > 0.0243 ||
-                            candle.getTr() > 0.0450 ||
-                            tmpCandle2.getTr() > 0.059 ||
-                            tmpCandle3.getAtr() > 0.0279 ||
-                            tmpCandle4.getAtr() > 0.0311;
-
-                    int h = LocalDateTime.now().getHour();
-                    boolean checkTimeH = h != 0 && h != 2 && h != 5 && h != 8 && h != 10 && h != 12 && h != 13
-                            && h != 14 && h != 17 && h != 20 && h != 22 && h != 23;
-                    boolean checkMacd = Math.abs(tmpCandle.getMacd()) > 0.00005 ||
-                            Math.abs(tmpCandle2.getMacd()) > 0.005;
-                    boolean checkSig = Math.abs(tmpCandle.getSig()) > 0.00007;
-                    boolean checkBb = candle.getBollingerBandHigh() - candle.getBollingerBandLow() > 0.052;
-                    boolean checkBb2 = tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow() < 0.300;
-                    boolean checkAdx = candle.getAdx().getAdx() > 14;
-                    boolean checkDx = Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) > 0.350 ||
-                            Math.abs(tmpCandle.getAdx().getPlusDi() - tmpCandle.getAdx().getMinusDi()) > 0.350;
-                    boolean checkRsi = Math.abs(tmpCandle2.getRsi()) > 23;
-                    boolean checkRsi2 = Math.abs(candle.getRsi()) < 91 &&
-                            Math.abs(tmpCandle.getRsi()) < 78;
+                    boolean doTrade1 = isDoTrade1(candle);
+                    boolean doTrade2 = isDoTrade2(candle);
+                    boolean doTrade = doTrade1 || doTrade2;
 
                     log.info("---crossed.---");
-                    log.info("spread        :" + checkSpread + " " + candle.getSpreadMa() + " < " + 0.027);
-                    log.info("hasLongCandle :" + !hasLongCandle);
-                    log.info("hasShortCandle:" + !hasShortCandle);
-                    log.info("checkAtr      :" + checkAtr + " " + candle.getAtr() + " > " + 0.0243);
-                    log.info("checkTimeH    :" + checkTimeH + " " + h);
-                    log.info("checkMacd     :" + checkMacd + " " + tmpCandle.getMacd() + " > " + 0.00005);
-                    log.info("checkSig      :" + checkSig + " " + tmpCandle.getSig() + " >" + 0.00007);
-                    log.info("checkBb       :" + checkBb + " " + (candle.getBollingerBandHigh() - candle.getBollingerBandLow()) + " > " + 0.052);
-                    log.info("checkBb2      :" + checkBb2 + " " + (tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow()) + " < " + 0.300);
-                    log.info("checkAdx      :" + checkAdx + " " + candle.getAdx().getAdx() + " > " + 14);
-                    log.info("checkDx       :" + checkDx + " " + Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) + " > " + 0.350);
-                    log.info("checkRsi      :" + checkRsi + " " + Math.abs(tmpCandle2.getRsi()) + " > " + 23);
-                    log.info("checkRsi2     :" + checkRsi2 + " " + Math.abs(candle.getRsi()) + " < " + 91);
+                    log.info("doTrade1        :" + doTrade1);
+                    log.info("doTrade2        :" + doTrade2);
 
-                    boolean doTrade = (
-                            !hasLongCandle
-                                    && !hasShortCandle
-                                    && checkAtr
-                                    && checkSpread
-                                    && checkTimeH
-                                    && checkMacd
-                                    && checkSig
-                                    && checkBb
-                                    && checkBb2
-                                    && checkAdx
-                                    && checkDx
-                                    && checkRsi
-                                    && checkRsi2
-                    );
 
                     if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                             (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||
@@ -203,6 +155,92 @@ public class PKFXMiniDataGCTrader {
             }
         };
 
+    }
+
+    private boolean isDoTrade1(Candle candle) {
+        Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
+        Candle tmpCandle2 = candle.getCandles().get(candle.getCandles().size() - 2);
+        Candle tmpCandle3 = candle.getCandles().get(candle.getCandles().size() - 3);
+        Candle tmpCandle4 = candle.getCandles().get(candle.getCandles().size() - 4);
+
+        boolean checkSpread = candle.getSpreadMa() < 0.027;
+        boolean hasLongCandle = hasLongCandle(candle);
+        boolean hasShortCandle = hasShortCandle(candle);
+        boolean checkAtr = candle.getAtr() > parameter1.getParamA$01().getParameter() ||
+                candle.getTr() > parameter1.getParamA$02().getParameter() ||
+                tmpCandle2.getTr() > parameter1.getParamA$03().getParameter() ||
+                tmpCandle3.getAtr() > parameter1.getParamA$04().getParameter() ||
+                tmpCandle4.getAtr() > parameter1.getParamA$05().getParameter();
+
+        boolean checkMacd = Math.abs(tmpCandle.getMacd()) > parameter1.getParamD$01().getParameter() ||
+                Math.abs(tmpCandle2.getMacd()) > parameter1.getParamD$02().getParameter();
+        boolean checkSig = Math.abs(tmpCandle.getSig()) > parameter1.getParamD$03().getParameter();
+        boolean checkBb = candle.getBollingerBandHigh() - candle.getBollingerBandLow() > parameter1.getParamC$01().getParameter();
+        boolean checkBb2 = tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow() < parameter1.getParamC$02().getParameter();
+        boolean checkAdx = candle.getAdx().getAdx() > parameter1.getParamB$01().getParameter();
+        boolean checkDx = Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) > parameter1.getParamC$03().getParameter() ||
+                Math.abs(tmpCandle.getAdx().getPlusDi() - tmpCandle.getAdx().getMinusDi()) > parameter1.getParamC$04().getParameter();
+        boolean checkRsi = Math.abs(tmpCandle2.getRsi()) > parameter1.getParamB$02().getParameter();
+        boolean checkRsi2 = Math.abs(candle.getRsi()) < parameter1.getParamB$03().getParameter() &&
+                Math.abs(tmpCandle.getRsi()) < parameter1.getParamB$04().getParameter();
+
+        return (
+                !hasLongCandle
+                        && !hasShortCandle
+                        && checkAtr
+                        && checkSpread
+                        && checkMacd
+                        && checkSig
+                        && checkBb
+                        && checkBb2
+                        && checkAdx
+                        && checkDx
+                        && checkRsi
+                        && checkRsi2
+        );
+    }
+
+    private boolean isDoTrade2(Candle candle) {
+        Candle tmpCandle = candle.getCandles().get(candle.getCandles().size() - 1);
+        Candle tmpCandle2 = candle.getCandles().get(candle.getCandles().size() - 2);
+        Candle tmpCandle3 = candle.getCandles().get(candle.getCandles().size() - 3);
+        Candle tmpCandle4 = candle.getCandles().get(candle.getCandles().size() - 4);
+
+        boolean checkSpread = candle.getSpreadMa() < 0.027;
+        boolean hasLongCandle = hasLongCandle(candle);
+        boolean hasShortCandle = hasShortCandle(candle);
+        boolean checkAtr = candle.getAtr() > parameter2.getParamA$01().getParameter() ||
+                candle.getTr() > parameter2.getParamA$02().getParameter() ||
+                tmpCandle2.getTr() > parameter2.getParamA$03().getParameter() ||
+                tmpCandle3.getAtr() > parameter2.getParamA$04().getParameter() ||
+                tmpCandle4.getAtr() > parameter2.getParamA$05().getParameter();
+
+        boolean checkMacd = Math.abs(tmpCandle.getMacd()) > parameter2.getParamD$01().getParameter() ||
+                Math.abs(tmpCandle2.getMacd()) > parameter2.getParamD$02().getParameter();
+        boolean checkSig = Math.abs(tmpCandle.getSig()) > parameter2.getParamD$03().getParameter();
+        boolean checkBb = candle.getBollingerBandHigh() - candle.getBollingerBandLow() > parameter2.getParamC$01().getParameter();
+        boolean checkBb2 = tmpCandle2.getBollingerBandHigh() - tmpCandle2.getBollingerBandLow() < parameter2.getParamC$02().getParameter();
+        boolean checkAdx = candle.getAdx().getAdx() > parameter2.getParamB$01().getParameter();
+        boolean checkDx = Math.abs(candle.getAdx().getPlusDi() - candle.getAdx().getMinusDi()) > parameter2.getParamC$03().getParameter() ||
+                Math.abs(tmpCandle.getAdx().getPlusDi() - tmpCandle.getAdx().getMinusDi()) > parameter2.getParamC$04().getParameter();
+        boolean checkRsi = Math.abs(tmpCandle2.getRsi()) > parameter2.getParamB$02().getParameter();
+        boolean checkRsi2 = Math.abs(candle.getRsi()) < parameter2.getParamB$03().getParameter() &&
+                Math.abs(tmpCandle.getRsi()) < parameter2.getParamB$04().getParameter();
+
+        return (
+                !hasLongCandle
+                        && !hasShortCandle
+                        && checkAtr
+                        && checkSpread
+                        && checkMacd
+                        && checkSig
+                        && checkBb
+                        && checkBb2
+                        && checkAdx
+                        && checkDx
+                        && checkRsi
+                        && checkRsi2
+        );
     }
 
     private Status losscut(RestTemplate restTemplate, PKFXFinderRestClient client, Status status, Candle openCandle, Candle candle) {
