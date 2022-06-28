@@ -272,7 +272,7 @@ public class PKFXMiniDataGCFinder {
             long elapsedTime = System.currentTimeMillis() - startTime;
             long averageTime = elapsedTime / completeCount;
             long remainTime = (size - completeCount) * averageTime;
-            long remainTimeM = remainTime / 1000 / 60 ;
+            long remainTimeM = remainTime / 1000 / 60;
             long remainTimeH = remainTime / 1000 / 60 / 60;
             long remainTimeD = remainTimeH / 24;
             long remainTimeY = remainTimeD / 365;
@@ -283,7 +283,7 @@ public class PKFXMiniDataGCFinder {
                 s.append("maxParam             : " + maxDiffParameter + "\n");
                 s.append("maxDiff              : " + maxDiff + "\n");
                 s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
-                s.append("completeCount        : " + completeCount + " / " + size + " " + (completeCount / size) + "%" + "\n");
+                s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) + "%" + "\n");
                 s.append("this time.           : " + time + " ms." + "\n");
                 s.append("average time.        : " + averageTime + " ms." + "\n");
                 s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
