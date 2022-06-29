@@ -9,11 +9,11 @@ public class Parameter {
 
     public static Parameter getParameterSim(){
         Parameter parameter1 = new Parameter();
-        parameter1.setParamA$01(new ParameterA$CurrentAtr(10.0 / 1000));
-        parameter1.setParamA$02(new ParameterA$CurrentTr(10.0 / 1000));
-        parameter1.setParamA$03(new ParameterA$Past2Tr(10.0 / 1000));
-        parameter1.setParamA$04(new ParameterA$Past3Atr(10.0 / 1000));
-        parameter1.setParamA$05(new ParameterA$Past4Atr(10.0 / 1000));
+        parameter1.setParamA$01(new ParameterA$CurrentAtr(20.0 / 1000));
+        parameter1.setParamA$02(new ParameterA$CurrentTr(20.0 / 1000));
+        parameter1.setParamA$03(new ParameterA$Past2Tr(20.0 / 1000));
+        parameter1.setParamA$04(new ParameterA$Past3Atr(20.0 / 1000));
+        parameter1.setParamA$05(new ParameterA$Past4Atr(20.0 / 1000));
 
         parameter1.setParamB$01(new ParameterB$Adx(10000.0 / 1000));
         parameter1.setParamB$02(new ParameterB$Past2Rsi(28000.0 / 1000));
