@@ -35,12 +35,6 @@ public class PKFXMiniDataGCTrader {
     }
 
     private static final double SPREAD_COST = 0.004;
-
-    Parameter parameter1 = Parameter.getParameter1();
-    Parameter parameter2 = Parameter.getParameter2();
-    Parameter parameter3 = Parameter.getParameter3();
-    Parameter parameter4 = Parameter.getParameter4();
-
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) {
         return args -> {
@@ -77,11 +71,12 @@ public class PKFXMiniDataGCTrader {
                         lastMacdPosition != Position.NONE) {
                     // クロスした
 
-                    boolean doTrade1 = isDoTradeWithParameter(candle, parameter1);
-                    boolean doTrade2 = isDoTradeWithParameter(candle, parameter2);
-                    boolean doTrade3 = isDoTradeWithParameter(candle, parameter3);
-                    boolean doTrade4 = isDoTradeWithParameter(candle, parameter4);
-                    boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4;
+                    boolean doTrade1 = isDoTradeWithParameter(candle, Parameter.getParameter1());
+                    boolean doTrade2 = isDoTradeWithParameter(candle, Parameter.getParameter2());
+                    boolean doTrade3 = isDoTradeWithParameter(candle, Parameter.getParameter3());
+                    boolean doTrade4 = isDoTradeWithParameter(candle, Parameter.getParameter4());
+                    boolean doTrade5 = isDoTradeWithParameter(candle, Parameter.getParameter5());
+                    boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5;
 
                     log.info("---crossed.---");
                     log.info("doTrade1        :" + doTrade1);
