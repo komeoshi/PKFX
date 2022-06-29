@@ -154,6 +154,31 @@ public class Parameter {
 
         return parameter5;
     }
+    public static Parameter getParameter6(){
+        Parameter parameter6 = new Parameter();
+        parameter6.setParamA$01(new ParameterA$CurrentAtr(20.0 / 1000));
+        parameter6.setParamA$02(new ParameterA$CurrentTr(20.0 / 1000));
+        parameter6.setParamA$03(new ParameterA$Past2Tr(20.0 / 1000));
+        parameter6.setParamA$04(new ParameterA$Past3Atr(20.0 / 1000));
+        parameter6.setParamA$05(new ParameterA$Past4Atr(20.0 / 1000));
+
+        parameter6.setParamB$01(new ParameterB$Adx(11000.0 / 1000));
+        parameter6.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
+        parameter6.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
+        parameter6.setParamB$04(new ParameterB$Rsi(93000.0 / 1000));
+
+        parameter6.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
+        parameter6.setParamC$02(new ParameterC$Bband(170.0 / 1000));
+        parameter6.setParamC$03(new ParameterC$DxBand(110.0 / 1000));
+        parameter6.setParamC$04(new ParameterC$DxBand(180.00000000000006 / 1000));
+
+        parameter6.setParamD$01(new ParameterD$Macd1(0.6800000000000017 / 1000));
+        parameter6.setParamD$02(new ParameterD$Macd2(55.0 / 1000));
+        parameter6.setParamD$03(new ParameterD$Sig(0.470000000000001 / 1000));
+
+        return parameter6;
+    }
+
 
     private ParameterA$CurrentAtr paramA$01 = new ParameterA$CurrentAtr(99999);
     private ParameterA$CurrentTr paramA$02 = new ParameterA$CurrentTr(99999);
