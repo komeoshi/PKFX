@@ -19,20 +19,46 @@ public class PKFXMiniDataGCSimulatorBatch {
 
         double[] params = {
 
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,13,14,15,16,17,18,19,20,
-                21,22,23
+                0.000210,
+                0.000220,
+                0.000230,
+                0.000240,
+                0.000250,
+                0.000260,
+                0.000270,
+                0.000280,
+                0.000290,
+                0.000300,
+                0.000310,
+                0.000320,
+                0.000330,
+                0.000340,
+                0.000350,
+                0.000360,
+                0.000370,
+                0.000380,
+                0.000390,
+                0.000400,
+                0.000410,
+                0.000420,
+                0.000430,
+                0.000440,
+                0.000450,
+                0.000460,
+                0.000470,
+                0.000480,
+                0.000490,
+                0.000500,
+                0.000510,
+                0.000520,
+                0.000530,
+                0.000540,
+                0.000550,
+                0.000560,
+                0.000570,
+                0.000580,
+                0.000590,
+                0.000600,
 
         };
 
@@ -44,6 +70,9 @@ public class PKFXMiniDataGCSimulatorBatch {
             PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
             sim1.setParam(param);
             sim1.setCandles(candles);
+            sim1.setLogging(false);
+            sim1.setShortCut(false);
+            sim1.setResultLogging(true);
             sim1.run();
 
             if (maxDiff < sim1.getDiff()) {
