@@ -83,6 +83,7 @@ public class PKFXMiniDataGCTrader {
                     log.info("doTrade2        :" + doTrade2);
                     log.info("doTrade3        :" + doTrade3);
                     log.info("doTrade4        :" + doTrade4);
+                    log.info("doTrade5        :" + doTrade5);
 
                     if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                             (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||
