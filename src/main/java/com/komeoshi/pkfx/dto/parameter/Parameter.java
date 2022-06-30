@@ -16,12 +16,12 @@ public class Parameter {
         parameter1.setParamA$05(new ParameterA$Past4Atr(35.0 / 1000));
 
         parameter1.setParamB$01(new ParameterB$Adx(17000.0 / 1000));
-        parameter1.setParamB$02(new ParameterB$Past2Rsi(40000.0 / 1000));
+        parameter1.setParamB$02(new ParameterB$Past2Rsi(33000.0 / 1000));
         parameter1.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
         parameter1.setParamB$04(new ParameterB$Rsi(75000.0 / 1000));
 
         parameter1.setParamC$01(new ParameterC$Bband(50.0 / 1000));
-        parameter1.setParamC$02(new ParameterC$Bband(70.0000000000001 / 1000));
+        parameter1.setParamC$02(new ParameterC$Bband(80.0000000000001 / 1000));
         parameter1.setParamC$03(new ParameterC$DxBand(360.0 / 1000));
         parameter1.setParamC$04(new ParameterC$DxBand(360.0 / 1000));
 
@@ -213,12 +213,12 @@ public class Parameter {
         parameter1.setParamA$05(new ParameterA$Past4Atr(35.0 / 1000));
 
         parameter1.setParamB$01(new ParameterB$Adx(17000.0 / 1000));
-        parameter1.setParamB$02(new ParameterB$Past2Rsi(40000.0 / 1000));
+        parameter1.setParamB$02(new ParameterB$Past2Rsi(33000.0 / 1000));
         parameter1.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
         parameter1.setParamB$04(new ParameterB$Rsi(75000.0 / 1000));
 
         parameter1.setParamC$01(new ParameterC$Bband(50.0 / 1000));
-        parameter1.setParamC$02(new ParameterC$Bband(70.0000000000001 / 1000));
+        parameter1.setParamC$02(new ParameterC$Bband(80.0000000000001 / 1000));
         parameter1.setParamC$03(new ParameterC$DxBand(360.0 / 1000));
         parameter1.setParamC$04(new ParameterC$DxBand(360.0 / 1000));
 
