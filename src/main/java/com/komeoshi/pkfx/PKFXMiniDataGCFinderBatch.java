@@ -1,22 +1,10 @@
 package com.komeoshi.pkfx;
 
-import com.google.common.collect.Lists;
-import com.komeoshi.pkfx.dto.Candle;
-import com.komeoshi.pkfx.dto.parameter.*;
-import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
+import com.komeoshi.pkfx.dto.parameter.Parameter;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
