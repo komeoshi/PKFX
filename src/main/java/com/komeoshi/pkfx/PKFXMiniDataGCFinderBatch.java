@@ -34,13 +34,9 @@ public class PKFXMiniDataGCFinderBatch {
                 maxDiff = tmpMaxDiff;
                 maxParameter = finder.getMaxDiffParameter();
             }
-
-
             log.info("-- " + maxDiff + " ---------------------------------------------------------");
         }
-
     }
-
 }
 
 
