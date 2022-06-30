@@ -78,7 +78,8 @@ public class PKFXMiniDataGCTrader {
                     boolean doTrade5 = isDoTradeWithParameter(candle, Parameter.getParameter5());
                     boolean doTrade6 = isDoTradeWithParameter(candle, Parameter.getParameter6());
                     boolean doTrade7 = isDoTradeWithParameter(candle, Parameter.getParameter7());
-                    boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7;
+                    boolean doTrade8 = isDoTradeWithParameter(candle, Parameter.getParameter8());
+                    boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7 || doTrade8;
 
                     log.info("---crossed.---");
                     log.info("doTrade1        :" + doTrade1);
