@@ -8,28 +8,28 @@ import lombok.Setter;
 public class Parameter {
 
     public static Parameter getParameterSim(){
-        Parameter parameter1 = new Parameter();
-        parameter1.setParamA$01(new ParameterA$CurrentAtr(35.0 / 1000));
-        parameter1.setParamA$02(new ParameterA$CurrentTr(35.0 / 1000));
-        parameter1.setParamA$03(new ParameterA$Past2Tr(35.0 / 1000));
-        parameter1.setParamA$04(new ParameterA$Past3Atr(35.0 / 1000));
-        parameter1.setParamA$05(new ParameterA$Past4Atr(35.0 / 1000));
+        Parameter parameterSim = new Parameter();
+        parameterSim.setParamA$01(new ParameterA$CurrentAtr(25.0 / 1000));
+        parameterSim.setParamA$02(new ParameterA$CurrentTr(25.0 / 1000));
+        parameterSim.setParamA$03(new ParameterA$Past2Tr(25.0 / 1000));
+        parameterSim.setParamA$04(new ParameterA$Past3Atr(25.0 / 1000));
+        parameterSim.setParamA$05(new ParameterA$Past4Atr(25.0 / 1000));
 
-        parameter1.setParamB$01(new ParameterB$Adx(17000.0 / 1000));
-        parameter1.setParamB$02(new ParameterB$Past2Rsi(33000.0 / 1000));
-        parameter1.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
-        parameter1.setParamB$04(new ParameterB$Rsi(75000.0 / 1000));
+        parameterSim.setParamB$01(new ParameterB$Adx(19000.0 / 1000));
+        parameterSim.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
+        parameterSim.setParamB$03(new ParameterB$Rsi(78000.0 / 1000));
+        parameterSim.setParamB$04(new ParameterB$Rsi(88000.0 / 1000));
 
-        parameter1.setParamC$01(new ParameterC$Bband(50.0 / 1000));
-        parameter1.setParamC$02(new ParameterC$Bband(80.0000000000001 / 1000));
-        parameter1.setParamC$03(new ParameterC$DxBand(360.0 / 1000));
-        parameter1.setParamC$04(new ParameterC$DxBand(360.0 / 1000));
+        parameterSim.setParamC$01(new ParameterC$Bband(60.0 / 1000));
+        parameterSim.setParamC$02(new ParameterC$Bband(70.0 / 1000));
+        parameterSim.setParamC$03(new ParameterC$DxBand(380.0 / 1000));
+        parameterSim.setParamC$04(new ParameterC$DxBand(380.0 / 1000));
 
-        parameter1.setParamD$01(new ParameterD$Macd1(0.11 / 1000));
-        parameter1.setParamD$02(new ParameterD$Macd2(86.0 / 1000));
-        parameter1.setParamD$03(new ParameterD$Sig(0.6000000000000012 / 1000));
+        parameterSim.setParamD$01(new ParameterD$Macd1(0.6800000000000017 / 1000));
+        parameterSim.setParamD$02(new ParameterD$Macd2(55.0 / 1000));
+        parameterSim.setParamD$03(new ParameterD$Sig(0.470000000000001 / 1000));
 
-        return parameter1;
+        return parameterSim;
     }
     public static Parameter getParameter1(){
         Parameter parameter1 = new Parameter();
@@ -227,6 +227,31 @@ public class Parameter {
         parameter1.setParamD$03(new ParameterD$Sig(0.6000000000000012 / 1000));
 
         return parameter1;
+    }
+
+    public static Parameter getParameter9(){
+        Parameter parameter9 = new Parameter();
+        parameter9.setParamA$01(new ParameterA$CurrentAtr(25.0 / 1000));
+        parameter9.setParamA$02(new ParameterA$CurrentTr(25.0 / 1000));
+        parameter9.setParamA$03(new ParameterA$Past2Tr(25.0 / 1000));
+        parameter9.setParamA$04(new ParameterA$Past3Atr(25.0 / 1000));
+        parameter9.setParamA$05(new ParameterA$Past4Atr(25.0 / 1000));
+
+        parameter9.setParamB$01(new ParameterB$Adx(19000.0 / 1000));
+        parameter9.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
+        parameter9.setParamB$03(new ParameterB$Rsi(78000.0 / 1000));
+        parameter9.setParamB$04(new ParameterB$Rsi(88000.0 / 1000));
+
+        parameter9.setParamC$01(new ParameterC$Bband(60.0 / 1000));
+        parameter9.setParamC$02(new ParameterC$Bband(70.0 / 1000));
+        parameter9.setParamC$03(new ParameterC$DxBand(380.0 / 1000));
+        parameter9.setParamC$04(new ParameterC$DxBand(380.0 / 1000));
+
+        parameter9.setParamD$01(new ParameterD$Macd1(0.6800000000000017 / 1000));
+        parameter9.setParamD$02(new ParameterD$Macd2(55.0 / 1000));
+        parameter9.setParamD$03(new ParameterD$Sig(0.470000000000001 / 1000));
+
+        return parameter9;
     }
 
     private ParameterA$CurrentAtr paramA$01 = new ParameterA$CurrentAtr(99999);

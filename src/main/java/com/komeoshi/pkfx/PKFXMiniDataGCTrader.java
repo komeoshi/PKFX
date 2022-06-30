@@ -79,7 +79,8 @@ public class PKFXMiniDataGCTrader {
                     boolean doTrade6 = isDoTradeWithParameter(candle, Parameter.getParameter6());
                     boolean doTrade7 = isDoTradeWithParameter(candle, Parameter.getParameter7());
                     boolean doTrade8 = isDoTradeWithParameter(candle, Parameter.getParameter8());
-                    boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7 || doTrade8;
+                    boolean doTrade9 = isDoTradeWithParameter(candle, Parameter.getParameter9());
+                    boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7 || doTrade8 || doTrade9;
 
                     log.info("---crossed.---");
                     log.info("doTrade1        :" + doTrade1);
@@ -89,6 +90,8 @@ public class PKFXMiniDataGCTrader {
                     log.info("doTrade5        :" + doTrade5);
                     log.info("doTrade6        :" + doTrade6);
                     log.info("doTrade7        :" + doTrade7);
+                    log.info("doTrade8        :" + doTrade8);
+                    log.info("doTrade9        :" + doTrade9);
 
                     if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                             (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||

@@ -66,6 +66,7 @@ public class PKFXMiniDataGCSimulator {
     Parameter parameter6 = Parameter.getParameter6();
     Parameter parameter7 = Parameter.getParameter7();
     Parameter parameter8 = Parameter.getParameter8();
+    Parameter parameter9 = Parameter.getParameter9();
 
     public void run() {
         init();
@@ -116,7 +117,8 @@ public class PKFXMiniDataGCSimulator {
                 boolean doTrade6 = isDoTradeWithParameter(candle, parameter6);
                 boolean doTrade7 = isDoTradeWithParameter(candle, parameter7);
                 boolean doTrade8 = isDoTradeWithParameter(candle, parameter8);
-                boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7 || doTrade8;
+                boolean doTrade9 = isDoTradeWithParameter(candle, parameter9);
+                boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7 || doTrade8 || doTrade9;
 
                 if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                         (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||
