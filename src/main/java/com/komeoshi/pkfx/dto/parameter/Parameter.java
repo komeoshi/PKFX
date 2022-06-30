@@ -239,17 +239,17 @@ public class Parameter {
 
         parameterSim.setParamB$01(new ParameterB$Adx(17000.0 / 1000));
         parameterSim.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
-        parameterSim.setParamB$03(new ParameterB$Rsi(81000.0 / 1000));
-        parameterSim.setParamB$04(new ParameterB$Rsi(90000.0 / 1000));
+        parameterSim.setParamB$03(new ParameterB$Rsi(83000.0 / 1000));
+        parameterSim.setParamB$04(new ParameterB$Rsi(93000.0 / 1000));
 
         parameterSim.setParamC$01(new ParameterC$Bband(60.0 / 1000));
         parameterSim.setParamC$02(new ParameterC$Bband(70.0 / 1000));
         parameterSim.setParamC$03(new ParameterC$DxBand(380.0 / 1000));
         parameterSim.setParamC$04(new ParameterC$DxBand(380.0 / 1000));
 
-        parameterSim.setParamD$01(new ParameterD$Macd1(0.38 / 1000));
-        parameterSim.setParamD$02(new ParameterD$Macd2(11.0 / 1000));
-        parameterSim.setParamD$03(new ParameterD$Sig(0.9900000000000019 / 1000));
+        parameterSim.setParamD$01(new ParameterD$Macd1(0.37 / 1000));
+        parameterSim.setParamD$02(new ParameterD$Macd2(75.0 / 1000));
+        parameterSim.setParamD$03(new ParameterD$Sig(0.9600000000000019 / 1000));
 
         return parameterSim;
     }
