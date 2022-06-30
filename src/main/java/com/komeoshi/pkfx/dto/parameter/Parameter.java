@@ -222,9 +222,9 @@ public class Parameter {
         parameter1.setParamC$03(new ParameterC$DxBand(360.0 / 1000));
         parameter1.setParamC$04(new ParameterC$DxBand(360.0 / 1000));
 
-        parameter1.setParamD$01(new ParameterD$Macd1(0.1 / 1000));
-        parameter1.setParamD$02(new ParameterD$Macd2(51.0 / 1000));
-        parameter1.setParamD$03(new ParameterD$Sig(0.6700000000000012 / 1000));
+        parameter1.setParamD$01(new ParameterD$Macd1(0.11 / 1000));
+        parameter1.setParamD$02(new ParameterD$Macd2(73.0 / 1000));
+        parameter1.setParamD$03(new ParameterD$Sig(0.7300000000000012 / 1000));
 
         return parameter1;
     }
