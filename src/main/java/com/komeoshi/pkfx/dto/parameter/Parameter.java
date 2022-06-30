@@ -8,28 +8,28 @@ import lombok.Setter;
 public class Parameter {
 
     public static Parameter getParameterSim(){
-        Parameter parameter3 = new Parameter();
-        parameter3.setParamA$01(new ParameterA$CurrentAtr(0));
-        parameter3.setParamA$02(new ParameterA$CurrentTr(0));
-        parameter3.setParamA$03(new ParameterA$Past2Tr(0));
-        parameter3.setParamA$04(new ParameterA$Past3Atr(0));
-        parameter3.setParamA$05(new ParameterA$Past4Atr(0));
+        Parameter parameter2 = new Parameter();
+        parameter2.setParamA$01(new ParameterA$CurrentAtr(15.0 / 1000));
+        parameter2.setParamA$02(new ParameterA$CurrentTr(15.0 / 1000));
+        parameter2.setParamA$03(new ParameterA$Past2Tr(15.0 / 1000));
+        parameter2.setParamA$04(new ParameterA$Past3Atr(15.0 / 1000));
+        parameter2.setParamA$05(new ParameterA$Past4Atr(15.0 / 1000));
 
-        parameter3.setParamB$01(new ParameterB$Adx(10000.0 / 1000));
-        parameter3.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
-        parameter3.setParamB$03(new ParameterB$Rsi(86000.0 / 1000));
-        parameter3.setParamB$04(new ParameterB$Rsi(88000.0 / 1000));
+        parameter2.setParamB$01(new ParameterB$Adx(15000.0 / 1000));
+        parameter2.setParamB$02(new ParameterB$Past2Rsi(21000.0 / 1000));
+        parameter2.setParamB$03(new ParameterB$Rsi(86000.0 / 1000));
+        parameter2.setParamB$04(new ParameterB$Rsi(78000.0 / 1000));
 
-        parameter3.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
-        parameter3.setParamC$02(new ParameterC$Bband(170.0 / 1000));
-        parameter3.setParamC$03(new ParameterC$DxBand(170.00000000000003 / 1000));
-        parameter3.setParamC$04(new ParameterC$DxBand(300.00000000000017 / 1000));
+        parameter2.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
+        parameter2.setParamC$02(new ParameterC$Bband(170.0 / 1000));
+        parameter2.setParamC$03(new ParameterC$DxBand(280.0000000000001 / 1000));
+        parameter2.setParamC$04(new ParameterC$DxBand(340.00000000000017 / 1000));
 
-        parameter3.setParamD$01(new ParameterD$Macd1(0.05 / 1000));
-        parameter3.setParamD$02(new ParameterD$Macd2(5.0 / 1000));
-        parameter3.setParamD$03(new ParameterD$Sig(0.06999999999999999 / 1000));
+        parameter2.setParamD$01(new ParameterD$Macd1(0.05 / 1000));
+        parameter2.setParamD$02(new ParameterD$Macd2(5.0 / 1000));
+        parameter2.setParamD$03(new ParameterD$Sig(0.06999999999999999 / 1000));
 
-        return parameter3;
+        return parameter2;
     }
     public static Parameter getParameter1(){
         Parameter parameter1 = new Parameter();
@@ -64,19 +64,19 @@ public class Parameter {
         parameter2.setParamA$04(new ParameterA$Past3Atr(15.0 / 1000));
         parameter2.setParamA$05(new ParameterA$Past4Atr(15.0 / 1000));
 
-        parameter2.setParamB$01(new ParameterB$Adx(15000.0 / 1000));
-        parameter2.setParamB$02(new ParameterB$Past2Rsi(21000.0 / 1000));
-        parameter2.setParamB$03(new ParameterB$Rsi(86000.0 / 1000));
-        parameter2.setParamB$04(new ParameterB$Rsi(78000.0 / 1000));
+        parameter2.setParamB$01(new ParameterB$Adx(11000.0 / 1000));
+        parameter2.setParamB$02(new ParameterB$Past2Rsi(38000.0 / 1000));
+        parameter2.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
+        parameter2.setParamB$04(new ParameterB$Rsi(85000.0 / 1000));
 
         parameter2.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
         parameter2.setParamC$02(new ParameterC$Bband(170.0 / 1000));
         parameter2.setParamC$03(new ParameterC$DxBand(280.0000000000001 / 1000));
         parameter2.setParamC$04(new ParameterC$DxBand(340.00000000000017 / 1000));
 
-        parameter2.setParamD$01(new ParameterD$Macd1(0.05 / 1000));
-        parameter2.setParamD$02(new ParameterD$Macd2(5.0 / 1000));
-        parameter2.setParamD$03(new ParameterD$Sig(0.06999999999999999 / 1000));
+        parameter2.setParamD$01(new ParameterD$Macd1(0.650000000000001 / 1000));
+        parameter2.setParamD$02(new ParameterD$Macd2(77.0 / 1000));
+        parameter2.setParamD$03(new ParameterD$Sig(0.35 / 1000));
 
         return parameter2;
     }
