@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,8 +15,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
+@Getter
+@Setter
 public class PKFXMiniDataGCFinder {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCFinder.class);
 
@@ -28,7 +33,7 @@ public class PKFXMiniDataGCFinder {
         log.info("creating executors.");
         int poolSize = Runtime.getRuntime().availableProcessors();
         log.info("available processors = " + poolSize);
-        ExecutorService pool = Executors.newFixedThreadPool(poolSize);
+        this.pool = Executors.newFixedThreadPool(poolSize);
 
         log.info("reading candle data.");
         PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
@@ -55,12 +60,18 @@ public class PKFXMiniDataGCFinder {
 
     }
 
+    private ExecutorService pool;
     private long completeCount = 0;
     private double maxDiff = -999.0;
     private double maxDiffTotal = 0;
     private Parameter maxDiffParameter = new Parameter();
     private long startTime = 0;
     private long size = 0L;
+    private boolean isBatch = false;
+    private int executeMaxSize = 50000;
+    private Parameter defaultParameter = Parameter.getParameterSim();
+    private double maxDiffAllTheTime = -999.0;
+
 
     private PKFXMiniDataGCSimulator createSimulator(List<Candle> candles, Parameter p) {
         PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
@@ -151,29 +162,75 @@ public class PKFXMiniDataGCFinder {
 
         List<Parameter> parameters = new ArrayList<>();
         for (List<Double> tmpParamB : paramBs) {
-            Parameter parameter = Parameter.getParameterSim();
+            Parameter parameter = new Parameter();
+
+            parameter.setParamA$01(new ParameterA$CurrentAtr(defaultParameter.getParamA$01().getParameter()));
+            parameter.setParamA$02(new ParameterA$CurrentTr(defaultParameter.getParamA$02().getParameter()));
+            parameter.setParamA$03(new ParameterA$Past2Tr(defaultParameter.getParamA$03().getParameter()));
+            parameter.setParamA$04(new ParameterA$Past3Atr(defaultParameter.getParamA$04().getParameter()));
+            parameter.setParamA$05(new ParameterA$Past4Atr(defaultParameter.getParamA$05().getParameter()));
 
             parameter.setParamB$01(new ParameterB$Adx(tmpParamB.get(0)));
             parameter.setParamB$02(new ParameterB$Past2Rsi(tmpParamB.get(1)));
             parameter.setParamB$03(new ParameterB$Rsi(tmpParamB.get(2)));
             parameter.setParamB$04(new ParameterB$Rsi(tmpParamB.get(3)));
 
+            parameter.setParamC$01(new ParameterC$Bband(defaultParameter.getParamC$01().getParameter()));
+            parameter.setParamC$02(new ParameterC$Bband(defaultParameter.getParamC$02().getParameter()));
+            parameter.setParamC$03(new ParameterC$DxBand(defaultParameter.getParamC$03().getParameter()));
+            parameter.setParamC$04(new ParameterC$DxBand(defaultParameter.getParamC$04().getParameter()));
+
+            parameter.setParamD$01(new ParameterD$Macd1(defaultParameter.getParamD$01().getParameter()));
+            parameter.setParamD$02(new ParameterD$Macd2(defaultParameter.getParamD$02().getParameter()));
+            parameter.setParamD$03(new ParameterD$Sig(defaultParameter.getParamD$03().getParameter()));
+
             parameters.add(parameter);
         }
 
         for (List<Double> tmpParamC : paramCs) {
-            Parameter parameter = Parameter.getParameterSim();
+            Parameter parameter = new Parameter();
+
+            parameter.setParamA$01(new ParameterA$CurrentAtr(defaultParameter.getParamA$01().getParameter()));
+            parameter.setParamA$02(new ParameterA$CurrentTr(defaultParameter.getParamA$02().getParameter()));
+            parameter.setParamA$03(new ParameterA$Past2Tr(defaultParameter.getParamA$03().getParameter()));
+            parameter.setParamA$04(new ParameterA$Past3Atr(defaultParameter.getParamA$04().getParameter()));
+            parameter.setParamA$05(new ParameterA$Past4Atr(defaultParameter.getParamA$05().getParameter()));
+
+            parameter.setParamB$01(new ParameterB$Adx(defaultParameter.getParamB$01().getParameter()));
+            parameter.setParamB$02(new ParameterB$Past2Rsi(defaultParameter.getParamB$02().getParameter()));
+            parameter.setParamB$03(new ParameterB$Rsi(defaultParameter.getParamB$03().getParameter()));
+            parameter.setParamB$04(new ParameterB$Rsi(defaultParameter.getParamB$04().getParameter()));
 
             parameter.setParamC$01(new ParameterC$Bband(tmpParamC.get(0)));
             parameter.setParamC$02(new ParameterC$Bband(tmpParamC.get(1)));
             parameter.setParamC$03(new ParameterC$DxBand(tmpParamC.get(2)));
             parameter.setParamC$04(new ParameterC$DxBand(tmpParamC.get(3)));
 
+            parameter.setParamD$01(new ParameterD$Macd1(defaultParameter.getParamD$01().getParameter()));
+            parameter.setParamD$02(new ParameterD$Macd2(defaultParameter.getParamD$02().getParameter()));
+            parameter.setParamD$03(new ParameterD$Sig(defaultParameter.getParamD$03().getParameter()));
+
             parameters.add(parameter);
         }
 
         for (List<Double> tmpParamD : paramDs) {
-            Parameter parameter = Parameter.getParameterSim();
+            Parameter parameter = new Parameter();
+
+            parameter.setParamA$01(new ParameterA$CurrentAtr(defaultParameter.getParamA$01().getParameter()));
+            parameter.setParamA$02(new ParameterA$CurrentTr(defaultParameter.getParamA$02().getParameter()));
+            parameter.setParamA$03(new ParameterA$Past2Tr(defaultParameter.getParamA$03().getParameter()));
+            parameter.setParamA$04(new ParameterA$Past3Atr(defaultParameter.getParamA$04().getParameter()));
+            parameter.setParamA$05(new ParameterA$Past4Atr(defaultParameter.getParamA$05().getParameter()));
+
+            parameter.setParamB$01(new ParameterB$Adx(defaultParameter.getParamB$01().getParameter()));
+            parameter.setParamB$02(new ParameterB$Past2Rsi(defaultParameter.getParamB$02().getParameter()));
+            parameter.setParamB$03(new ParameterB$Rsi(defaultParameter.getParamB$03().getParameter()));
+            parameter.setParamB$04(new ParameterB$Rsi(defaultParameter.getParamB$04().getParameter()));
+
+            parameter.setParamC$01(new ParameterC$Bband(defaultParameter.getParamC$01().getParameter()));
+            parameter.setParamC$02(new ParameterC$Bband(defaultParameter.getParamC$02().getParameter()));
+            parameter.setParamC$03(new ParameterC$DxBand(defaultParameter.getParamC$03().getParameter()));
+            parameter.setParamC$04(new ParameterC$DxBand(defaultParameter.getParamC$04().getParameter()));
 
             parameter.setParamD$01(new ParameterD$Macd1(tmpParamD.get(0)));
             parameter.setParamD$02(new ParameterD$Macd2(tmpParamD.get(1)));
@@ -183,13 +240,27 @@ public class PKFXMiniDataGCFinder {
         }
 
         for (List<Double> tmpParamA : paramAs) {
-            Parameter parameter = Parameter.getParameterSim();
+            Parameter parameter = new Parameter();
 
             parameter.setParamA$01(new ParameterA$CurrentAtr(tmpParamA.get(0)));
             parameter.setParamA$02(new ParameterA$CurrentTr(tmpParamA.get(1)));
             parameter.setParamA$03(new ParameterA$Past2Tr(tmpParamA.get(2)));
             parameter.setParamA$04(new ParameterA$Past3Atr(tmpParamA.get(3)));
             parameter.setParamA$05(new ParameterA$Past4Atr(tmpParamA.get(4)));
+
+            parameter.setParamB$01(new ParameterB$Adx(defaultParameter.getParamB$01().getParameter()));
+            parameter.setParamB$02(new ParameterB$Past2Rsi(defaultParameter.getParamB$02().getParameter()));
+            parameter.setParamB$03(new ParameterB$Rsi(defaultParameter.getParamB$03().getParameter()));
+            parameter.setParamB$04(new ParameterB$Rsi(defaultParameter.getParamB$04().getParameter()));
+
+            parameter.setParamC$01(new ParameterC$Bband(defaultParameter.getParamC$01().getParameter()));
+            parameter.setParamC$02(new ParameterC$Bband(defaultParameter.getParamC$02().getParameter()));
+            parameter.setParamC$03(new ParameterC$DxBand(defaultParameter.getParamC$03().getParameter()));
+            parameter.setParamC$04(new ParameterC$DxBand(defaultParameter.getParamC$04().getParameter()));
+
+            parameter.setParamD$01(new ParameterD$Macd1(defaultParameter.getParamD$01().getParameter()));
+            parameter.setParamD$02(new ParameterD$Macd2(defaultParameter.getParamD$02().getParameter()));
+            parameter.setParamD$03(new ParameterD$Sig(defaultParameter.getParamD$03().getParameter()));
 
             parameters.add(parameter);
         }
@@ -203,10 +274,14 @@ public class PKFXMiniDataGCFinder {
             count++;
             FinderExecutor exec = new FinderExecutor(parameter, candles);
 
-            pool.submit(exec);
-            if (count % 1000 == 0) {
-                log.info("submit count:" + count + " complete count:" + completeCount);
-                sleep(5);
+            try {
+                pool.submit(exec);
+                if (count % 1000 == 0) {
+                    log.info("submit count:" + count + " complete count:" + completeCount);
+                    sleep(5);
+                }
+            } catch (RejectedExecutionException ignored) {
+
             }
         }
     }
@@ -302,9 +377,14 @@ public class PKFXMiniDataGCFinder {
                 s.append("remain time(M).      : " + remainTimeM + " M." + "\n");
                 s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
                 s.append("remain time(Y).      : " + remainTimeY + " Y." + "\n");
+                s.append("maxDiff allthetime   : " + maxDiffAllTheTime + "\n");
 
                 log.info(s.toString());
                 showMemoryUsage();
+            }
+
+            if (isBatch && completeCount > executeMaxSize) {
+                pool.shutdownNow();
             }
 
         }
