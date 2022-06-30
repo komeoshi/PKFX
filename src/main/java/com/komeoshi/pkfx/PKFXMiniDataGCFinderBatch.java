@@ -28,10 +28,12 @@ public class PKFXMiniDataGCFinderBatch {
             finder.setMaxDiffAllTheTime(maxDiff);
 
             finder.execute();
-            maxParameter = finder.getMaxDiffParameter();
+
             double tmpMaxDiff = finder.getMaxDiff();
-            if (maxDiff < tmpMaxDiff)
+            if (maxDiff < tmpMaxDiff) {
                 maxDiff = tmpMaxDiff;
+                maxParameter = finder.getMaxDiffParameter();
+            }
 
 
             log.info("-- " + maxDiff + " ---------------------------------------------------------");
