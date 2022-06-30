@@ -269,6 +269,9 @@ public class PKFXMiniDataGCFinder {
         this.size = parameters.size();
         log.info("parameters size = " + size);
 
+        FinderExecutor exec1 = new FinderExecutor(defaultParameter, candles);
+        pool.submit(exec1);
+
         long count = 0;
         for (Parameter parameter : parameters) {
             count++;
