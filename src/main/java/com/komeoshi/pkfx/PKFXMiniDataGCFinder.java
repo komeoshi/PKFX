@@ -72,8 +72,7 @@ public class PKFXMiniDataGCFinder {
         sim1.setParameter4(new Parameter());
         sim1.setParameter5(new Parameter());
         sim1.setParameter6(new Parameter());
-
-
+        sim1.setParameter7(new Parameter());
 
         return sim1;
     }
