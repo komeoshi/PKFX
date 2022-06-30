@@ -89,19 +89,19 @@ public class Parameter {
         parameter3.setParamA$04(new ParameterA$Past3Atr(0));
         parameter3.setParamA$05(new ParameterA$Past4Atr(0));
 
-        parameter3.setParamB$01(new ParameterB$Adx(10000.0 / 1000));
+        parameter3.setParamB$01(new ParameterB$Adx(11000.0 / 1000));
         parameter3.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
         parameter3.setParamB$03(new ParameterB$Rsi(86000.0 / 1000));
-        parameter3.setParamB$04(new ParameterB$Rsi(88000.0 / 1000));
+        parameter3.setParamB$04(new ParameterB$Rsi(76000.0 / 1000));
 
         parameter3.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
         parameter3.setParamC$02(new ParameterC$Bband(170.0 / 1000));
         parameter3.setParamC$03(new ParameterC$DxBand(170.00000000000003 / 1000));
         parameter3.setParamC$04(new ParameterC$DxBand(300.00000000000017 / 1000));
 
-        parameter3.setParamD$01(new ParameterD$Macd1(0.05 / 1000));
-        parameter3.setParamD$02(new ParameterD$Macd2(5.0 / 1000));
-        parameter3.setParamD$03(new ParameterD$Sig(0.06999999999999999 / 1000));
+        parameter3.setParamD$01(new ParameterD$Macd1(0.6900000000000012 / 1000));
+        parameter3.setParamD$02(new ParameterD$Macd2(89.0 / 1000));
+        parameter3.setParamD$03(new ParameterD$Sig(0.71 / 1000));
 
         return parameter3;
     }
