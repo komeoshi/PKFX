@@ -8,28 +8,28 @@ import lombok.Setter;
 public class Parameter {
 
     public static Parameter getParameterSim(){
-        Parameter parameterSim = new Parameter();
-        parameterSim.setParamA$01(new ParameterA$CurrentAtr(25.0 / 1000));
-        parameterSim.setParamA$02(new ParameterA$CurrentTr(25.0 / 1000));
-        parameterSim.setParamA$03(new ParameterA$Past2Tr(25.0 / 1000));
-        parameterSim.setParamA$04(new ParameterA$Past3Atr(25.0 / 1000));
-        parameterSim.setParamA$05(new ParameterA$Past4Atr(25.0 / 1000));
+        Parameter parameter6 = new Parameter();
+        parameter6.setParamA$01(new ParameterA$CurrentAtr(20.0 / 1000));
+        parameter6.setParamA$02(new ParameterA$CurrentTr(20.0 / 1000));
+        parameter6.setParamA$03(new ParameterA$Past2Tr(20.0 / 1000));
+        parameter6.setParamA$04(new ParameterA$Past3Atr(20.0 / 1000));
+        parameter6.setParamA$05(new ParameterA$Past4Atr(20.0 / 1000));
 
-        parameterSim.setParamB$01(new ParameterB$Adx(17000.0 / 1000));
-        parameterSim.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
-        parameterSim.setParamB$03(new ParameterB$Rsi(83000.0 / 1000));
-        parameterSim.setParamB$04(new ParameterB$Rsi(93000.0 / 1000));
+        parameter6.setParamB$01(new ParameterB$Adx(11000.0 / 1000));
+        parameter6.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
+        parameter6.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
+        parameter6.setParamB$04(new ParameterB$Rsi(93000.0 / 1000));
 
-        parameterSim.setParamC$01(new ParameterC$Bband(60.0 / 1000));
-        parameterSim.setParamC$02(new ParameterC$Bband(70.0 / 1000));
-        parameterSim.setParamC$03(new ParameterC$DxBand(380.0 / 1000));
-        parameterSim.setParamC$04(new ParameterC$DxBand(380.0 / 1000));
+        parameter6.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
+        parameter6.setParamC$02(new ParameterC$Bband(170.0 / 1000));
+        parameter6.setParamC$03(new ParameterC$DxBand(110.0 / 1000));
+        parameter6.setParamC$04(new ParameterC$DxBand(180.00000000000006 / 1000));
 
-        parameterSim.setParamD$01(new ParameterD$Macd1(0.37 / 1000));
-        parameterSim.setParamD$02(new ParameterD$Macd2(75.0 / 1000));
-        parameterSim.setParamD$03(new ParameterD$Sig(0.9600000000000019 / 1000));
+        parameter6.setParamD$01(new ParameterD$Macd1(0.6800000000000017 / 1000));
+        parameter6.setParamD$02(new ParameterD$Macd2(55.0 / 1000));
+        parameter6.setParamD$03(new ParameterD$Sig(0.470000000000001 / 1000));
 
-        return parameterSim;
+        return parameter6;
     }
     public static Parameter getParameter1(){
         Parameter parameter1 = new Parameter();
@@ -172,9 +172,9 @@ public class Parameter {
         parameter6.setParamC$03(new ParameterC$DxBand(110.0 / 1000));
         parameter6.setParamC$04(new ParameterC$DxBand(180.00000000000006 / 1000));
 
-        parameter6.setParamD$01(new ParameterD$Macd1(0.6800000000000017 / 1000));
-        parameter6.setParamD$02(new ParameterD$Macd2(55.0 / 1000));
-        parameter6.setParamD$03(new ParameterD$Sig(0.470000000000001 / 1000));
+        parameter6.setParamD$01(new ParameterD$Macd1(0.6700000000000017 / 1000));
+        parameter6.setParamD$02(new ParameterD$Macd2(75.0 / 1000));
+        parameter6.setParamD$03(new ParameterD$Sig(0.620000000000001 / 1000));
 
         return parameter6;
     }
@@ -197,9 +197,9 @@ public class Parameter {
         parameter1.setParamC$03(new ParameterC$DxBand(160.00000000000003 / 1000));
         parameter1.setParamC$04(new ParameterC$DxBand(120.0000000000002 / 1000));
 
-        parameter1.setParamD$01(new ParameterD$Macd1(0.07 / 1000));
-        parameter1.setParamD$02(new ParameterD$Macd2(12.0 / 1000));
-        parameter1.setParamD$03(new ParameterD$Sig(0.6900000000000012 / 1000));
+        parameter1.setParamD$01(new ParameterD$Macd1(0.2 / 1000));
+        parameter1.setParamD$02(new ParameterD$Macd2(43.0 / 1000));
+        parameter1.setParamD$03(new ParameterD$Sig(0.6400000000000012 / 1000));
 
         return parameter1;
     }
