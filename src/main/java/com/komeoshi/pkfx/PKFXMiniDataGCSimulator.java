@@ -2,6 +2,7 @@ package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.*;
+import com.komeoshi.pkfx.dto.parameter.okawari.OkawariParameter;
 import com.komeoshi.pkfx.enumerator.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
@@ -68,6 +69,7 @@ public class PKFXMiniDataGCSimulator {
     Parameter parameter8 = Parameter.getParameter8();
     Parameter parameter9 = Parameter.getParameter9();
     Parameter parameter10 = Parameter.getParameter10();
+    OkawariParameter okawariParameter = OkawariParameter.getOkawariParameter();
 
 
     public void run() {
@@ -303,16 +305,16 @@ public class PKFXMiniDataGCSimulator {
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
-        boolean okawariFlag = Math.abs(candle.getMacd()) > 0.0875 ||
-                Math.abs(candle.getMacd()) < 0.007 ||
-                candle.getAdx().getAdx() > 55 ||
-                candle.getAdx().getAdx() < 25 ||
-                Math.abs(candle.getRsi()) > 90 ||
-                Math.abs(candle.getRsi()) < 20 ||
-                candle.getBollingerBandHigh() - candle.getBollingerBandLow() > 0.380 ||
-                candle.getBollingerBandHigh() - candle.getBollingerBandLow() < 0.097 ||
-                Math.abs(candle.getSig()) < 0.004 ||
-                candle.getAtr() < 0.016;
+        boolean okawariFlag = Math.abs(candle.getMacd()) > okawariParameter.getParamA().getParameter() ||
+                Math.abs(candle.getMacd()) < okawariParameter.getParamB().getParameter() ||
+                candle.getAdx().getAdx() > okawariParameter.getParamC().getParameter() ||
+                candle.getAdx().getAdx() < okawariParameter.getParamD().getParameter() ||
+                Math.abs(candle.getRsi()) > okawariParameter.getParamE().getParameter() ||
+                Math.abs(candle.getRsi()) < okawariParameter.getParamF().getParameter() ||
+                candle.getBollingerBandHigh() - candle.getBollingerBandLow() > okawariParameter.getParamG().getParameter() ||
+                candle.getBollingerBandHigh() - candle.getBollingerBandLow() < okawariParameter.getParamH().getParameter() ||
+                Math.abs(candle.getSig()) < okawariParameter.getParamI().getParameter() ||
+                candle.getAtr() < okawariParameter.getParamJ().getParameter();
 
         if (status == Status.HOLDING_BUY) {
             if (targetRateBuy < candle.getAsk().getC()) {
