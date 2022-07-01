@@ -243,6 +243,8 @@ public class PKFXMiniDataGCSimulator {
         boolean checkRsi2 = Math.abs(candle.getRsi()) < parameter.getParamB$03().getParameter() &&
                 Math.abs(tmpCandle.getRsi()) < parameter.getParamB$04().getParameter();
 
+        int m = candle.getTime().atZone(ZoneId.of("Asia/Tokyo")).getMinute();
+        boolean checkTimeM = m != 59;
         return (
                 !hasLongCandle
                         && !hasShortCandle
@@ -256,6 +258,7 @@ public class PKFXMiniDataGCSimulator {
                         && checkDx
                         && checkRsi
                         && checkRsi2
+                        && checkTimeM
         );
     }
 

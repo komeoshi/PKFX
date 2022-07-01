@@ -194,6 +194,8 @@ public class PKFXMiniDataGCTrader {
         boolean checkRsi2 = Math.abs(candle.getRsi()) < parameter.getParamB$03().getParameter() &&
                 Math.abs(tmpCandle.getRsi()) < parameter.getParamB$04().getParameter();
 
+        int m = LocalDateTime.now().getMinute();
+        boolean checkTimeM = m != 59;
         return (
                 !hasLongCandle
                         && !hasShortCandle
@@ -207,6 +209,7 @@ public class PKFXMiniDataGCTrader {
                         && checkDx
                         && checkRsi
                         && checkRsi2
+                        && checkTimeM
         );
     }
 
