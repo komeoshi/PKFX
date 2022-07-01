@@ -112,37 +112,114 @@ public class PKFXMiniDataGCOkawariFinder {
 
         log.info("shuffle parameters, done.");
 
-        List<List<Double>> params = Lists.cartesianProduct(
+        List<List<Double>> paramMacds = Lists.cartesianProduct(
                 paramA$parameters,
-                paramB$parameters,
+                paramB$parameters
+        );
+        log.info("cartesianProduct paramMacds, done. " + paramMacds.size());
+        List<List<Double>> paramAdxs = Lists.cartesianProduct(
                 paramC$parameters,
-                paramD$parameters,
+                paramD$parameters
+        );
+        log.info("cartesianProduct paramAdxs, done. " + paramAdxs.size());
+        List<List<Double>> paramRsis = Lists.cartesianProduct(
                 paramE$parameters,
-                paramF$parameters,
+                paramF$parameters
+        );
+        log.info("cartesianProduct paramRsis, done. " + paramRsis.size());
+        List<List<Double>> paramBbands = Lists.cartesianProduct(
                 paramG$parameters,
-                paramH$parameters,
+                paramH$parameters
+        );
+        log.info("cartesianProduct paramBbands, done. " + paramBbands.size());
+        List<List<Double>> paramAtrs = Lists.cartesianProduct(
                 paramI$parameters,
                 paramJ$parameters
         );
-        log.info("cartesianProduct params, done. " + params.size());
+        log.info("cartesianProduct paramAtrs, done. " + paramAtrs.size());
 
-        this.size = (long) params.size() ;
+
+        this.size = (long) paramMacds.size() + paramAdxs.size() + paramRsis.size() + paramBbands.size() + paramAtrs.size();
         log.info("scheduled size = " + size);
 
         List<OkawariParameter> parameters = new ArrayList<>();
-        for (List<Double> param : params) {
+        for (List<Double> paramMacd : paramMacds) {
             OkawariParameter parameter = new OkawariParameter();
 
-            parameter.setParamA(new OkawariParameterA$Macd(param.get(0)));
-            parameter.setParamB(new OkawariParameterB$Macd(param.get(1)));
-            parameter.setParamC(new OkawariParameterC$Adx(param.get(2)));
-            parameter.setParamD(new OkawariParameterD$Adx(param.get(3)));
-            parameter.setParamE(new OkawariParameterE$Rsi(param.get(4)));
-            parameter.setParamF(new OkawariParameterF$Rsi(param.get(5)));
-            parameter.setParamG(new OkawariParameterG$Bband(param.get(6)));
-            parameter.setParamH(new OkawariParameterH$Bband(param.get(7)));
-            parameter.setParamI(new OkawariParameterI$Sig(param.get(8)));
-            parameter.setParamJ(new OkawariParameterJ$Atr(param.get(9)));
+            parameter.setParamA(new OkawariParameterA$Macd(paramMacd.get(0)));
+            parameter.setParamB(new OkawariParameterB$Macd(paramMacd.get(1)));
+            parameter.setParamC(new OkawariParameterC$Adx(defaultParameter.getParamC().getParameter()));
+            parameter.setParamD(new OkawariParameterD$Adx(defaultParameter.getParamD().getParameter()));
+            parameter.setParamE(new OkawariParameterE$Rsi(defaultParameter.getParamE().getParameter()));
+            parameter.setParamF(new OkawariParameterF$Rsi(defaultParameter.getParamF().getParameter()));
+            parameter.setParamG(new OkawariParameterG$Bband(defaultParameter.getParamG().getParameter()));
+            parameter.setParamH(new OkawariParameterH$Bband(defaultParameter.getParamH().getParameter()));
+            parameter.setParamI(new OkawariParameterI$Sig(defaultParameter.getParamI().getParameter()));
+            parameter.setParamJ(new OkawariParameterJ$Atr(defaultParameter.getParamJ().getParameter()));
+
+            parameters.add(parameter);
+        }
+        for (List<Double> paramAdx : paramAdxs) {
+            OkawariParameter parameter = new OkawariParameter();
+
+            parameter.setParamA(new OkawariParameterA$Macd(defaultParameter.getParamA().getParameter()));
+            parameter.setParamB(new OkawariParameterB$Macd(defaultParameter.getParamB().getParameter()));
+            parameter.setParamC(new OkawariParameterC$Adx(paramAdx.get(0)));
+            parameter.setParamD(new OkawariParameterD$Adx(paramAdx.get(0)));
+            parameter.setParamE(new OkawariParameterE$Rsi(defaultParameter.getParamE().getParameter()));
+            parameter.setParamF(new OkawariParameterF$Rsi(defaultParameter.getParamF().getParameter()));
+            parameter.setParamG(new OkawariParameterG$Bband(defaultParameter.getParamG().getParameter()));
+            parameter.setParamH(new OkawariParameterH$Bband(defaultParameter.getParamH().getParameter()));
+            parameter.setParamI(new OkawariParameterI$Sig(defaultParameter.getParamI().getParameter()));
+            parameter.setParamJ(new OkawariParameterJ$Atr(defaultParameter.getParamJ().getParameter()));
+
+            parameters.add(parameter);
+        }
+        for (List<Double> paramRsi : paramRsis) {
+            OkawariParameter parameter = new OkawariParameter();
+
+            parameter.setParamA(new OkawariParameterA$Macd(defaultParameter.getParamA().getParameter()));
+            parameter.setParamB(new OkawariParameterB$Macd(defaultParameter.getParamB().getParameter()));
+            parameter.setParamC(new OkawariParameterC$Adx(defaultParameter.getParamC().getParameter()));
+            parameter.setParamD(new OkawariParameterD$Adx(defaultParameter.getParamD().getParameter()));
+            parameter.setParamE(new OkawariParameterE$Rsi(paramRsi.get(0)));
+            parameter.setParamF(new OkawariParameterF$Rsi(paramRsi.get(1)));
+            parameter.setParamG(new OkawariParameterG$Bband(defaultParameter.getParamG().getParameter()));
+            parameter.setParamH(new OkawariParameterH$Bband(defaultParameter.getParamH().getParameter()));
+            parameter.setParamI(new OkawariParameterI$Sig(defaultParameter.getParamI().getParameter()));
+            parameter.setParamJ(new OkawariParameterJ$Atr(defaultParameter.getParamJ().getParameter()));
+
+            parameters.add(parameter);
+        }
+        for (List<Double> paramBband : paramBbands) {
+            OkawariParameter parameter = new OkawariParameter();
+
+            parameter.setParamA(new OkawariParameterA$Macd(defaultParameter.getParamA().getParameter()));
+            parameter.setParamB(new OkawariParameterB$Macd(defaultParameter.getParamB().getParameter()));
+            parameter.setParamC(new OkawariParameterC$Adx(defaultParameter.getParamC().getParameter()));
+            parameter.setParamD(new OkawariParameterD$Adx(defaultParameter.getParamD().getParameter()));
+            parameter.setParamE(new OkawariParameterE$Rsi(defaultParameter.getParamE().getParameter()));
+            parameter.setParamF(new OkawariParameterF$Rsi(defaultParameter.getParamF().getParameter()));
+            parameter.setParamG(new OkawariParameterG$Bband(paramBband.get(0)));
+            parameter.setParamH(new OkawariParameterH$Bband(paramBband.get(1)));
+            parameter.setParamI(new OkawariParameterI$Sig(defaultParameter.getParamI().getParameter()));
+            parameter.setParamJ(new OkawariParameterJ$Atr(defaultParameter.getParamJ().getParameter()));
+
+            parameters.add(parameter);
+        }
+        for (List<Double> paramAtr : paramAtrs) {
+            OkawariParameter parameter = new OkawariParameter();
+
+            parameter.setParamA(new OkawariParameterA$Macd(defaultParameter.getParamA().getParameter()));
+            parameter.setParamB(new OkawariParameterB$Macd(defaultParameter.getParamB().getParameter()));
+            parameter.setParamC(new OkawariParameterC$Adx(defaultParameter.getParamC().getParameter()));
+            parameter.setParamD(new OkawariParameterD$Adx(defaultParameter.getParamD().getParameter()));
+            parameter.setParamE(new OkawariParameterE$Rsi(defaultParameter.getParamE().getParameter()));
+            parameter.setParamF(new OkawariParameterF$Rsi(defaultParameter.getParamF().getParameter()));
+            parameter.setParamG(new OkawariParameterG$Bband(defaultParameter.getParamG().getParameter()));
+            parameter.setParamH(new OkawariParameterH$Bband(defaultParameter.getParamH().getParameter()));
+            parameter.setParamI(new OkawariParameterI$Sig(paramAtr.get(0)));
+            parameter.setParamJ(new OkawariParameterJ$Atr(paramAtr.get(1)));
 
             parameters.add(parameter);
         }
