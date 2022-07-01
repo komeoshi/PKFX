@@ -8,28 +8,28 @@ import lombok.Setter;
 public class Parameter {
 
     public static Parameter getParameterSim(){
-        Parameter parameter6 = new Parameter();
-        parameter6.setParamA$01(new ParameterA$CurrentAtr(20.0 / 1000));
-        parameter6.setParamA$02(new ParameterA$CurrentTr(20.0 / 1000));
-        parameter6.setParamA$03(new ParameterA$Past2Tr(20.0 / 1000));
-        parameter6.setParamA$04(new ParameterA$Past3Atr(20.0 / 1000));
-        parameter6.setParamA$05(new ParameterA$Past4Atr(20.0 / 1000));
+        Parameter parameter5 = new Parameter();
+        parameter5.setParamA$01(new ParameterA$CurrentAtr(10.0 / 1000));
+        parameter5.setParamA$02(new ParameterA$CurrentTr(10.0 / 1000));
+        parameter5.setParamA$03(new ParameterA$Past2Tr(10.0 / 1000));
+        parameter5.setParamA$04(new ParameterA$Past3Atr(10.0 / 1000));
+        parameter5.setParamA$05(new ParameterA$Past4Atr(10.0 / 1000));
 
-        parameter6.setParamB$01(new ParameterB$Adx(11000.0 / 1000));
-        parameter6.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
-        parameter6.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
-        parameter6.setParamB$04(new ParameterB$Rsi(93000.0 / 1000));
+        parameter5.setParamB$01(new ParameterB$Adx(11000.0 / 1000));
+        parameter5.setParamB$02(new ParameterB$Past2Rsi(37000.0 / 1000));
+        parameter5.setParamB$03(new ParameterB$Rsi(93000.0 / 1000));
+        parameter5.setParamB$04(new ParameterB$Rsi(77000.0 / 1000));
 
-        parameter6.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
-        parameter6.setParamC$02(new ParameterC$Bband(170.0 / 1000));
-        parameter6.setParamC$03(new ParameterC$DxBand(110.0 / 1000));
-        parameter6.setParamC$04(new ParameterC$DxBand(180.00000000000006 / 1000));
+        parameter5.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
+        parameter5.setParamC$02(new ParameterC$Bband(170.0 / 1000));
+        parameter5.setParamC$03(new ParameterC$DxBand(180.00000000000006 / 1000));
+        parameter5.setParamC$04(new ParameterC$DxBand(170.00000000000003 / 1000));
 
-        parameter6.setParamD$01(new ParameterD$Macd1(0.6800000000000017 / 1000));
-        parameter6.setParamD$02(new ParameterD$Macd2(55.0 / 1000));
-        parameter6.setParamD$03(new ParameterD$Sig(0.470000000000001 / 1000));
+        parameter5.setParamD$01(new ParameterD$Macd1(0.6700000000000012 / 1000));
+        parameter5.setParamD$02(new ParameterD$Macd2(38.0 / 1000));
+        parameter5.setParamD$03(new ParameterD$Sig(0.7 / 1000));
 
-        return parameter6;
+        return parameter5;
     }
     public static Parameter getParameter1(){
         Parameter parameter1 = new Parameter();
@@ -148,9 +148,9 @@ public class Parameter {
         parameter5.setParamC$03(new ParameterC$DxBand(180.00000000000006 / 1000));
         parameter5.setParamC$04(new ParameterC$DxBand(170.00000000000003 / 1000));
 
-        parameter5.setParamD$01(new ParameterD$Macd1(0.6800000000000012 / 1000));
-        parameter5.setParamD$02(new ParameterD$Macd2(13.0 / 1000));
-        parameter5.setParamD$03(new ParameterD$Sig(0.04 / 1000));
+        parameter5.setParamD$01(new ParameterD$Macd1(0.6700000000000012 / 1000));
+        parameter5.setParamD$02(new ParameterD$Macd2(38.0 / 1000));
+        parameter5.setParamD$03(new ParameterD$Sig(0.7 / 1000));
 
         return parameter5;
     }
