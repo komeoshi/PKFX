@@ -10,13 +10,13 @@ public class OkawariParameter {
     public static OkawariParameter getOkawariParameter() {
         OkawariParameter parameter1 = new OkawariParameter();
 
-        parameter1.setParamA(new OkawariParameterA$Macd(40.0 / 1000));
-        parameter1.setParamB(new OkawariParameterB$Macd(7.0 / 1000));
+        parameter1.setParamA(new OkawariParameterA$Macd(35.0 / 1000));
+        parameter1.setParamB(new OkawariParameterB$Macd(4.0 / 1000));
         parameter1.setParamC(new OkawariParameterC$Adx(55));
         parameter1.setParamD(new OkawariParameterD$Adx(25));
-        parameter1.setParamE(new OkawariParameterE$Rsi(90));
-        parameter1.setParamF(new OkawariParameterF$Rsi(10));
-        parameter1.setParamG(new OkawariParameterG$Bband(410.0000000000003 / 1000));
+        parameter1.setParamE(new OkawariParameterE$Rsi(85));
+        parameter1.setParamF(new OkawariParameterF$Rsi(15));
+        parameter1.setParamG(new OkawariParameterG$Bband(460.0000000000003 / 1000));
         parameter1.setParamH(new OkawariParameterH$Bband(109.99999999999999 / 1000));
         parameter1.setParamI(new OkawariParameterI$Sig(2.0/1000));
         parameter1.setParamJ(new OkawariParameterJ$Atr(6.0/1000));
