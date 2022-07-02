@@ -15,7 +15,7 @@ public class OkawariParameter {
         parameter1.setParamC(new OkawariParameterC$Adx(55));
         parameter1.setParamD(new OkawariParameterD$Adx(25));
         parameter1.setParamE(new OkawariParameterE$Rsi(90));
-        parameter1.setParamF(new OkawariParameterF$Rsi(20));
+        parameter1.setParamF(new OkawariParameterF$Rsi(10));
         parameter1.setParamG(new OkawariParameterG$Bband(220.0000000000003 / 1000));
         parameter1.setParamH(new OkawariParameterH$Bband(99.99999999999999 / 1000));
         parameter1.setParamI(new OkawariParameterI$Sig(2.0/1000));
