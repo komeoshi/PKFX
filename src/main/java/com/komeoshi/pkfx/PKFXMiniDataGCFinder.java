@@ -272,6 +272,7 @@ public class PKFXMiniDataGCFinder {
 
         FinderExecutor exec1 = new FinderExecutor(defaultParameter, candles);
         pool.submit(exec1);
+        sleep(3);
 
         long count = 0;
         for (Parameter parameter : parameters) {
