@@ -14,28 +14,28 @@ public class Parameter {
     }
 
     public static Parameter getParameter1() {
-        Parameter parameter7 = new Parameter();
-        parameter7.setParamA$01(new ParameterA$CurrentAtr(30.0 / 1000));
-        parameter7.setParamA$02(new ParameterA$CurrentTr(30.0 / 1000));
-        parameter7.setParamA$03(new ParameterA$Past2Tr(30.0 / 1000));
-        parameter7.setParamA$04(new ParameterA$Past3Atr(30.0 / 1000));
-        parameter7.setParamA$05(new ParameterA$Past4Atr(30.0 / 1000));
+        Parameter parameter1 = new Parameter();
+        parameter1.setParamA$01(new ParameterA$CurrentAtr(0));
+        parameter1.setParamA$02(new ParameterA$CurrentTr(0));
+        parameter1.setParamA$03(new ParameterA$Past2Tr(0));
+        parameter1.setParamA$04(new ParameterA$Past3Atr(0));
+        parameter1.setParamA$05(new ParameterA$Past4Atr(0));
 
-        parameter7.setParamB$01(new ParameterB$Adx(17000.0 / 1000));
-        parameter7.setParamB$02(new ParameterB$Past2Rsi(40000.0 / 1000));
-        parameter7.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
-        parameter7.setParamB$04(new ParameterB$Rsi(75000.0 / 1000));
+        parameter1.setParamB$01(new ParameterB$Adx(11000.0 / 1000));
+        parameter1.setParamB$02(new ParameterB$Past2Rsi(22000.0 / 1000));
+        parameter1.setParamB$03(new ParameterB$Rsi(76000.0 / 1000));
+        parameter1.setParamB$04(new ParameterB$Rsi(77000.0 / 1000));
 
-        parameter7.setParamC$01(new ParameterC$Bband(50.0 / 1000));
-        parameter7.setParamC$02(new ParameterC$Bband(70.0000000000001 / 1000));
-        parameter7.setParamC$03(new ParameterC$DxBand(160.00000000000003 / 1000));
-        parameter7.setParamC$04(new ParameterC$DxBand(120.0000000000002 / 1000));
+        parameter1.setParamC$01(new ParameterC$Bband(129.99999999999997 / 1000));
+        parameter1.setParamC$02(new ParameterC$Bband(170.0 / 1000));
+        parameter1.setParamC$03(new ParameterC$DxBand(380.00000000000003 / 1000));
+        parameter1.setParamC$04(new ParameterC$DxBand(300.00000000000017 / 1000));
 
-        parameter7.setParamD$01(new ParameterD$Macd1(0.2 / 1000));
-        parameter7.setParamD$02(new ParameterD$Macd2(43.0 / 1000));
-        parameter7.setParamD$03(new ParameterD$Sig(0.6400000000000012 / 1000));
+        parameter1.setParamD$01(new ParameterD$Macd1(0.6900000000000012 / 1000));
+        parameter1.setParamD$02(new ParameterD$Macd2(89.0 / 1000));
+        parameter1.setParamD$03(new ParameterD$Sig(0.71 / 1000));
 
-        return parameter7;
+        return parameter1;
     }
 
     public static Parameter getParameter2() {
