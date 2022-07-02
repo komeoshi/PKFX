@@ -78,15 +78,15 @@ public class PKFXMiniDataGCFinder {
         sim1.setCandles(candles);
 
         sim1.setParameter1(p);
-        sim1.setParameter2(new Parameter());
-        sim1.setParameter3(new Parameter());
-        sim1.setParameter4(new Parameter());
-        sim1.setParameter5(new Parameter());
-        sim1.setParameter6(new Parameter());
-        sim1.setParameter7(new Parameter());
-        sim1.setParameter8(new Parameter());
-        sim1.setParameter9(new Parameter());
-        sim1.setParameter10(new Parameter());
+        sim1.setParameter2(Parameter.getParameter2());
+        sim1.setParameter3(Parameter.getParameter3());
+        sim1.setParameter4(Parameter.getParameter4());
+        sim1.setParameter5(Parameter.getParameter5());
+        sim1.setParameter6(Parameter.getParameter6());
+        sim1.setParameter7(Parameter.getParameter7());
+        sim1.setParameter8(Parameter.getParameter8());
+        sim1.setParameter9(Parameter.getParameter9());
+        sim1.setParameter10(Parameter.getParameter10());
 
         return sim1;
     }
