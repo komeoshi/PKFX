@@ -3,12 +3,13 @@ package com.komeoshi.pkfx.dto.parameter;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-public class ParameterD$Sig {
+public class ParameterD$Sig implements Serializable {
     double parameter = 0.00007;
 
     public ParameterD$Sig(double parameter){

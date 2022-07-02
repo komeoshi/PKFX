@@ -3,9 +3,11 @@ package com.komeoshi.pkfx.dto.parameter;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class Parameter {
+public class Parameter implements Serializable {
 
     public static Parameter getParameterSim(){
         return Parameter.getParameter10();

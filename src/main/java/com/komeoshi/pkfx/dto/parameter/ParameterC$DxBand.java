@@ -3,12 +3,13 @@ package com.komeoshi.pkfx.dto.parameter;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-public class ParameterC$DxBand {
+public class ParameterC$DxBand implements Serializable {
     double parameter = 0.350;
 
     public ParameterC$DxBand(double parameter){

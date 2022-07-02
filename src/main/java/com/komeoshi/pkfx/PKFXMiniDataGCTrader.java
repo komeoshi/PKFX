@@ -8,6 +8,7 @@ import com.komeoshi.pkfx.enumerator.AdxPosition;
 import com.komeoshi.pkfx.enumerator.Position;
 import com.komeoshi.pkfx.enumerator.Status;
 import com.komeoshi.pkfx.restclient.PKFXFinderRestClient;
+import com.komeoshi.pkfx.simulatedata.PKFXParameterDataReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -35,12 +36,46 @@ public class PKFXMiniDataGCTrader {
         return builder.build();
     }
 
+    public void init() {
+        PKFXParameterDataReader reader1 = new PKFXParameterDataReader("parameter1.dat");
+        parameter1 = reader1.read();
+        PKFXParameterDataReader reader2 = new PKFXParameterDataReader("parameter2.dat");
+        parameter2 = reader2.read();
+        PKFXParameterDataReader reader3 = new PKFXParameterDataReader("parameter3.dat");
+        parameter3 = reader3.read();
+        PKFXParameterDataReader reader4 = new PKFXParameterDataReader("parameter4.dat");
+        parameter4 = reader4.read();
+        PKFXParameterDataReader reader5 = new PKFXParameterDataReader("parameter5.dat");
+        parameter5 = reader5.read();
+        PKFXParameterDataReader reader6 = new PKFXParameterDataReader("parameter6.dat");
+        parameter6 = reader6.read();
+        PKFXParameterDataReader reader7 = new PKFXParameterDataReader("parameter7.dat");
+        parameter7 = reader7.read();
+        PKFXParameterDataReader reader8 = new PKFXParameterDataReader("parameter8.dat");
+        parameter8 = reader8.read();
+        PKFXParameterDataReader reader9 = new PKFXParameterDataReader("parameter9.dat");
+        parameter9 = reader9.read();
+        PKFXParameterDataReader reader10 = new PKFXParameterDataReader("parameter10.dat");
+        parameter10 = reader10.read();
+    }
+    Parameter parameter1 = null;
+    Parameter parameter2 = null;
+    Parameter parameter3 = null;
+    Parameter parameter4 = null;
+    Parameter parameter5 = null;
+    Parameter parameter6 = null;
+    Parameter parameter7 = null;
+    Parameter parameter8 = null;
+    Parameter parameter9 = null;
+    Parameter parameter10 = null;
+
     private static final double SPREAD_COST = 0.004;
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) {
         return args -> {
 
             PKFXFinderRestClient client = new PKFXFinderRestClient();
+            init();
 
             Status status = Status.NONE;
             Position lastMacdPosition = Position.NONE;
@@ -72,16 +107,16 @@ public class PKFXMiniDataGCTrader {
                         lastMacdPosition != Position.NONE) {
                     // クロスした
 
-                    boolean doTrade1 = isDoTradeWithParameter(candle, Parameter.getParameter1());
-                    boolean doTrade2 = isDoTradeWithParameter(candle, Parameter.getParameter2());
-                    boolean doTrade3 = isDoTradeWithParameter(candle, Parameter.getParameter3());
-                    boolean doTrade4 = isDoTradeWithParameter(candle, Parameter.getParameter4());
-                    boolean doTrade5 = isDoTradeWithParameter(candle, Parameter.getParameter5());
-                    boolean doTrade6 = isDoTradeWithParameter(candle, Parameter.getParameter6());
-                    boolean doTrade7 = isDoTradeWithParameter(candle, Parameter.getParameter7());
-                    boolean doTrade8 = isDoTradeWithParameter(candle, Parameter.getParameter8());
-                    boolean doTrade9 = isDoTradeWithParameter(candle, Parameter.getParameter9());
-                    boolean doTrade10 = isDoTradeWithParameter(candle, Parameter.getParameter10());
+                    boolean doTrade1 = isDoTradeWithParameter(candle, parameter1);
+                    boolean doTrade2 = isDoTradeWithParameter(candle, parameter2);
+                    boolean doTrade3 = isDoTradeWithParameter(candle, parameter3);
+                    boolean doTrade4 = isDoTradeWithParameter(candle, parameter4);
+                    boolean doTrade5 = isDoTradeWithParameter(candle, parameter5);
+                    boolean doTrade6 = isDoTradeWithParameter(candle, parameter6);
+                    boolean doTrade7 = isDoTradeWithParameter(candle, parameter7);
+                    boolean doTrade8 = isDoTradeWithParameter(candle, parameter8);
+                    boolean doTrade9 = isDoTradeWithParameter(candle, parameter9);
+                    boolean doTrade10 = isDoTradeWithParameter(candle, parameter10);
                     boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7 || doTrade8 || doTrade9 || doTrade10;
 
                     log.info("---crossed.---");

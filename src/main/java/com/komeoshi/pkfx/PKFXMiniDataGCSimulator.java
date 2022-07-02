@@ -4,6 +4,7 @@ import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.*;
 import com.komeoshi.pkfx.dto.parameter.okawari.OkawariParameter;
 import com.komeoshi.pkfx.enumerator.*;
+import com.komeoshi.pkfx.simulatedata.PKFXParameterDataReader;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,21 +60,47 @@ public class PKFXMiniDataGCSimulator {
         diff = 0.0;
     }
 
-    Parameter parameter1 = Parameter.getParameter1();
-    Parameter parameter2 = Parameter.getParameter2();
-    Parameter parameter3 = Parameter.getParameter3();
-    Parameter parameter4 = Parameter.getParameter4();
-    Parameter parameter5 = Parameter.getParameter5();
-    Parameter parameter6 = Parameter.getParameter6();
-    Parameter parameter7 = Parameter.getParameter7();
-    Parameter parameter8 = Parameter.getParameter8();
-    Parameter parameter9 = Parameter.getParameter9();
-    Parameter parameter10 = Parameter.getParameter10();
+    public void init2() {
+        PKFXParameterDataReader reader1 = new PKFXParameterDataReader("parameter1.dat");
+        parameter1 = reader1.read();
+        PKFXParameterDataReader reader2 = new PKFXParameterDataReader("parameter2.dat");
+        parameter2 = reader2.read();
+        PKFXParameterDataReader reader3 = new PKFXParameterDataReader("parameter3.dat");
+        parameter3 = reader3.read();
+        PKFXParameterDataReader reader4 = new PKFXParameterDataReader("parameter4.dat");
+        parameter4 = reader4.read();
+        PKFXParameterDataReader reader5 = new PKFXParameterDataReader("parameter5.dat");
+        parameter5 = reader5.read();
+        PKFXParameterDataReader reader6 = new PKFXParameterDataReader("parameter6.dat");
+        parameter6 = reader6.read();
+        PKFXParameterDataReader reader7 = new PKFXParameterDataReader("parameter7.dat");
+        parameter7 = reader7.read();
+        PKFXParameterDataReader reader8 = new PKFXParameterDataReader("parameter8.dat");
+        parameter8 = reader8.read();
+        PKFXParameterDataReader reader9 = new PKFXParameterDataReader("parameter9.dat");
+        parameter9 = reader9.read();
+        PKFXParameterDataReader reader10 = new PKFXParameterDataReader("parameter10.dat");
+        parameter10 = reader10.read();
+    }
+
+    Parameter parameter1 = null;
+    Parameter parameter2 = null;
+    Parameter parameter3 = null;
+    Parameter parameter4 = null;
+    Parameter parameter5 = null;
+    Parameter parameter6 = null;
+    Parameter parameter7 = null;
+    Parameter parameter8 = null;
+    Parameter parameter9 = null;
+    Parameter parameter10 = null;
     OkawariParameter okawariParameter = OkawariParameter.getOkawariParameter();
 
 
     public void run() {
         init();
+        if (parameter1 == null) {
+            init2();
+        }
         if (candles == null) {
             this.candles = getCandlesFromFile();
         }
@@ -102,7 +129,7 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            LocalDateTime to = LocalDateTime.of(2022, 6, 1, 0, 0, 0, 0);
+            LocalDateTime to = LocalDateTime.of(2022, 7, 1, 0, 0, 0, 0);
             if (candle.getTime().isAfter(to)) {
                 continue;
             }

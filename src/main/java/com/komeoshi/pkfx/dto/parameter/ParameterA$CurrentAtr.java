@@ -3,12 +3,13 @@ package com.komeoshi.pkfx.dto.parameter;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-public class ParameterA$CurrentAtr {
+public class ParameterA$CurrentAtr implements Serializable {
     double parameter = 0.0243;
 
     public ParameterA$CurrentAtr(double parameter){

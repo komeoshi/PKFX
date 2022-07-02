@@ -3,6 +3,7 @@ package com.komeoshi.pkfx;
 import com.google.common.collect.Lists;
 import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.*;
+import com.komeoshi.pkfx.enumerator.ParameterPosition;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,26 +70,76 @@ public class PKFXMiniDataGCFinder {
     private long startTime = 0;
     private long size = 0L;
     private boolean isBatch = false;
+    private ParameterPosition parameterPosition;
     private int executeMaxSize = 50000;
-    private Parameter defaultParameter = Parameter.getParameterSim();
+    private Parameter defaultParameter = null;
     private double maxDiffAllTheTime = -999.0;
     private int loopCount = -999;
 
+    Parameter parameter1 = null;
+    Parameter parameter2 = null;
+    Parameter parameter3 = null;
+    Parameter parameter4 = null;
+    Parameter parameter5 = null;
+    Parameter parameter6 = null;
+    Parameter parameter7 = null;
+    Parameter parameter8 = null;
+    Parameter parameter9 = null;
+    Parameter parameter10 = null;
 
     private PKFXMiniDataGCSimulator createSimulator(List<Candle> candles, Parameter p) {
         PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
         sim1.setCandles(candles);
 
-        sim1.setParameter1(Parameter.getParameter1());
-        sim1.setParameter2(Parameter.getParameter2());
-        sim1.setParameter3(Parameter.getParameter3());
-        sim1.setParameter4(Parameter.getParameter4());
-        sim1.setParameter5(Parameter.getParameter5());
-        sim1.setParameter6(Parameter.getParameter6());
-        sim1.setParameter7(Parameter.getParameter7());
-        sim1.setParameter8(Parameter.getParameter8());
-        sim1.setParameter9(Parameter.getParameter9());
-        sim1.setParameter10(p);
+        if (parameterPosition == ParameterPosition.PARAMETER1)
+            sim1.setParameter1(p);
+        else
+            sim1.setParameter1(parameter1);
+
+        if (parameterPosition == ParameterPosition.PARAMETER2)
+            sim1.setParameter2(p);
+        else
+            sim1.setParameter2(parameter2);
+
+        if (parameterPosition == ParameterPosition.PARAMETER3)
+            sim1.setParameter3(p);
+        else
+            sim1.setParameter3(parameter3);
+
+        if (parameterPosition == ParameterPosition.PARAMETER4)
+            sim1.setParameter4(p);
+        else
+            sim1.setParameter4(parameter4);
+
+        if (parameterPosition == ParameterPosition.PARAMETER5)
+            sim1.setParameter5(p);
+        else
+            sim1.setParameter5(parameter5);
+
+        if (parameterPosition == ParameterPosition.PARAMETER6)
+            sim1.setParameter6(p);
+        else
+            sim1.setParameter6(parameter6);
+
+        if (parameterPosition == ParameterPosition.PARAMETER7)
+            sim1.setParameter7(p);
+        else
+            sim1.setParameter7(parameter7);
+
+        if (parameterPosition == ParameterPosition.PARAMETER8)
+            sim1.setParameter8(p);
+        else
+            sim1.setParameter8(parameter8);
+
+        if (parameterPosition == ParameterPosition.PARAMETER9)
+            sim1.setParameter9(p);
+        else
+            sim1.setParameter9(parameter9);
+
+        if (parameterPosition == ParameterPosition.PARAMETER10)
+            sim1.setParameter10(p);
+        else
+            sim1.setParameter10(parameter10);
 
         return sim1;
     }
