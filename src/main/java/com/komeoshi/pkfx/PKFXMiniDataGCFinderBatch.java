@@ -20,12 +20,16 @@ public class PKFXMiniDataGCFinderBatch {
 
         Parameter maxParameter = Parameter.getParameterSim();
         double maxDiff = -999.0;
+        int loopCount = 0;
         while (true) {
+            loopCount++;
+
             PKFXMiniDataGCFinder finder = new PKFXMiniDataGCFinder();
             finder.setBatch(true);
             finder.setExecuteMaxSize(5000);
             finder.setDefaultParameter(maxParameter);
             finder.setMaxDiffAllTheTime(maxDiff);
+            finder.setLoopCount(loopCount);
 
             finder.execute();
 

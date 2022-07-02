@@ -71,6 +71,7 @@ public class PKFXMiniDataGCFinder {
     private int executeMaxSize = 50000;
     private Parameter defaultParameter = Parameter.getParameterSim();
     private double maxDiffAllTheTime = -999.0;
+    private int loopCount = -999;
 
 
     private PKFXMiniDataGCSimulator createSimulator(List<Candle> candles, Parameter p) {
@@ -383,6 +384,7 @@ public class PKFXMiniDataGCFinder {
                 s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
                 s.append("remain time(Y).      : " + remainTimeY + " Y." + "\n");
                 s.append("maxDiff allthetime   : " + maxDiffAllTheTime + "\n");
+                s.append("loop count           : " + loopCount + "\n");
 
                 log.info(s.toString());
                 showMemoryUsage();
