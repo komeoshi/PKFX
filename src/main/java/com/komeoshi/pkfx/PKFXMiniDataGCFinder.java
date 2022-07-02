@@ -63,6 +63,7 @@ public class PKFXMiniDataGCFinder {
     private ExecutorService pool;
     private long completeCount = 0;
     private double maxDiff = -999.0;
+    private double winRate = -999.0;
     private double maxDiffTotal = 0;
     private Parameter maxDiffParameter = new Parameter();
     private long startTime = 0;
@@ -78,7 +79,7 @@ public class PKFXMiniDataGCFinder {
         PKFXMiniDataGCSimulator sim1 = new PKFXMiniDataGCSimulator();
         sim1.setCandles(candles);
 
-        sim1.setParameter1(p);
+        sim1.setParameter1(Parameter.getParameter1());
         sim1.setParameter2(Parameter.getParameter2());
         sim1.setParameter3(Parameter.getParameter3());
         sim1.setParameter4(Parameter.getParameter4());
@@ -87,7 +88,7 @@ public class PKFXMiniDataGCFinder {
         sim1.setParameter7(Parameter.getParameter7());
         sim1.setParameter8(Parameter.getParameter8());
         sim1.setParameter9(Parameter.getParameter9());
-        sim1.setParameter10(Parameter.getParameter10());
+        sim1.setParameter10(p);
 
         return sim1;
     }
@@ -345,20 +346,23 @@ public class PKFXMiniDataGCFinder {
 
             long endTime = System.currentTimeMillis();
             long time = (endTime - startTime);
+            double winRate = ((double) sim1.getCountWin() / (double) sim1.getTotalCount());
 
-            diff(diff, total, parameter, time);
+            diff(diff, total, parameter, time, winRate);
 
         }
 
         private synchronized void diff(double diff,
                                        int total,
                                        Parameter parameter,
-                                       long time) {
+                                       long time,
+                                       double winRate) {
             completeCount++;
             if (diff != 0.0 && diff >= maxDiff) {
                 maxDiff = diff;
                 maxDiffTotal = total;
                 maxDiffParameter = parameter;
+                winRate = winRate;
             }
 
             long elapsedTime = System.currentTimeMillis() - startTime;
@@ -375,6 +379,7 @@ public class PKFXMiniDataGCFinder {
                 s.append("maxParam             : " + maxDiffParameter + "\n");
                 s.append("maxDiff              : " + maxDiff + "\n");
                 s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
+                s.append("maxDiff(win Rate)    : " + winRate * 100 + "\n");
                 s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) * 100 + "%" + "\n");
                 s.append("this time.           : " + time + " ms." + "\n");
                 s.append("average time.        : " + averageTime + " ms." + "\n");

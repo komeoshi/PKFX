@@ -24,7 +24,7 @@ public class PKFXMiniDataGCOkawariFinderBatch {
         while (true) {
             PKFXMiniDataGCOkawariFinder finder = new PKFXMiniDataGCOkawariFinder();
             finder.setBatch(true);
-            finder.setExecuteMaxSize(1000);
+            finder.setExecuteMaxSize(150);
             finder.setDefaultParameter(maxParameter);
             finder.setMaxDiffAllTheTime(maxDiff);
 

@@ -26,7 +26,7 @@ public class PKFXMiniDataGCFinderBatch {
 
             PKFXMiniDataGCFinder finder = new PKFXMiniDataGCFinder();
             finder.setBatch(true);
-            finder.setExecuteMaxSize(5000);
+            finder.setExecuteMaxSize(500);
             finder.setDefaultParameter(maxParameter);
             finder.setMaxDiffAllTheTime(maxDiff);
             finder.setLoopCount(loopCount);
