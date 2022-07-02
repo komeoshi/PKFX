@@ -96,15 +96,15 @@ public class Parameter {
         parameter4.setParamA$04(new ParameterA$Past3Atr(15.0 / 1000));
         parameter4.setParamA$05(new ParameterA$Past4Atr(15.0 / 1000));
 
-        parameter4.setParamB$01(new ParameterB$Adx(11000.0 / 1000));
-        parameter4.setParamB$02(new ParameterB$Past2Rsi(38000.0 / 1000));
+        parameter4.setParamB$01(new ParameterB$Adx(12000.0 / 1000));
+        parameter4.setParamB$02(new ParameterB$Past2Rsi(23000.0 / 1000));
         parameter4.setParamB$03(new ParameterB$Rsi(85000.0 / 1000));
-        parameter4.setParamB$04(new ParameterB$Rsi(85000.0 / 1000));
+        parameter4.setParamB$04(new ParameterB$Rsi(90000.0 / 1000));
 
-        parameter4.setParamC$01(new ParameterC$Bband(139.99999999999997 / 1000));
+        parameter4.setParamC$01(new ParameterC$Bband(129.99999999999997 / 1000));
         parameter4.setParamC$02(new ParameterC$Bband(170.0 / 1000));
-        parameter4.setParamC$03(new ParameterC$DxBand(280.0000000000001 / 1000));
-        parameter4.setParamC$04(new ParameterC$DxBand(340.00000000000017 / 1000));
+        parameter4.setParamC$03(new ParameterC$DxBand(220.0000000000001 / 1000));
+        parameter4.setParamC$04(new ParameterC$DxBand(380.00000000000017 / 1000));
 
         parameter4.setParamD$01(new ParameterD$Macd1(0.650000000000001 / 1000));
         parameter4.setParamD$02(new ParameterD$Macd2(77.0 / 1000));
