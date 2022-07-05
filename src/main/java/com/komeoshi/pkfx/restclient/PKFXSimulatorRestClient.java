@@ -31,7 +31,7 @@ public class PKFXSimulatorRestClient {
         LocalDateTime to = LocalDateTime.of(2021, 6, 1, 1, 0, 0, 0);
 
         List<String> days = new ArrayList<>();
-        while (from.isBefore(LocalDateTime.of(2022, 7, 1, 0, 0, 0, 0))) {
+        while (from.isBefore(LocalDateTime.of(2022, 7, 5, 0, 0, 0, 0))) {
             String dateFrom = from.format(DateTimeFormatter.ISO_DATE_TIME);
             String dateTo = to.format(DateTimeFormatter.ISO_DATE_TIME);
 
@@ -49,7 +49,7 @@ public class PKFXSimulatorRestClient {
         LocalDateTime to = LocalDateTime.of(2021, 6, 2, 0, 0, 0, 0);
 
         List<String> days = new ArrayList<>();
-        while (from.isBefore(LocalDateTime.of(2022, 7, 1, 0, 0, 0, 0))) {
+        while (from.isBefore(LocalDateTime.of(2022, 7, 5, 0, 0, 0, 0))) {
             String dateFrom = from.format(DateTimeFormatter.ISO_DATE_TIME);
             String dateTo = to.format(DateTimeFormatter.ISO_DATE_TIME);
 
