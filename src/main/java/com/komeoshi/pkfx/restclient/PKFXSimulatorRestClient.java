@@ -11,6 +11,7 @@ import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,17 +22,17 @@ public class PKFXSimulatorRestClient {
 
     public static void main(String[] args) {
         PKFXSimulatorRestClient client = new PKFXSimulatorRestClient();
-        List<Candle> candles  = client.runWithManyCandles(new RestTemplate());
+        List<Candle> candles = client.runWithManyCandles(new RestTemplate());
 
         log.info("" + candles.size());
     }
 
-    private List<String> getMins() {
-        LocalDateTime from = LocalDateTime.of(2021, 1, 1, 0, 0, 0, 0);
-        LocalDateTime to = LocalDateTime.of(2021, 1, 1, 1, 0, 0, 0);
+    private List<String> getMins(LocalDate _from, LocalDate _to) {
+        LocalDateTime from = LocalDateTime.of(_from.getYear(), _from.getMonthValue(), _from.getDayOfMonth(), 0, 0, 0, 0);
+        LocalDateTime to = LocalDateTime.of(_from.getYear(), _from.getMonthValue(), _from.getDayOfMonth(), 1, 0, 0, 0);
 
         List<String> days = new ArrayList<>();
-        while (from.isBefore(LocalDateTime.of(2022, 7, 5, 0, 0, 0, 0))) {
+        while (from.isBefore(LocalDateTime.of(_to.getYear(), _to.getMonthValue(), _to.getDayOfMonth(), 0, 0, 0, 0))) {
             String dateFrom = from.format(DateTimeFormatter.ISO_DATE_TIME);
             String dateTo = to.format(DateTimeFormatter.ISO_DATE_TIME);
 
@@ -44,12 +45,12 @@ public class PKFXSimulatorRestClient {
         return days;
     }
 
-    private List<String> getDays() {
-        LocalDateTime from = LocalDateTime.of(2021, 1, 1, 0, 0, 0, 0);
-        LocalDateTime to = LocalDateTime.of(2021, 1, 2, 0, 0, 0, 0);
+    private List<String> getDays(LocalDate _from, LocalDate _to) {
+        LocalDateTime from = LocalDateTime.of(_from.getYear(), _from.getMonthValue(), _from.getDayOfMonth(), 0, 0, 0, 0);
+        LocalDateTime to = LocalDateTime.of(_to.getYear(), _to.getMonthValue(), _to.getDayOfMonth(), 0, 0, 0, 0);
 
         List<String> days = new ArrayList<>();
-        while (from.isBefore(LocalDateTime.of(2022, 7, 5, 0, 0, 0, 0))) {
+        while (from.isBefore(LocalDateTime.of(_to.getYear(), _to.getMonthValue(), _to.getDayOfMonth(), 0, 0, 0, 0))) {
             String dateFrom = from.format(DateTimeFormatter.ISO_DATE_TIME);
             String dateTo = to.format(DateTimeFormatter.ISO_DATE_TIME);
 
@@ -63,8 +64,14 @@ public class PKFXSimulatorRestClient {
     }
 
     public List<Candle> runMins(RestTemplate restTemplate) {
+        return runMins(restTemplate,
+                LocalDate.of(2021, 6, 1),
+                LocalDate.of(2022, 7, 5));
+    }
+
+    public List<Candle> runMins(RestTemplate restTemplate, LocalDate _from, LocalDate _to) {
         List<Candle> candles = new ArrayList<>();
-        List<String> mins = getMins();
+        List<String> mins = getMins(_from, _to);
 
         for (String min : mins) {
             log.info(min);
@@ -78,9 +85,15 @@ public class PKFXSimulatorRestClient {
     }
 
     public List<Candle> runWithManyCandles(RestTemplate restTemplate) {
+        return runWithManyCandles(restTemplate,
+                LocalDate.of(2021, 6, 1),
+                LocalDate.of(2022, 7, 5));
+    }
+
+    public List<Candle> runWithManyCandles(RestTemplate restTemplate, LocalDate _from, LocalDate _to) {
 
         List<Candle> candles = new ArrayList<>();
-        List<String> days = getDays();
+        List<String> days = getDays(_from, _to);
 
         for (String day : days) {
             log.info(day);
