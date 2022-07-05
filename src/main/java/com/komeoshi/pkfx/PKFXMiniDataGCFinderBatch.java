@@ -1,5 +1,6 @@
 package com.komeoshi.pkfx;
 
+import com.komeoshi.pkfx.dto.Candle;
 import com.komeoshi.pkfx.dto.parameter.Parameter;
 import com.komeoshi.pkfx.enumerator.ParameterPosition;
 import com.komeoshi.pkfx.simulatedata.PKFXParameterDataCreator;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +47,8 @@ public class PKFXMiniDataGCFinderBatch {
     Parameter parameter8 = null;
     Parameter parameter9 = null;
     Parameter parameter10 = null;
+
+    List<Candle> candles = null;
 
     public void init() {
         PKFXParameterDataReader reader1 = new PKFXParameterDataReader("parameter1.dat");
@@ -114,6 +118,8 @@ public class PKFXMiniDataGCFinderBatch {
             filename = "parameter10.dat";
         }
 
+
+
         double maxDiff = -999.0;
         int loopCount = 0;
         for (int ii = 0; ii < 10; ii++) {
@@ -137,6 +143,7 @@ public class PKFXMiniDataGCFinderBatch {
             finder.setDefaultParameter(maxParameter);
             finder.setMaxDiffAllTheTime(maxDiff);
             finder.setLoopCount(loopCount);
+            finder.setCandles(candles);
 
             finder.execute();
 
@@ -146,6 +153,8 @@ public class PKFXMiniDataGCFinderBatch {
                 maxParameter = finder.getMaxDiffParameter();
             }
             log.info("-- " + maxDiff + " ---------------------------------------------------------");
+
+            this.candles = finder.getCandles();
         }
 
         if (position == ParameterPosition.PARAMETER1)
