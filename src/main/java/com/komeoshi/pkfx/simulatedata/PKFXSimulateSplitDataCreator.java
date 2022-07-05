@@ -31,8 +31,8 @@ public class PKFXSimulateSplitDataCreator {
         }
     }
 
-    private LocalDate from = LocalDate.of(2020, 1, 1);
-    private LocalDate to = LocalDate.of(2022, 7, 1);
+    private LocalDate from = LocalDate.of(2019, 1, 1);
+    private LocalDate to = LocalDate.of(2020, 1, 1);
 
     public void saveDaysData() throws IOException {
 
@@ -40,7 +40,7 @@ public class PKFXSimulateSplitDataCreator {
             LocalDate tmp = from.plusDays(1);
             Candles candles = getDaysCandles(from, tmp);
 
-            String filename = "data/data_" + from.getYear() + String.format("%02d", from.getMonthValue()) + String.format("%02d", from.getDayOfMonth()) + ".dat";
+            String filename = "data/data/data_" + from.getYear() + String.format("%02d", from.getMonthValue()) + String.format("%02d", from.getDayOfMonth()) + ".dat";
             output(candles, filename);
 
             from = from.plusDays(1);
@@ -65,7 +65,7 @@ public class PKFXSimulateSplitDataCreator {
             LocalDate tmp = from.plusDays(1);
             Candles candles = getMinsCandles(from, tmp);
 
-            String filename = "data/dataMins_" + from.getYear() + String.format("%02d", from.getMonthValue()) + String.format("%02d", from.getDayOfMonth()) + ".dat";
+            String filename = "data/mindata/dataMins_" + from.getYear() + String.format("%02d", from.getMonthValue()) + String.format("%02d", from.getDayOfMonth()) + ".dat";
             output(candles, filename);
 
             from = from.plusDays(1);
