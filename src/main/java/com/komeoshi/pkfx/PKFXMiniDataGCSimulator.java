@@ -129,7 +129,7 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            LocalDateTime to = LocalDateTime.of(2022, 7, 1, 0, 0, 0, 0);
+            LocalDateTime to = LocalDateTime.of(2022, 7, 5, 0, 0, 0, 0);
             if (candle.getTime().isAfter(to)) {
                 continue;
             }
