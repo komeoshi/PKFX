@@ -69,25 +69,23 @@ public class PKFXSimulatorRestClient {
                 LocalDate.of(2022, 7, 5));
     }
 
+    public List<Candle> runWithManyCandles(RestTemplate restTemplate) {
+        return runWithManyCandles(restTemplate,
+                LocalDate.of(2021, 6, 1),
+                LocalDate.of(2022, 7, 5));
+    }
+
     public List<Candle> runMins(RestTemplate restTemplate, LocalDate _from, LocalDate _to) {
         List<Candle> candles = new ArrayList<>();
         List<String> mins = getMins(_from, _to);
 
         for (String min : mins) {
             log.info(min);
-            HttpComponentsClientHttpRequestFactory httpComponents =
-                    new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
-            candles.addAll(run(new RestTemplate(httpComponents), min, "S5").getCandles());
+            candles.addAll(run(new RestTemplate(), min, "S5").getCandles());
         }
 
         log.info("size:" + candles.size());
         return candles;
-    }
-
-    public List<Candle> runWithManyCandles(RestTemplate restTemplate) {
-        return runWithManyCandles(restTemplate,
-                LocalDate.of(2021, 6, 1),
-                LocalDate.of(2022, 7, 5));
     }
 
     public List<Candle> runWithManyCandles(RestTemplate restTemplate, LocalDate _from, LocalDate _to) {
@@ -97,8 +95,6 @@ public class PKFXSimulatorRestClient {
 
         for (String day : days) {
             log.info(day);
-//            HttpComponentsClientHttpRequestFactory httpComponents =
-//                    new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build());
             candles.addAll(run(new RestTemplate(), day, PKFXConst.GRANULARITY).getCandles());
         }
 
@@ -115,7 +111,6 @@ public class PKFXSimulatorRestClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + PKFXConst.getApiAccessToken());
-        // headers.add("Accept-Encoding", "gzip, deflate");
 
         ResponseEntity<Instrument> response = restTemplate.exchange(
                 url,
