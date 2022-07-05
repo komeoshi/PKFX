@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Getter
 @Setter
@@ -42,6 +42,8 @@ public class PKFXMiniDataGCSimulator {
     private boolean isResultLogging = true;
     private boolean isShortCut = false;
 
+    Map<String, Double> summaryMap = new TreeMap<>();
+
 
     public static void main(String[] args) {
         PKFXMiniDataGCSimulator sim = new PKFXMiniDataGCSimulator();
@@ -58,6 +60,7 @@ public class PKFXMiniDataGCSimulator {
         countLose = 0;
         totalCount = 0;
         diff = 0.0;
+        summaryMap = new TreeMap<>();
     }
 
     public void init2() {
@@ -95,7 +98,6 @@ public class PKFXMiniDataGCSimulator {
     Parameter parameter10 = null;
     OkawariParameter okawariParameter = OkawariParameter.getOkawariParameter();
 
-
     public void run() {
         init();
         if (parameter1 == null) {
@@ -112,6 +114,7 @@ public class PKFXMiniDataGCSimulator {
         Candle openCandle = null;
         int continueCount = 0;
         final int CONTINUE_MAX = 0;
+
         for (int ii = 0; ii < candles.size(); ii++) {
             Candle candle = candles.get(ii);
 
@@ -246,6 +249,12 @@ public class PKFXMiniDataGCSimulator {
                     diff + "(" + (diff * 1000 / totalCount) + "), " +
                     "LOSSCUT:" + countLosscut + " REACHED:" + countReached + " TIMEOUT:" + countTimeoutWin + "/" + countTimeoutLose
             );
+        if (isLogging) {
+            log.info("---summary---");
+            for (Map.Entry<String, Double> e : summaryMap.entrySet()) {
+                log.info(e.getKey() + ":" + e.getValue());
+            }
+        }
     }
 
     private boolean isDoTradeWithParameter(Candle candle, Parameter parameter) {
@@ -325,7 +334,7 @@ public class PKFXMiniDataGCSimulator {
 
 
     private Status targetReach(Status status, Candle openCandle, Candle candle) {
-        double mag = 0.4 / 1000;;
+        double mag = 0.4 / 1000;
         double targetRateBuy = (openCandle.getAsk().getC() + SPREAD_COST) * (1 + mag);
         double targetRateSell = (openCandle.getAsk().getC() - SPREAD_COST) * (1 - mag);
 
@@ -429,6 +438,9 @@ public class PKFXMiniDataGCSimulator {
                 }
                 break;
         }
+
+        String key = openCandle.getTime().format(DateTimeFormatter.ofPattern("yyyyMM"));
+        summaryMap.merge(key, (thisDiff - SPREAD_COST), Double::sum);
 
         if (isLogging)
             log.info("<< signal 【" + openCandle.getNumber() + "】" + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
