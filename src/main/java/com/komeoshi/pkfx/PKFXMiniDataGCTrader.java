@@ -85,6 +85,7 @@ public class PKFXMiniDataGCTrader {
             int continueCount = 0;
             final int CONTINUE_MAX = 0;
             long loopCount = 0;
+            long totalTime = 0;
             while (true) {
                 loopCount++;
                 long startTime = System.currentTimeMillis();
@@ -194,8 +195,9 @@ public class PKFXMiniDataGCTrader {
                 }
                 long endTime = System.currentTimeMillis();
                 long elapsedTime = endTime - startTime;
+                totalTime += elapsedTime;
                 if (loopCount % 1000 == 0) {
-                    log.info("【" + loopCount + "】 " + elapsedTime + "ms. ");
+                    log.info("【" + loopCount + "】 " + elapsedTime + "ms. " + (totalTime / loopCount) + "ms.");
                 }
             }
         };
