@@ -65,13 +65,13 @@ public class PKFXSimulatorRestClient {
 
     public List<Candle> runMins(RestTemplate restTemplate) {
         return runMins(restTemplate,
-                LocalDate.of(2021, 6, 1),
+                LocalDate.of(2020, 1, 1),
                 LocalDate.of(2022, 7, 5));
     }
 
     public List<Candle> runWithManyCandles(RestTemplate restTemplate) {
         return runWithManyCandles(restTemplate,
-                LocalDate.of(2021, 6, 1),
+                LocalDate.of(2020, 1, 1),
                 LocalDate.of(2022, 7, 5));
     }
 
