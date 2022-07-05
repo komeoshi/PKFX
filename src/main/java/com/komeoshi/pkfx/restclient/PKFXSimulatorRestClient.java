@@ -29,17 +29,17 @@ public class PKFXSimulatorRestClient {
 
     private List<String> getMins(LocalDate _from, LocalDate _to) {
         LocalDateTime from = LocalDateTime.of(_from.getYear(), _from.getMonthValue(), _from.getDayOfMonth(), 0, 0, 0, 0);
-        LocalDateTime to = LocalDateTime.of(_from.getYear(), _from.getMonthValue(), _from.getDayOfMonth(), 1, 0, 0, 0);
+        LocalDateTime fromTmp = from.plusHours(1);
 
         List<String> days = new ArrayList<>();
         while (from.isBefore(LocalDateTime.of(_to.getYear(), _to.getMonthValue(), _to.getDayOfMonth(), 0, 0, 0, 0))) {
             String dateFrom = from.format(DateTimeFormatter.ISO_DATE_TIME);
-            String dateTo = to.format(DateTimeFormatter.ISO_DATE_TIME);
+            String dateTo = fromTmp.format(DateTimeFormatter.ISO_DATE_TIME);
 
             String day = "from=" + dateFrom + ".000000000Z&to=" + dateTo + ".000000000Z";
             days.add(day);
             from = from.plusHours(1);
-            to = to.plusHours(1);
+            fromTmp = fromTmp.plusHours(1);
         }
 
         return days;
@@ -47,17 +47,17 @@ public class PKFXSimulatorRestClient {
 
     private List<String> getDays(LocalDate _from, LocalDate _to) {
         LocalDateTime from = LocalDateTime.of(_from.getYear(), _from.getMonthValue(), _from.getDayOfMonth(), 0, 0, 0, 0);
-        LocalDateTime to = LocalDateTime.of(_to.getYear(), _to.getMonthValue(), _to.getDayOfMonth(), 0, 0, 0, 0);
+        LocalDateTime fromTmp = from.plusDays(1);
 
         List<String> days = new ArrayList<>();
         while (from.isBefore(LocalDateTime.of(_to.getYear(), _to.getMonthValue(), _to.getDayOfMonth(), 0, 0, 0, 0))) {
             String dateFrom = from.format(DateTimeFormatter.ISO_DATE_TIME);
-            String dateTo = to.format(DateTimeFormatter.ISO_DATE_TIME);
+            String dateTo = fromTmp.format(DateTimeFormatter.ISO_DATE_TIME);
 
             String day = "from=" + dateFrom + ".000000000Z&to=" + dateTo + ".000000000Z";
             days.add(day);
             from = from.plusDays(1);
-            to = to.plusDays(1);
+            fromTmp = fromTmp.plusDays(1);
         }
 
         return days;
