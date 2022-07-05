@@ -122,7 +122,7 @@ public class PKFXMiniDataGCFinderBatch {
 
         double maxDiff = -999.0;
         int loopCount = 0;
-        for (int ii = 0; ii < 10; ii++) {
+        for (int ii = 0; ii < 20; ii++) {
             loopCount++;
 
             PKFXMiniDataGCFinder finder = new PKFXMiniDataGCFinder();
@@ -139,7 +139,7 @@ public class PKFXMiniDataGCFinderBatch {
 
             finder.setParameterPosition(position);
             finder.setBatch(true);
-            finder.setExecuteMaxSize(500);
+            finder.setExecuteMaxSize(1000);
             finder.setDefaultParameter(maxParameter);
             finder.setMaxDiffAllTheTime(maxDiff);
             finder.setLoopCount(loopCount);
