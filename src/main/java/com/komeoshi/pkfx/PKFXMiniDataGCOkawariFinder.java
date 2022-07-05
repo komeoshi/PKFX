@@ -37,8 +37,10 @@ public class PKFXMiniDataGCOkawariFinder {
         this.pool = Executors.newFixedThreadPool(poolSize);
 
         log.info("reading candle data.");
-        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
-        List<Candle> candles = reader.read().getCandles();
+        if (candles == null) {
+            PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
+            candles = reader.read().getCandles();
+        }
         log.info("read done.");
 
         log.info("creating parameters, execute. ");
@@ -72,6 +74,7 @@ public class PKFXMiniDataGCOkawariFinder {
     private int executeMaxSize = 50000;
     private OkawariParameter defaultParameter = OkawariParameter.getOkawariParameter();
     private double maxDiffAllTheTime = -999.0;
+    List<Candle> candles = null;
 
 
     private PKFXMiniDataGCSimulator createSimulator(List<Candle> candles, OkawariParameter p) {
