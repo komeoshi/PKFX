@@ -407,13 +407,13 @@ public class PKFXMiniDataGCFinder {
                                        int total,
                                        Parameter parameter,
                                        long time,
-                                       double winRate) {
+                                       double winRate_) {
             completeCount++;
             if (diff != 0.0 && diff >= maxDiff) {
                 maxDiff = diff;
                 maxDiffTotal = total;
                 maxDiffParameter = parameter;
-                winRate = winRate;
+                winRate = winRate_;
             }
 
             long elapsedTime = System.currentTimeMillis() - startTime;

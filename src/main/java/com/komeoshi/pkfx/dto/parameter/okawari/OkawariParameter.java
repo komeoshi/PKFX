@@ -1,6 +1,5 @@
 package com.komeoshi.pkfx.dto.parameter.okawari;
 
-import com.komeoshi.pkfx.dto.parameter.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,12 +13,12 @@ public class OkawariParameter {
         parameter1.setParamB(new OkawariParameterB$Macd(4.0 / 1000));
         parameter1.setParamC(new OkawariParameterC$Adx(55));
         parameter1.setParamD(new OkawariParameterD$Adx(25));
-        parameter1.setParamE(new OkawariParameterE$Rsi(85));
+        parameter1.setParamE(new OkawariParameterE$Rsi(90));
         parameter1.setParamF(new OkawariParameterF$Rsi(15));
-        parameter1.setParamG(new OkawariParameterG$Bband(460.0000000000003 / 1000));
+        parameter1.setParamG(new OkawariParameterG$Bband(150.0000000000003 / 1000));
         parameter1.setParamH(new OkawariParameterH$Bband(109.99999999999999 / 1000));
-        parameter1.setParamI(new OkawariParameterI$Sig(2.0/1000));
-        parameter1.setParamJ(new OkawariParameterJ$Atr(6.0/1000));
+        parameter1.setParamI(new OkawariParameterI$Sig(2.0 / 1000));
+        parameter1.setParamJ(new OkawariParameterJ$Atr(16.0 / 1000));
 
         return parameter1;
     }

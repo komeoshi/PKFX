@@ -1,6 +1,5 @@
 package com.komeoshi.pkfx;
 
-import com.komeoshi.pkfx.dto.parameter.Parameter;
 import com.komeoshi.pkfx.dto.parameter.okawari.OkawariParameter;
 import lombok.Getter;
 import lombok.Setter;

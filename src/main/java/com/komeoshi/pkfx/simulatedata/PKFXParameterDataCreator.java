@@ -18,22 +18,6 @@ public class PKFXParameterDataCreator {
     private static final Logger log = LoggerFactory.getLogger(PKFXParameterDataCreator.class);
 
     public static void main(String[] args) {
-        try {
-            PKFXParameterDataCreator p = new PKFXParameterDataCreator();
-            p.output("parameter1.dat", Parameter.getParameter1());
-            p.output("parameter2.dat", Parameter.getParameter2());
-            p.output("parameter3.dat", Parameter.getParameter3());
-            p.output("parameter4.dat", Parameter.getParameter4());
-            p.output("parameter5.dat", Parameter.getParameter5());
-            p.output("parameter6.dat", Parameter.getParameter6());
-            p.output("parameter7.dat", Parameter.getParameter7());
-            p.output("parameter8.dat", Parameter.getParameter8());
-            p.output("parameter9.dat", Parameter.getParameter9());
-            p.output("parameter10.dat", Parameter.getParameter10());
-        } catch (IOException e) {
-            log.error("", e);
-        }
-
     }
 
     public void output(String filename, Parameter parameter) throws IOException {

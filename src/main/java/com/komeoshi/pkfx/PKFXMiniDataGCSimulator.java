@@ -1,7 +1,7 @@
 package com.komeoshi.pkfx;
 
 import com.komeoshi.pkfx.dto.Candle;
-import com.komeoshi.pkfx.dto.parameter.*;
+import com.komeoshi.pkfx.dto.parameter.Parameter;
 import com.komeoshi.pkfx.dto.parameter.okawari.OkawariParameter;
 import com.komeoshi.pkfx.enumerator.*;
 import com.komeoshi.pkfx.simulatedata.PKFXParameterDataReader;
