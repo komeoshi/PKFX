@@ -37,8 +37,10 @@ public class PKFXMiniDataGCFinder {
         this.pool = Executors.newFixedThreadPool(poolSize);
 
         log.info("reading candle data.");
-        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
-        List<Candle> candles = reader.read().getCandles();
+        if(candles == null) {
+            PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
+            candles = reader.read().getCandles();
+        }
         log.info("read done.");
 
         log.info("creating parameters, execute. ");
@@ -75,6 +77,7 @@ public class PKFXMiniDataGCFinder {
     private Parameter defaultParameter = null;
     private double maxDiffAllTheTime = -999.0;
     private int loopCount = -999;
+    List<Candle> candles = null;
 
     Parameter parameter1 = null;
     Parameter parameter2 = null;
