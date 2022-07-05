@@ -84,7 +84,11 @@ public class PKFXMiniDataGCTrader {
             Candle openCandle = null;
             int continueCount = 0;
             final int CONTINUE_MAX = 0;
+            long loopCount = 0;
             while (true) {
+                loopCount++;
+                long startTime = System.currentTimeMillis();
+
                 Instrument instrument = getInstrument(restTemplate, client);
                 if (instrument == null) continue;
 
@@ -118,8 +122,6 @@ public class PKFXMiniDataGCTrader {
                     boolean doTrade9 = isDoTradeWithParameter(candle, parameter9);
                     boolean doTrade10 = isDoTradeWithParameter(candle, parameter10);
                     boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7 || doTrade8 || doTrade9 || doTrade10;
-
-                    log.info("---crossed.---");
 
                     if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                             (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||
@@ -189,6 +191,11 @@ public class PKFXMiniDataGCTrader {
                     if (status == Status.NONE) {
                         continueCount = 0;
                     }
+                }
+                long endTime = System.currentTimeMillis();
+                long elapsedTime = endTime - startTime;
+                if (loopCount % 1000 == 0) {
+                    log.info("【" + loopCount + "】 " + elapsedTime + "ms. ");
                 }
             }
         };
