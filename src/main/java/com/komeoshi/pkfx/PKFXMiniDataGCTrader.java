@@ -120,16 +120,6 @@ public class PKFXMiniDataGCTrader {
                     boolean doTrade = doTrade1 || doTrade2 || doTrade3 || doTrade4 || doTrade5 || doTrade6 || doTrade7 || doTrade8 || doTrade9 || doTrade10;
 
                     log.info("---crossed.---");
-                    log.info("doTrade1        :" + doTrade1);
-                    log.info("doTrade2        :" + doTrade2);
-                    log.info("doTrade3        :" + doTrade3);
-                    log.info("doTrade4        :" + doTrade4);
-                    log.info("doTrade5        :" + doTrade5);
-                    log.info("doTrade6        :" + doTrade6);
-                    log.info("doTrade7        :" + doTrade7);
-                    log.info("doTrade8        :" + doTrade8);
-                    log.info("doTrade9        :" + doTrade9);
-                    log.info("doTrade10       :" + doTrade10);
 
                     if ((macdPositionChanged && candle.getMacdPosition() == Position.LONG) ||
                             (emaPositionChanged && candle.getEmaPosition() == Position.LONG) ||
