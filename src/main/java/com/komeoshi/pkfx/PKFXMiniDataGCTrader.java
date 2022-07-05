@@ -197,7 +197,7 @@ public class PKFXMiniDataGCTrader {
                 long elapsedTime = endTime - startTime;
                 totalTime += elapsedTime;
                 if (loopCount % 1000 == 0) {
-                    log.info("【" + loopCount + "】 " + elapsedTime + "ms. " + (totalTime / loopCount) + "ms.");
+                    log.info("【" + loopCount + "】 " + candle.getTime() + " " + elapsedTime + "ms. " + (totalTime / loopCount) + "ms.");
                 }
             }
         };
