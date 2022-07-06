@@ -135,8 +135,8 @@ public class PKFXGCSimulator {
     }
 
     private List<Candle> getCandles() {
-        PKFXSimulateDataReader reader201201 = new PKFXSimulateDataReader("data.dat");
-        List<Candle> candles201201 = reader201201.read().getCandles();
+        PKFXSimulateDataReader reader201201 = new PKFXSimulateDataReader("data/data");
+        List<Candle> candles201201 = reader201201.read();
 
         return new ArrayList<>(candles201201);
     }

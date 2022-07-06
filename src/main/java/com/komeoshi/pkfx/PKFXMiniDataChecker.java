@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PKFXMiniDataChecker {
@@ -15,22 +16,22 @@ public class PKFXMiniDataChecker {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataChecker.class);
 
     public static void main(String[] args) {
-        PKFXMiniDataChecker checker = new PKFXMiniDataChecker("minData.dat");
+        PKFXMiniDataChecker checker = new PKFXMiniDataChecker("data/mindata");
         checker.check();
     }
 
-    private String filename = "";
+    private String dirname = "";
 
-    public PKFXMiniDataChecker(String filename) {
-        this.filename = filename;
+    public PKFXMiniDataChecker(String dirname) {
+        this.dirname = dirname;
     }
 
     public void check() {
-        PKFXSimulateDataReader reader = new PKFXSimulateDataReader(filename);
-        Candles candles = reader.read();
+        PKFXSimulateDataReader reader = new PKFXSimulateDataReader(dirname);
+        List<Candle> candles = reader.read();
 
         Map<String, Integer> map = new HashMap<>();
-        for (Candle candle : candles.getCandles()) {
+        for (Candle candle : candles) {
             String time = candle.getTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
             Integer count = map.get(time);

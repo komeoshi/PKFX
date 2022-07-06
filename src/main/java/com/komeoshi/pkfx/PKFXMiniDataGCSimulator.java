@@ -478,8 +478,8 @@ public class PKFXMiniDataGCSimulator {
     }
 
     private List<Candle> getCandlesFromFile() {
-        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
-        List<Candle> candles = reader.read().getCandles();
+        PKFXSimulateDataReader reader = new PKFXSimulateDataReader("data/mindata");
+        List<Candle> candles = reader.read();
 
         return new ArrayList<>(candles);
     }

@@ -38,8 +38,8 @@ public class PKFXMiniDataGCFinder {
 
         log.info("reading candle data.");
         if(candles == null) {
-            PKFXSimulateDataReader reader = new PKFXSimulateDataReader("minData.dat");
-            candles = reader.read().getCandles();
+            PKFXSimulateDataReader reader = new PKFXSimulateDataReader("data/mindata");
+            candles = reader.read();
         }
         log.info("read done.");
 

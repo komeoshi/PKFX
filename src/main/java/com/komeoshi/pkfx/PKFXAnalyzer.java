@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.DatabaseMetaData;
+import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -484,5 +485,22 @@ public class PKFXAnalyzer {
                         " " + (endTime - startTime));
             }
         }
+    }
+    public static void showMemoryUsage() {
+
+        long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
+        long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
+
+        long used = total - free;
+        long max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
+
+        if (log.isInfoEnabled()) {
+            log.info("\n" + "memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
+                    numberFormat(max));
+        }
+    }
+    public static String numberFormat(long l) {
+        NumberFormat nfNum = NumberFormat.getNumberInstance();
+        return nfNum.format(l);
     }
 }
