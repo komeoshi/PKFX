@@ -118,11 +118,6 @@ public class PKFXMiniDataGCSimulator {
         for (int ii = 0; ii < candles.size(); ii++) {
             Candle candle = candles.get(ii);
 
-            if (isShortCut && candles.size() / 100 < ii && totalCount == 0) {
-                // これ以上やっても無駄
-                break;
-            }
-
             if (candle.getMacdPosition() == Position.NONE) {
                 continue;
             }
@@ -441,6 +436,9 @@ public class PKFXMiniDataGCSimulator {
 
         String key = openCandle.getTime().format(DateTimeFormatter.ofPattern("yyyyMM"));
         summaryMap.merge(key, (thisDiff - SPREAD_COST), Double::sum);
+
+        String key2 = openCandle.getTime().format(DateTimeFormatter.ofPattern("yyyy"));
+        summaryMap.merge(key2, (thisDiff - SPREAD_COST), Double::sum);
 
         if (isLogging)
             log.info("<< signal 【" + openCandle.getNumber() + "】" + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +
