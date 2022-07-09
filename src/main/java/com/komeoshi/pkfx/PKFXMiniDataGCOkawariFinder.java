@@ -242,19 +242,11 @@ public class PKFXMiniDataGCOkawariFinder {
                 pool.submit(exec);
                 if (count % 1000 == 0) {
                     log.info("submit count:" + count + " complete count:" + completeCount);
-                    sleep(5);
+                    PKFXAnalyzer.sleep(5);
                 }
             } catch (RejectedExecutionException ignored) {
 
             }
-        }
-    }
-
-    private void sleep(int sec) {
-        try {
-            Thread.sleep(sec * 1000L);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 

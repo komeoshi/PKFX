@@ -1,5 +1,6 @@
 package com.komeoshi.pkfx.restclient;
 
+import com.komeoshi.pkfx.PKFXAnalyzer;
 import com.komeoshi.pkfx.PKFXConst;
 import com.komeoshi.pkfx.PKFXUnitCalculator;
 import com.komeoshi.pkfx.dto.*;
@@ -115,15 +116,7 @@ public class PKFXFinderRestClient {
                     });
 
             log.info("  response:" + response.getBody());
-            sleep();
-
-        }
-    }
-
-    private void sleep() {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException ignored) {
+            PKFXAnalyzer.sleep(5);
 
         }
     }

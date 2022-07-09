@@ -499,7 +499,7 @@ public class PKFXAnalyzer {
         long max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
 
         if (log.isInfoEnabled()) {
-            log.info("\n" + "memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
+            log.info("memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
                     numberFormat(max));
         }
     }
@@ -507,4 +507,13 @@ public class PKFXAnalyzer {
         NumberFormat nfNum = NumberFormat.getNumberInstance();
         return nfNum.format(l);
     }
+
+    public static void sleep(int sec) {
+        try {
+            Thread.sleep(sec * 1000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

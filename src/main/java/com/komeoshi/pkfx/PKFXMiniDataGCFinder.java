@@ -338,7 +338,7 @@ public class PKFXMiniDataGCFinder {
                 if (count % 100 == 0) {
                     log.info("submit count:" + count + " complete count:" + completeCount);
                     PKFXAnalyzer.showMemoryUsage();
-                    sleep(5);
+                    PKFXAnalyzer.sleep(5);
                 }
             } catch (RejectedExecutionException ignored) {
 
@@ -347,14 +347,6 @@ public class PKFXMiniDataGCFinder {
             if (count > executeMaxSize) {
                 break;
             }
-        }
-    }
-
-    private void sleep(int sec) {
-        try {
-            Thread.sleep(sec * 1000L);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -408,15 +400,16 @@ public class PKFXMiniDataGCFinder {
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 long averageTime = elapsedTime / completeCount;
                 long remainTime = (size - completeCount) * averageTime;
-                long remainTimeM = remainTime / 1000 / 60;
                 long remainTimeH = remainTime / 1000 / 60 / 60;
-                long remainTimeD = remainTimeH / 24;
-                long remainTimeY = remainTimeD / 365;
 
+                if(completeCount % 25 ==0){
+                    log.info("complete count:" + completeCount + " maxDiff:" + maxDiff);
+                }
                 if (completeCount % 100 == 0) {
                     StringBuilder s = new StringBuilder();
                     s.append("\n");
                     s.append("maxParam             : " + maxDiffParameter + "\n");
+                    s.append("parameterPosition    : " + parameterPosition + "\n");
                     s.append("maxDiff              : " + maxDiff + "\n");
                     s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
                     s.append("maxDiff(win Rate)    : " + winRate * 100 + "\n");
@@ -424,10 +417,7 @@ public class PKFXMiniDataGCFinder {
                     s.append("this time.           : " + time + " ms." + "\n");
                     s.append("average time.        : " + averageTime + " ms." + "\n");
                     s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
-                    s.append("remain time(ms).     : " + remainTime + " ms." + "\n");
-                    s.append("remain time(M).      : " + remainTimeM + " M." + "\n");
                     s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
-                    s.append("remain time(Y).      : " + remainTimeY + " Y." + "\n");
                     s.append("maxDiff allthetime   : " + maxDiffAllTheTime + "\n");
                     s.append("loop count           : " + loopCount + "\n");
 
