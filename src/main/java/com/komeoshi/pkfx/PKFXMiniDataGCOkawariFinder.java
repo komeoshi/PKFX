@@ -2,7 +2,6 @@ package com.komeoshi.pkfx;
 
 import com.google.common.collect.Lists;
 import com.komeoshi.pkfx.dto.Candle;
-import com.komeoshi.pkfx.dto.parameter.*;
 import com.komeoshi.pkfx.dto.parameter.okawari.*;
 import com.komeoshi.pkfx.simulatedata.PKFXSimulateDataReader;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -252,25 +250,6 @@ public class PKFXMiniDataGCOkawariFinder {
         }
     }
 
-    public static void showMemoryUsage() {
-
-        long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
-        long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
-
-        long used = total - free;
-        long max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
-
-        if (log.isInfoEnabled()) {
-            log.info("\n" + "memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
-                    numberFormat(max));
-        }
-    }
-
-    public static String numberFormat(long l) {
-        NumberFormat nfNum = NumberFormat.getNumberInstance();
-        return nfNum.format(l);
-    }
-
     private void sleep(int sec) {
         try {
             Thread.sleep(sec * 1000L);
@@ -346,7 +325,7 @@ public class PKFXMiniDataGCOkawariFinder {
                 s.append("maxDiff allthetime   : " + maxDiffAllTheTime + "\n");
 
                 log.info(s.toString());
-                showMemoryUsage();
+                PKFXAnalyzer.showMemoryUsage();
             }
 
             if (isBatch && completeCount > executeMaxSize) {

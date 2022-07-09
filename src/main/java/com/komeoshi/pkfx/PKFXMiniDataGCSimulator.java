@@ -122,12 +122,12 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            LocalDateTime from = LocalDateTime.of(2017, 1, 1, 0, 0, 0, 0);
+            LocalDateTime from = LocalDateTime.of(2006, 1, 1, 0, 0, 0, 0);
             if (candle.getTime().isBefore(from)) {
                 continue;
             }
 
-            LocalDateTime to = LocalDateTime.of(2022, 7, 5, 0, 0, 0, 0);
+            LocalDateTime to = LocalDateTime.of(2022, 7, 31, 0, 0, 0, 0);
             if (candle.getTime().isAfter(to)) {
                 continue;
             }
@@ -434,11 +434,9 @@ public class PKFXMiniDataGCSimulator {
                 break;
         }
 
-        String key = openCandle.getTime().format(DateTimeFormatter.ofPattern("yyyyMM"));
-        summaryMap.merge(key, (thisDiff - SPREAD_COST), Double::sum);
-
         String key2 = openCandle.getTime().format(DateTimeFormatter.ofPattern("yyyy"));
         summaryMap.merge(key2, (thisDiff - SPREAD_COST), Double::sum);
+        summaryMap.merge("count_" + key2, 1.0, Double::sum);
 
         if (isLogging)
             log.info("<< signal 【" + openCandle.getNumber() + "】" + closeCandle.getTime().atZone(ZoneId.of("Asia/Tokyo")) +

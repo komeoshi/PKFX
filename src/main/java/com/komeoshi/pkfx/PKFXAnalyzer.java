@@ -331,6 +331,7 @@ public class PKFXAnalyzer {
     }
 
     public void setPosition(List<Candle> candles, boolean logging, double param) {
+        long startTimeAll = System.currentTimeMillis();
         for (int ii = 0; ii < candles.size(); ii++) {
 
             final int MAXSIZE = 200;
@@ -480,9 +481,12 @@ public class PKFXAnalyzer {
 
             if (logging && ii % 10000 == 0) {
                 long endTime = System.currentTimeMillis();
+
+                long elapsedTime = endTime - startTimeAll;
+                double aveTime = (double)elapsedTime / (double)ii;
                 log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() +
-                        " " + currentCandle.getAdx().getAdx() +
-                        " " + (endTime - startTime));
+                        " " + (endTime - startTime) + " " + aveTime);
+                showMemoryUsage();
             }
         }
     }

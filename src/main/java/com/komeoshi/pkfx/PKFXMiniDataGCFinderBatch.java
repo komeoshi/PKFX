@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -19,21 +21,29 @@ public class PKFXMiniDataGCFinderBatch {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCFinderBatch.class);
 
     public static void main(String[] args) {
-        PKFXMiniDataGCFinderBatch batch = new PKFXMiniDataGCFinderBatch();
-        batch.init();
-        try {
-            batch.execute(ParameterPosition.PARAMETER1);
-            batch.execute(ParameterPosition.PARAMETER2);
-            batch.execute(ParameterPosition.PARAMETER3);
-            batch.execute(ParameterPosition.PARAMETER4);
-            batch.execute(ParameterPosition.PARAMETER5);
-            batch.execute(ParameterPosition.PARAMETER6);
-            batch.execute(ParameterPosition.PARAMETER7);
-            batch.execute(ParameterPosition.PARAMETER8);
-            batch.execute(ParameterPosition.PARAMETER9);
-            batch.execute(ParameterPosition.PARAMETER10);
-        } catch (IOException e) {
-            log.error("", e);
+        while (true) {
+            PKFXMiniDataGCFinderBatch batch = new PKFXMiniDataGCFinderBatch();
+            batch.init();
+            try {
+                List<ParameterPosition> list = new ArrayList<>();
+                list.add(ParameterPosition.PARAMETER1);
+                list.add(ParameterPosition.PARAMETER2);
+                list.add(ParameterPosition.PARAMETER3);
+                list.add(ParameterPosition.PARAMETER4);
+                list.add(ParameterPosition.PARAMETER5);
+                list.add(ParameterPosition.PARAMETER6);
+                list.add(ParameterPosition.PARAMETER7);
+                list.add(ParameterPosition.PARAMETER8);
+                list.add(ParameterPosition.PARAMETER9);
+                list.add(ParameterPosition.PARAMETER10);
+                Collections.shuffle(list);
+
+                for (ParameterPosition position : list)
+                    batch.execute(position);
+
+            } catch (IOException e) {
+                log.error("", e);
+            }
         }
     }
 
@@ -120,7 +130,7 @@ public class PKFXMiniDataGCFinderBatch {
 
         double maxDiff = -999.0;
         int loopCount = 0;
-        for (int ii = 0; ii < 20; ii++) {
+        for (int ii = 0; ii < 5; ii++) {
             loopCount++;
 
             PKFXMiniDataGCFinder finder = new PKFXMiniDataGCFinder();
@@ -153,6 +163,9 @@ public class PKFXMiniDataGCFinderBatch {
             log.info("-- " + maxDiff + " ---------------------------------------------------------");
 
             this.candles = finder.getCandles();
+
+            PKFXParameterDataCreator creator = new PKFXParameterDataCreator();
+            creator.output(filename, maxParameter);
         }
 
         if (position == ParameterPosition.PARAMETER1)
@@ -175,9 +188,6 @@ public class PKFXMiniDataGCFinderBatch {
             parameter9 = maxParameter;
         if (position == ParameterPosition.PARAMETER10)
             parameter10 = maxParameter;
-
-        PKFXParameterDataCreator creator = new PKFXParameterDataCreator();
-        creator.output(filename, maxParameter);
     }
 }
 

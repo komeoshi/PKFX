@@ -10,7 +10,6 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +36,7 @@ public class PKFXMiniDataGCFinder {
         this.pool = Executors.newFixedThreadPool(poolSize);
 
         log.info("reading candle data.");
-        if(candles == null) {
+        if (candles == null) {
             PKFXSimulateDataReader reader = new PKFXSimulateDataReader("data/mindata");
             candles = reader.read();
         }
@@ -339,31 +338,13 @@ public class PKFXMiniDataGCFinder {
                 pool.submit(exec);
                 if (count % 1000 == 0) {
                     log.info("submit count:" + count + " complete count:" + completeCount);
+                    PKFXAnalyzer.showMemoryUsage();
                     sleep(5);
                 }
             } catch (RejectedExecutionException ignored) {
 
             }
         }
-    }
-
-    public static void showMemoryUsage() {
-
-        long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
-        long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
-
-        long used = total - free;
-        long max = Runtime.getRuntime().maxMemory() / 1024 / 1024;
-
-        if (log.isInfoEnabled()) {
-            log.info("\n" + "memory usage {}(MB) / {}(MB) / {}(MB)", numberFormat(used), numberFormat(total),
-                    numberFormat(max));
-        }
-    }
-
-    public static String numberFormat(long l) {
-        NumberFormat nfNum = NumberFormat.getNumberInstance();
-        return nfNum.format(l);
     }
 
     private void sleep(int sec) {
@@ -406,53 +387,55 @@ public class PKFXMiniDataGCFinder {
 
         }
 
-        private synchronized void diff(double diff,
-                                       int total,
-                                       Parameter parameter,
-                                       long time,
-                                       double winRate_) {
-            completeCount++;
-            if (diff != 0.0 && diff >= maxDiff) {
-                maxDiff = diff;
-                maxDiffTotal = total;
-                maxDiffParameter = parameter;
-                winRate = winRate_;
+        private void diff(double diff,
+                          int total,
+                          Parameter parameter,
+                          long time,
+                          double winRate_) {
+
+            synchronized (pool) {
+                completeCount++;
+                if (diff != 0.0 && diff >= maxDiff) {
+                    maxDiff = diff;
+                    maxDiffTotal = total;
+                    maxDiffParameter = parameter;
+                    winRate = winRate_;
+                }
+
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                long averageTime = elapsedTime / completeCount;
+                long remainTime = (size - completeCount) * averageTime;
+                long remainTimeM = remainTime / 1000 / 60;
+                long remainTimeH = remainTime / 1000 / 60 / 60;
+                long remainTimeD = remainTimeH / 24;
+                long remainTimeY = remainTimeD / 365;
+
+                if (completeCount % 100 == 0) {
+                    StringBuilder s = new StringBuilder();
+                    s.append("\n");
+                    s.append("maxParam             : " + maxDiffParameter + "\n");
+                    s.append("maxDiff              : " + maxDiff + "\n");
+                    s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
+                    s.append("maxDiff(win Rate)    : " + winRate * 100 + "\n");
+                    s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) * 100 + "%" + "\n");
+                    s.append("this time.           : " + time + " ms." + "\n");
+                    s.append("average time.        : " + averageTime + " ms." + "\n");
+                    s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
+                    s.append("remain time(ms).     : " + remainTime + " ms." + "\n");
+                    s.append("remain time(M).      : " + remainTimeM + " M." + "\n");
+                    s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
+                    s.append("remain time(Y).      : " + remainTimeY + " Y." + "\n");
+                    s.append("maxDiff allthetime   : " + maxDiffAllTheTime + "\n");
+                    s.append("loop count           : " + loopCount + "\n");
+
+                    log.info(s.toString());
+                    PKFXAnalyzer.showMemoryUsage();
+                }
+
+                if (isBatch && completeCount > executeMaxSize) {
+                    pool.shutdownNow();
+                }
             }
-
-            long elapsedTime = System.currentTimeMillis() - startTime;
-            long averageTime = elapsedTime / completeCount;
-            long remainTime = (size - completeCount) * averageTime;
-            long remainTimeM = remainTime / 1000 / 60;
-            long remainTimeH = remainTime / 1000 / 60 / 60;
-            long remainTimeD = remainTimeH / 24;
-            long remainTimeY = remainTimeD / 365;
-
-            if (completeCount % 100 == 0) {
-                StringBuilder s = new StringBuilder();
-                s.append("\n");
-                s.append("maxParam             : " + maxDiffParameter + "\n");
-                s.append("maxDiff              : " + maxDiff + "\n");
-                s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
-                s.append("maxDiff(win Rate)    : " + winRate * 100 + "\n");
-                s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) * 100 + "%" + "\n");
-                s.append("this time.           : " + time + " ms." + "\n");
-                s.append("average time.        : " + averageTime + " ms." + "\n");
-                s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
-                s.append("remain time(ms).     : " + remainTime + " ms." + "\n");
-                s.append("remain time(M).      : " + remainTimeM + " M." + "\n");
-                s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
-                s.append("remain time(Y).      : " + remainTimeY + " Y." + "\n");
-                s.append("maxDiff allthetime   : " + maxDiffAllTheTime + "\n");
-                s.append("loop count           : " + loopCount + "\n");
-
-                log.info(s.toString());
-                showMemoryUsage();
-            }
-
-            if (isBatch && completeCount > executeMaxSize) {
-                pool.shutdownNow();
-            }
-
         }
     }
 }

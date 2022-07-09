@@ -31,8 +31,8 @@ public class PKFXSimulateSplitDataCreator {
         }
     }
 
-    private LocalDate from = LocalDate.of(2019, 1, 1);
-    private LocalDate to = LocalDate.of(2020, 1, 1);
+    private LocalDate from = LocalDate.of(2015, 6, 14);
+    private LocalDate to = LocalDate.of(2016, 1, 1);
 
     public void saveDaysData() throws IOException {
 
