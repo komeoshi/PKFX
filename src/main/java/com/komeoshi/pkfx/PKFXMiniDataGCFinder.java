@@ -336,9 +336,8 @@ public class PKFXMiniDataGCFinder {
             try {
                 pool.submit(exec);
                 if (count % 100 == 0) {
-                    log.info("submit count:" + count + " complete count:" + completeCount);
+                    log.info("submit count:" + count );
                     PKFXAnalyzer.showMemoryUsage();
-                    PKFXAnalyzer.sleep(5);
                 }
             } catch (RejectedExecutionException ignored) {
 
