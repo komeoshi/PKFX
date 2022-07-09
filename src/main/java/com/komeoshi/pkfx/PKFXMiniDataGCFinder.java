@@ -327,7 +327,6 @@ public class PKFXMiniDataGCFinder {
 
         FinderExecutor exec1 = new FinderExecutor(defaultParameter, candles);
         pool.submit(exec1);
-        sleep(3);
 
         long count = 0;
         for (Parameter parameter : parameters) {
@@ -336,13 +335,17 @@ public class PKFXMiniDataGCFinder {
 
             try {
                 pool.submit(exec);
-                if (count % 1000 == 0) {
+                if (count % 100 == 0) {
                     log.info("submit count:" + count + " complete count:" + completeCount);
                     PKFXAnalyzer.showMemoryUsage();
                     sleep(5);
                 }
             } catch (RejectedExecutionException ignored) {
 
+            }
+
+            if (count > executeMaxSize) {
+                break;
             }
         }
     }
