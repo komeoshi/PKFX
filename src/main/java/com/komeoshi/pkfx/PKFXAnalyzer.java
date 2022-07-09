@@ -14,6 +14,7 @@ import java.sql.DatabaseMetaData;
 import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -473,7 +474,7 @@ public class PKFXAnalyzer {
 
             if (isHigh) {
                 currentCandle.setBbPosition(BBPosition.OVER);
-            }else if (isLow) {
+            } else if (isLow) {
                 currentCandle.setBbPosition(BBPosition.UNDER);
             } else {
                 currentCandle.setBbPosition(BBPosition.NONE);
@@ -483,13 +484,15 @@ public class PKFXAnalyzer {
                 long endTime = System.currentTimeMillis();
 
                 long elapsedTime = endTime - startTimeAll;
-                double aveTime = (double)elapsedTime / (double)ii;
-                log.info(ii + "/" + candles.size() + " " + currentCandle.getTime() +
-                        " " + (endTime - startTime) + " " + aveTime);
+                double aveTime = (double) elapsedTime / (double) ii;
+                log.info(ii + "/" + candles.size() + " " + ((double) ii / (double) candles.size()) + "% " +
+                        currentCandle.getTime() +
+                        " " + (endTime - startTime) + " " + aveTime + " " );
                 showMemoryUsage();
             }
         }
     }
+
     public static void showMemoryUsage() {
 
         long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
@@ -503,6 +506,7 @@ public class PKFXAnalyzer {
                     numberFormat(max));
         }
     }
+
     public static String numberFormat(long l) {
         NumberFormat nfNum = NumberFormat.getNumberInstance();
         return nfNum.format(l);
@@ -514,6 +518,12 @@ public class PKFXAnalyzer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static long daysCount(List<Candle> candles) {
+        LocalDateTime from = candles.get(0).getTime();
+        LocalDateTime to = candles.get(candles.size() - 1).getTime();
+        return ChronoUnit.DAYS.between(from, to);
     }
 
 }

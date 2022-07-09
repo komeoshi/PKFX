@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -337,7 +339,6 @@ public class PKFXMiniDataGCFinder {
                 pool.submit(exec);
                 if (count % 100 == 0) {
                     log.info("submit count:" + count );
-                    PKFXAnalyzer.showMemoryUsage();
                 }
             } catch (RejectedExecutionException ignored) {
 
@@ -389,7 +390,8 @@ public class PKFXMiniDataGCFinder {
 
             synchronized (pool) {
                 completeCount++;
-                if (diff != 0.0 && diff >= maxDiff) {
+                double countThreshold = PKFXAnalyzer.daysCount(candles) * 1.00;
+                if (diff != 0.0 && diff >= maxDiff && total > countThreshold) {
                     maxDiff = diff;
                     maxDiffTotal = total;
                     maxDiffParameter = parameter;
@@ -412,6 +414,7 @@ public class PKFXMiniDataGCFinder {
                     s.append("maxDiff              : " + maxDiff + "\n");
                     s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
                     s.append("maxDiff(win Rate)    : " + winRate * 100 + "\n");
+                    s.append("count threshold      : " + countThreshold + "\n");
                     s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) * 100 + "%" + "\n");
                     s.append("this time.           : " + time + " ms." + "\n");
                     s.append("average time.        : " + averageTime + " ms." + "\n");

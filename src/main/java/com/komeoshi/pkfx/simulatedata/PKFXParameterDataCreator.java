@@ -43,6 +43,7 @@ public class PKFXParameterDataCreator {
             objectOutputStream.flush();
 
         }
+        log.info(filename + " saved.");
     }
 
 

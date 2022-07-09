@@ -118,6 +118,11 @@ public class PKFXMiniDataGCSimulator {
         for (int ii = 0; ii < candles.size(); ii++) {
             Candle candle = candles.get(ii);
 
+            if (isShortCut && candles.size() / 100 < ii && totalCount == 0) {
+                // これ以上やっても無駄
+                break;
+            }
+
             if (candle.getMacdPosition() == Position.NONE) {
                 continue;
             }

@@ -241,7 +241,7 @@ public class PKFXMiniDataGCOkawariFinder {
             try {
                 pool.submit(exec);
                 if (count % 100 == 0) {
-                    log.info("submit count:" + count );
+                    log.info("submit count:" + count);
                 }
             } catch (RejectedExecutionException ignored) {
             }
@@ -289,7 +289,8 @@ public class PKFXMiniDataGCOkawariFinder {
                           long time) {
             synchronized (pool) {
                 completeCount++;
-                if (diff != 0.0 && diff >= maxDiff) {
+                double countThreshold = PKFXAnalyzer.daysCount(candles) * 1.00;
+                if (diff != 0.0 && diff >= maxDiff && total > countThreshold) {
                     maxDiff = diff;
                     maxDiffTotal = total;
                     maxDiffParameter = parameter;
@@ -309,6 +310,7 @@ public class PKFXMiniDataGCOkawariFinder {
                     s.append("maxParam             : " + maxDiffParameter + "\n");
                     s.append("maxDiff              : " + maxDiff + "\n");
                     s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
+                    s.append("count threshold      : " + countThreshold + "\n");
                     s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) * 100 + "%" + "\n");
                     s.append("this time.           : " + time + " ms." + "\n");
                     s.append("average time.        : " + averageTime + " ms." + "\n");
