@@ -485,9 +485,9 @@ public class PKFXAnalyzer {
 
                 long elapsedTime = endTime - startTimeAll;
                 double aveTime = (double) elapsedTime / (double) ii;
-                log.info(ii + "/" + candles.size() + " " + ((double) ii / (double) candles.size()) + "% " +
+                log.info(ii + "/" + candles.size() + " " + ((double) ii / (double) candles.size()) * 100 + "% " +
                         currentCandle.getTime() +
-                        " " + (endTime - startTime) + " " + aveTime + " " );
+                        " " + (endTime - startTime) + " " + aveTime + " ");
                 showMemoryUsage();
             }
         }
