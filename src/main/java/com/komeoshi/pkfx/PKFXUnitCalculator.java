@@ -8,9 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 public class PKFXUnitCalculator {
 
-    private static final Logger log = LoggerFactory.getLogger(PKFXUnitCalculator.class);
-
-
     private static final int MAG = 25;
     private static final int MAX = 250_000;
 

@@ -43,6 +43,7 @@ public class PKFXMiniDataGCFinderBatch {
 
             } catch (IOException e) {
                 log.error("", e);
+                break;
             }
         }
     }

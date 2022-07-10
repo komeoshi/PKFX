@@ -10,8 +10,6 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -338,7 +336,7 @@ public class PKFXMiniDataGCFinder {
             try {
                 pool.submit(exec);
                 if (count % 100 == 0) {
-                    log.info("submit count:" + count );
+                    log.info("submit count:" + count);
                 }
             } catch (RejectedExecutionException ignored) {
 
@@ -403,7 +401,7 @@ public class PKFXMiniDataGCFinder {
                 long remainTime = (size - completeCount) * averageTime;
                 long remainTimeH = remainTime / 1000 / 60 / 60;
 
-                if(completeCount % 25 ==0){
+                if (completeCount % 25 == 0) {
                     log.info("complete count:" + completeCount + " maxDiff:" + maxDiff);
                 }
                 if (completeCount % 100 == 0) {
