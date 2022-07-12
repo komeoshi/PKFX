@@ -127,7 +127,7 @@ public class PKFXMiniDataGCSimulator {
                 continue;
             }
 
-            LocalDateTime from = LocalDateTime.of(2006, 1, 1, 0, 0, 0, 0);
+            LocalDateTime from = LocalDateTime.of(2004, 1, 1, 0, 0, 0, 0);
             if (candle.getTime().isBefore(from)) {
                 continue;
             }

@@ -10,18 +10,33 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
 public class PKFXMiniDataGCFinderBatch {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCFinderBatch.class);
 
+    private static final LocalDate initialFrom = LocalDate.of(2004, 1, 1);
+    private static final LocalDate lastDate = LocalDate.of(2022, 1, 1);
+
+    private static final int LENGTH_YEAR = 15;
+
     public static void main(String[] args) {
+
+        LocalDate from = initialFrom;
+        LocalDate to = from.plusYears(LENGTH_YEAR);
         while (true) {
+
+            PKFXMiniDataGCFinderBatch.prepareFile(from, to);
             PKFXMiniDataGCFinderBatch batch = new PKFXMiniDataGCFinderBatch();
             batch.init();
             try {
@@ -39,12 +54,19 @@ public class PKFXMiniDataGCFinderBatch {
                 Collections.shuffle(list);
 
                 for (ParameterPosition position : list)
-                    batch.execute(position);
+                    batch.execute(position, from, to);
 
             } catch (IOException e) {
                 log.error("", e);
                 break;
             }
+
+            if (from.isAfter(lastDate.minusYears(LENGTH_YEAR).minusDays(1))) {
+                from = initialFrom;
+            } else {
+                from = from.plusYears(1);
+            }
+            to = from.plusYears(LENGTH_YEAR);
         }
     }
 
@@ -84,7 +106,7 @@ public class PKFXMiniDataGCFinderBatch {
         parameter10 = reader10.read();
     }
 
-    public void execute(ParameterPosition position) throws IOException {
+    public void execute(ParameterPosition position, LocalDate from, LocalDate to) throws IOException {
 
         Parameter maxParameter = null;
         String filename = "";
@@ -148,11 +170,13 @@ public class PKFXMiniDataGCFinderBatch {
 
             finder.setParameterPosition(position);
             finder.setBatch(true);
-            finder.setExecuteMaxSize(500);
+            finder.setExecuteMaxSize(250);
             finder.setDefaultParameter(maxParameter);
             finder.setMaxDiffAllTheTime(maxDiff);
             finder.setLoopCount(loopCount);
             finder.setCandles(candles);
+            finder.setFrom(from);
+            finder.setTo(to);
 
             finder.execute();
 
@@ -189,6 +213,32 @@ public class PKFXMiniDataGCFinderBatch {
             parameter9 = maxParameter;
         if (position == ParameterPosition.PARAMETER10)
             parameter10 = maxParameter;
+    }
+
+    public static void prepareFile(LocalDate from, LocalDate to) {
+
+        log.info("moving datafiles. " + from + " - " + to);
+
+        try {
+            File fromDir = new File("data/mindata");
+            File[] files = fromDir.listFiles();
+            for (File file : Objects.requireNonNull(files)) {
+                String toName = "data/mindatabak/" + file.getName();
+                Files.move(file.toPath(), new File(toName).toPath());
+            }
+
+            while (!from.isEqual(to)) {
+                String date = from.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+                String filename = "dataMins_" + date + ".dat";
+                Files.move(new File("data/mindatabak/" + filename).toPath(), new File("data/mindata/" + filename).toPath());
+
+                from = from.plusDays(1);
+            }
+
+        } catch (IOException e) {
+            log.error("", e);
+            System.exit(1);
+        }
     }
 }
 

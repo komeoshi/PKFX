@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +78,9 @@ public class PKFXMiniDataGCFinder {
     private double maxDiffAllTheTime = -999.0;
     private int loopCount = -999;
     List<Candle> candles = null;
+
+    private LocalDate from = null;
+    private LocalDate to = null;
 
     Parameter parameter1 = null;
     Parameter parameter2 = null;
@@ -366,7 +370,7 @@ public class PKFXMiniDataGCFinder {
             PKFXMiniDataGCSimulator sim1 = createSimulator(candles, parameter);
             sim1.setResultLogging(false);
             sim1.setLogging(false);
-            sim1.setShortCut(true);
+            sim1.setShortCut(false);
             sim1.run();
 
             double diff = sim1.getDiff();
@@ -388,7 +392,7 @@ public class PKFXMiniDataGCFinder {
 
             synchronized (pool) {
                 completeCount++;
-                double countThreshold = PKFXAnalyzer.daysCount(candles) * 1.00;
+                double countThreshold = PKFXAnalyzer.daysCount(candles) * 0.33;
                 if (diff != 0.0 && diff >= maxDiff && total > countThreshold) {
                     maxDiff = diff;
                     maxDiffTotal = total;
@@ -420,6 +424,7 @@ public class PKFXMiniDataGCFinder {
                     s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
                     s.append("maxDiff allthetime   : " + maxDiffAllTheTime + "\n");
                     s.append("loop count           : " + loopCount + "\n");
+                    s.append("from - to            : " + from + " - " + to);
 
                     log.info(s.toString());
                     PKFXAnalyzer.showMemoryUsage();
