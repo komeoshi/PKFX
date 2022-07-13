@@ -29,6 +29,9 @@ public class PKFXSimulateDataReader {
     }
 
     public List<Candle> read() {
+        return read(true);
+    }
+    public List<Candle> read(boolean logging) {
         List<Candle> candles = new ArrayList<>();
 
         File dir = new File(dirname);
@@ -40,14 +43,14 @@ public class PKFXSimulateDataReader {
             count++;
             candles.addAll(read(file.getAbsolutePath()).getCandles());
 
-            if (count % 100 == 0) {
+            if (logging && count % 100 == 0) {
                 log.info("【" + count + "】 / " + files.size() + " " + file.getAbsoluteFile());
                 PKFXAnalyzer.showMemoryUsage();
             }
         }
 
         PKFXAnalyzer analyzer = new PKFXAnalyzer();
-        analyzer.setPosition(candles, true);
+        analyzer.setPosition(candles, logging);
 
         return candles;
     }

@@ -41,6 +41,7 @@ public class PKFXMiniDataGCSimulator {
     private boolean isLogging = true;
     private boolean isResultLogging = true;
     private boolean isShortCut = false;
+    private boolean isAnalyzeLogging = true;
 
     Map<String, Double> summaryMap = new TreeMap<>();
 
@@ -104,7 +105,7 @@ public class PKFXMiniDataGCSimulator {
             init2();
         }
         if (candles == null) {
-            this.candles = getCandlesFromFile();
+            this.candles = getCandlesFromFile(isAnalyzeLogging);
         }
 
         Status status = Status.NONE;
@@ -478,9 +479,9 @@ public class PKFXMiniDataGCSimulator {
 
     }
 
-    private List<Candle> getCandlesFromFile() {
+    private List<Candle> getCandlesFromFile(boolean logging) {
         PKFXSimulateDataReader reader = new PKFXSimulateDataReader("data/mindata");
-        List<Candle> candles = reader.read();
+        List<Candle> candles = reader.read(logging);
 
         return new ArrayList<>(candles);
     }

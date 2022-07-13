@@ -35,32 +35,30 @@ public class PKFXMiniDataGCFinderBatch {
         LocalDate to = from.plusYears(LENGTH_YEAR);
         while (true) {
 
-            PKFXMiniDataGCFinderBatch.prepareFile(from, to);
+
             PKFXMiniDataGCFinderBatch batch = new PKFXMiniDataGCFinderBatch();
             batch.init();
-            try {
-                List<ParameterPosition> list = new ArrayList<>();
-                list.add(ParameterPosition.PARAMETER1);
-                list.add(ParameterPosition.PARAMETER2);
-                list.add(ParameterPosition.PARAMETER3);
-                list.add(ParameterPosition.PARAMETER4);
-                list.add(ParameterPosition.PARAMETER5);
-                list.add(ParameterPosition.PARAMETER6);
-                list.add(ParameterPosition.PARAMETER7);
-                list.add(ParameterPosition.PARAMETER8);
-                list.add(ParameterPosition.PARAMETER9);
-                list.add(ParameterPosition.PARAMETER10);
-                Collections.shuffle(list);
 
-                for (ParameterPosition position : list)
-                    batch.execute(position, from, to);
+            List<ParameterPosition> list = new ArrayList<>();
+            list.add(ParameterPosition.PARAMETER1);
+            list.add(ParameterPosition.PARAMETER2);
+            list.add(ParameterPosition.PARAMETER3);
+            list.add(ParameterPosition.PARAMETER4);
+            list.add(ParameterPosition.PARAMETER5);
+            list.add(ParameterPosition.PARAMETER6);
+            list.add(ParameterPosition.PARAMETER7);
+            list.add(ParameterPosition.PARAMETER8);
+            list.add(ParameterPosition.PARAMETER9);
+            list.add(ParameterPosition.PARAMETER10);
+            Collections.shuffle(list);
 
-                resultSummaryMap.put(LocalDateTime.now() + " " + from + " - " + to, batch.getMaxDiff());
-
-            } catch (IOException e) {
-                log.error("", e);
-                break;
+            for (ParameterPosition position : list) {
+                PKFXMiniDataGCFinderBatch.prepareFile(from, to);
+                batch.execute(position, from, to);
             }
+
+
+            resultSummaryMap.put(LocalDateTime.now() + " " + from + " - " + to, batch.getMaxDiff());
 
             if (from.isAfter(lastDate.minusYears(LENGTH_YEAR).minusDays(1))) {
                 from = initialFrom;
@@ -72,8 +70,29 @@ public class PKFXMiniDataGCFinderBatch {
             for (Map.Entry<String, Double> entry : resultSummaryMap.entrySet()) {
                 log.info("result summary:" + entry.getKey() + ":" + entry.getValue());
             }
+
+            runLatest(batch);
         }
     }
+
+    private static void runLatest(PKFXMiniDataGCFinderBatch batch) {
+
+        LocalDate from = LocalDate.of(2022, 1, 1);
+        LocalDate to = LocalDate.of(2022, 7, 13);
+
+        log.info("    executing at latest data. " + from + " - " + to);
+        PKFXMiniDataGCFinderBatch.prepareFile(from, to);
+        PKFXMiniDataGCSimulator sim = new PKFXMiniDataGCSimulator();
+
+        sim.setAnalyzeLogging(false);
+        sim.setResultLogging(true);
+        sim.setLogging(false);
+        sim.setShortCut(false);
+        sim.run();
+
+        log.info("    executing at latest data. " + "done. " + PKFXAnalyzer.daysCount(sim.getCandles()) + " days.");
+    }
+
 
     Parameter parameter1 = null;
     Parameter parameter2 = null;
@@ -112,7 +131,7 @@ public class PKFXMiniDataGCFinderBatch {
         parameter10 = reader10.read();
     }
 
-    public void execute(ParameterPosition position, LocalDate from, LocalDate to) throws IOException {
+    public void execute(ParameterPosition position, LocalDate from, LocalDate to) {
 
         Parameter maxParameter = null;
         String filename = "";
@@ -199,8 +218,13 @@ public class PKFXMiniDataGCFinderBatch {
 
             this.candles = finder.getCandles();
 
-            PKFXParameterDataCreator creator = new PKFXParameterDataCreator();
-            creator.output(filename, maxParameter);
+            try {
+                PKFXParameterDataCreator creator = new PKFXParameterDataCreator();
+                creator.output(filename, maxParameter);
+            } catch (IOException e) {
+                log.error("", e);
+                System.exit(1);
+            }
         }
 
         if (position == ParameterPosition.PARAMETER1)
