@@ -14,11 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -32,6 +30,7 @@ public class PKFXMiniDataGCFinderBatch {
 
     public static void main(String[] args) {
 
+        Map<String, Double> resultSummaryMap = new TreeMap<>();
         LocalDate from = initialFrom;
         LocalDate to = from.plusYears(LENGTH_YEAR);
         while (true) {
@@ -56,6 +55,8 @@ public class PKFXMiniDataGCFinderBatch {
                 for (ParameterPosition position : list)
                     batch.execute(position, from, to);
 
+                resultSummaryMap.put(LocalDateTime.now() + " " + from + " - " + to, batch.getMaxDiff());
+
             } catch (IOException e) {
                 log.error("", e);
                 break;
@@ -67,6 +68,10 @@ public class PKFXMiniDataGCFinderBatch {
                 from = from.plusYears(1);
             }
             to = from.plusYears(LENGTH_YEAR);
+
+            for (Map.Entry<String, Double> entry : resultSummaryMap.entrySet()) {
+                log.info("result summary:" + entry.getKey() + ":" + entry.getValue());
+            }
         }
     }
 
@@ -82,6 +87,7 @@ public class PKFXMiniDataGCFinderBatch {
     Parameter parameter10 = null;
 
     List<Candle> candles = null;
+    double maxDiff = -999.0;
 
     public void init() {
         PKFXParameterDataReader reader1 = new PKFXParameterDataReader("parameter1.dat");
@@ -153,7 +159,7 @@ public class PKFXMiniDataGCFinderBatch {
 
         double maxDiff = -999.0;
         int loopCount = 0;
-        for (int ii = 0; ii < 5; ii++) {
+        for (int ii = 0; ii < 3; ii++) {
             loopCount++;
 
             PKFXMiniDataGCFinder finder = new PKFXMiniDataGCFinder();
@@ -213,6 +219,8 @@ public class PKFXMiniDataGCFinderBatch {
             parameter9 = maxParameter;
         if (position == ParameterPosition.PARAMETER10)
             parameter10 = maxParameter;
+
+        this.maxDiff = maxDiff;
     }
 
     public static void prepareFile(LocalDate from, LocalDate to) {
