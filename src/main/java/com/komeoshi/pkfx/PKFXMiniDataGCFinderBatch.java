@@ -23,10 +23,10 @@ import java.util.*;
 public class PKFXMiniDataGCFinderBatch {
     private static final Logger log = LoggerFactory.getLogger(PKFXMiniDataGCFinderBatch.class);
 
-    private static final LocalDate initialFrom = LocalDate.of(2004, 1, 1);
+    private static final LocalDate initialFrom = LocalDate.of(2005, 1, 1);
     private static final LocalDate lastDate = LocalDate.of(2022, 1, 1);
 
-    private static final int LENGTH_YEAR = 15;
+    private static final int LENGTH_YEAR = 12;
 
     public static void main(String[] args) {
 

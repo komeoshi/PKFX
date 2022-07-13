@@ -372,7 +372,7 @@ public class PKFXMiniDataGCFinder {
             PKFXMiniDataGCSimulator sim1 = createSimulator(candles, parameter);
             sim1.setResultLogging(false);
             sim1.setLogging(false);
-            sim1.setShortCut(false);
+            sim1.setShortCut(true);
             sim1.run();
 
             double diff = sim1.getDiff();
