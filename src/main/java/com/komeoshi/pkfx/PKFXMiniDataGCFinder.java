@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -78,6 +79,7 @@ public class PKFXMiniDataGCFinder {
     private double maxDiffAllTheTime = -999.0;
     private int loopCount = -999;
     List<Candle> candles = null;
+    Map<String, Double> summaryMap = null;
 
     private LocalDate from = null;
     private LocalDate to = null;
@@ -380,7 +382,7 @@ public class PKFXMiniDataGCFinder {
             long time = (endTime - startTime);
             double winRate = ((double) sim1.getCountWin() / (double) sim1.getTotalCount());
 
-            diff(diff, total, parameter, time, winRate);
+            diff(diff, total, parameter, time, winRate, sim1.getSummaryMap());
 
         }
 
@@ -388,7 +390,8 @@ public class PKFXMiniDataGCFinder {
                           int total,
                           Parameter parameter,
                           long time,
-                          double winRate_) {
+                          double winRate_,
+                          Map<String, Double> summaryMap_) {
 
             synchronized (pool) {
                 completeCount++;
@@ -398,6 +401,7 @@ public class PKFXMiniDataGCFinder {
                     maxDiffTotal = total;
                     maxDiffParameter = parameter;
                     winRate = winRate_;
+                    summaryMap = summaryMap_;
                 }
 
                 long elapsedTime = System.currentTimeMillis() - startTime;

@@ -192,6 +192,10 @@ public class PKFXMiniDataGCFinderBatch {
                 maxParameter = finder.getMaxDiffParameter();
             }
             log.info("-- " + maxDiff + " ---------------------------------------------------------");
+            log.info("summary / year");
+            Map<String, Double> summaryMap = finder.getSummaryMap();
+            for (Map.Entry<String, Double> entry : summaryMap.entrySet())
+                log.info(entry.getKey() + ":" + entry.getValue());
 
             this.candles = finder.getCandles();
 
