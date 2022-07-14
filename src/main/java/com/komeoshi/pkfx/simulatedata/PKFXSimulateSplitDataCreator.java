@@ -31,8 +31,8 @@ public class PKFXSimulateSplitDataCreator {
         }
     }
 
-    private LocalDate from = LocalDate.of(2015, 6, 14);
-    private LocalDate to = LocalDate.of(2016, 1, 1);
+    private LocalDate from = LocalDate.of(2022, 7, 13);
+    private final LocalDate to = LocalDate.of(2022, 7, 13);
 
     public void saveDaysData() throws IOException {
 
@@ -99,7 +99,7 @@ public class PKFXSimulateSplitDataCreator {
         byte[] binary = baos.toByteArray();
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(filename);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);) {
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
 
             // 特定のクラスのオブジェクトの状態をストリームに書き込む
             objectOutputStream.writeObject(binary);

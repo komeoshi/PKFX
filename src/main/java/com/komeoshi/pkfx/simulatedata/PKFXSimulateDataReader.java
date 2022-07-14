@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 public class PKFXSimulateDataReader {
@@ -31,6 +32,7 @@ public class PKFXSimulateDataReader {
     public List<Candle> read() {
         return read(true);
     }
+
     public List<Candle> read(boolean logging) {
         List<Candle> candles = new ArrayList<>();
 
@@ -43,9 +45,14 @@ public class PKFXSimulateDataReader {
             count++;
             candles.addAll(read(file.getAbsolutePath()).getCandles());
 
-            if (logging && count % 100 == 0) {
-                log.info("【" + count + "】 / " + files.size() + " " + file.getAbsoluteFile());
-                PKFXAnalyzer.showMemoryUsage();
+            try {
+                if (logging && count % 500 == 0) {
+                    log.info("【" + count + "】 / " + files.size() + " " + file.getAbsoluteFile() + " " + Files.size(file.toPath()));
+                    PKFXAnalyzer.showMemoryUsage();
+                }
+            } catch (IOException e) {
+                log.error("", e);
+                System.exit(1);
             }
         }
 

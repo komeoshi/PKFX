@@ -26,7 +26,7 @@ public class PKFXMiniDataGCFinderBatch {
     private static final LocalDate initialFrom = LocalDate.of(2005, 1, 1);
     private static final LocalDate lastDate = LocalDate.of(2022, 1, 1);
 
-    private static final int LENGTH_YEAR = 12;
+    private static final int LENGTH_YEAR = 15;
 
     public static void main(String[] args) {
 
@@ -82,7 +82,7 @@ public class PKFXMiniDataGCFinderBatch {
     private static void runLatest() {
 
         LocalDate from = LocalDate.of(2022, 1, 1);
-        LocalDate to = LocalDate.of(2022, 7, 13);
+        LocalDate to = LocalDate.of(2022, 7, 14);
 
         log.info("    executing at latest data. " + from + " - " + to);
         PKFXMiniDataGCFinderBatch.prepareFile(from, to);
