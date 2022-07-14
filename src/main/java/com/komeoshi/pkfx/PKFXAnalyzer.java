@@ -480,7 +480,7 @@ public class PKFXAnalyzer {
                 currentCandle.setBbPosition(BBPosition.NONE);
             }
 
-            if (logging && ii % 100000 == 0) {
+            if (logging && ii % 1_000_000 == 0) {
                 long endTime = System.currentTimeMillis();
 
                 long elapsedTime = endTime - startTimeAll;

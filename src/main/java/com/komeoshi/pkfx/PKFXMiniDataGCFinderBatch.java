@@ -34,29 +34,17 @@ public class PKFXMiniDataGCFinderBatch {
         LocalDate from = initialFrom;
         LocalDate to = from.plusYears(LENGTH_YEAR);
         while (true) {
-
-
             PKFXMiniDataGCFinderBatch batch = new PKFXMiniDataGCFinderBatch();
             batch.init();
 
-            List<ParameterPosition> list = new ArrayList<>();
-            list.add(ParameterPosition.PARAMETER1);
-            list.add(ParameterPosition.PARAMETER2);
-            list.add(ParameterPosition.PARAMETER3);
-            list.add(ParameterPosition.PARAMETER4);
-            list.add(ParameterPosition.PARAMETER5);
-            list.add(ParameterPosition.PARAMETER6);
-            list.add(ParameterPosition.PARAMETER7);
-            list.add(ParameterPosition.PARAMETER8);
-            list.add(ParameterPosition.PARAMETER9);
-            list.add(ParameterPosition.PARAMETER10);
-            Collections.shuffle(list);
+            List<ParameterPosition> list = getParameterPositions();
 
+            int count = 0;
             for (ParameterPosition position : list) {
+                count++;
                 PKFXMiniDataGCFinderBatch.prepareFile(from, to);
-                batch.execute(position, from, to);
+                batch.execute(position, from, to, count);
             }
-
 
             resultSummaryMap.put(LocalDateTime.now() + " " + from + " - " + to, batch.getMaxDiff());
 
@@ -71,11 +59,27 @@ public class PKFXMiniDataGCFinderBatch {
                 log.info("result summary:" + entry.getKey() + ":" + entry.getValue());
             }
 
-            runLatest(batch);
+            runLatest();
         }
     }
 
-    private static void runLatest(PKFXMiniDataGCFinderBatch batch) {
+    private static List<ParameterPosition> getParameterPositions() {
+        List<ParameterPosition> list = new ArrayList<>();
+        list.add(ParameterPosition.PARAMETER1);
+        list.add(ParameterPosition.PARAMETER2);
+        list.add(ParameterPosition.PARAMETER3);
+        list.add(ParameterPosition.PARAMETER4);
+        list.add(ParameterPosition.PARAMETER5);
+        list.add(ParameterPosition.PARAMETER6);
+        list.add(ParameterPosition.PARAMETER7);
+        list.add(ParameterPosition.PARAMETER8);
+        list.add(ParameterPosition.PARAMETER9);
+        list.add(ParameterPosition.PARAMETER10);
+        Collections.shuffle(list);
+        return list;
+    }
+
+    private static void runLatest() {
 
         LocalDate from = LocalDate.of(2022, 1, 1);
         LocalDate to = LocalDate.of(2022, 7, 13);
@@ -131,7 +135,7 @@ public class PKFXMiniDataGCFinderBatch {
         parameter10 = reader10.read();
     }
 
-    public void execute(ParameterPosition position, LocalDate from, LocalDate to) {
+    public void execute(ParameterPosition position, LocalDate from, LocalDate to, int count) {
 
         Parameter maxParameter = null;
         String filename = "";
@@ -199,6 +203,7 @@ public class PKFXMiniDataGCFinderBatch {
             finder.setDefaultParameter(maxParameter);
             finder.setMaxDiffAllTheTime(maxDiff);
             finder.setLoopCount(loopCount);
+            finder.setCount(count);
             finder.setCandles(candles);
             finder.setFrom(from);
             finder.setTo(to);

@@ -78,6 +78,7 @@ public class PKFXMiniDataGCFinder {
     private Parameter defaultParameter = null;
     private double maxDiffAllTheTime = -999.0;
     private int loopCount = -999;
+    private int count = -999;
     List<Candle> candles = null;
     Map<String, Double> summaryMap = null;
 
@@ -406,8 +407,6 @@ public class PKFXMiniDataGCFinder {
 
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 long averageTime = elapsedTime / completeCount;
-                long remainTime = (size - completeCount) * averageTime;
-                long remainTimeH = remainTime / 1000 / 60 / 60;
 
                 if (completeCount % 25 == 0) {
                     log.info("complete count:" + completeCount + " maxDiff:" + maxDiff);
@@ -419,15 +418,13 @@ public class PKFXMiniDataGCFinder {
                     s.append("parameterPosition    : " + parameterPosition + "\n");
                     s.append("maxDiff              : " + maxDiff + "\n");
                     s.append("maxDiff(count)       : " + maxDiffTotal + "\n");
-                    s.append("maxDiff(win Rate)    : " + winRate * 100 + "\n");
+                    s.append("maxDiff(win Rate)    : " + winRate * 100 + "%\n");
                     s.append("count threshold      : " + countThreshold + "\n");
                     s.append("completeCount        : " + completeCount + " / " + size + " " + ((double) completeCount / (double) size) * 100 + "%" + "\n");
                     s.append("this time.           : " + time + " ms." + "\n");
                     s.append("average time.        : " + averageTime + " ms." + "\n");
-                    s.append("elapsed total time.  : " + elapsedTime + " ms." + "\n");
-                    s.append("remain time(H).      : " + remainTimeH + " H." + "\n");
                     s.append("maxDiff allthetime   : " + maxDiffAllTheTime + "\n");
-                    s.append("loop count           : " + loopCount + "\n");
+                    s.append("loop count/param pos : " + loopCount + "/" + count + "\n");
                     s.append("from - to            : " + from + " - " + to);
 
                     log.info(s.toString());
