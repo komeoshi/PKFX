@@ -396,7 +396,7 @@ public class PKFXMiniDataGCFinder {
 
             synchronized (pool) {
                 completeCount++;
-                double countThreshold = PKFXAnalyzer.daysCount(candles) * 0.33;
+                double countThreshold = PKFXAnalyzer.daysCount(candles) * 1.00;
                 if (diff != 0.0 && diff >= maxDiff && total > countThreshold) {
                     maxDiff = diff;
                     maxDiffTotal = total;
